@@ -24,11 +24,17 @@ export function HomePage() {
 
         <section className="home-grid" aria-label="Portfolio sections">
           {navigationItems.map((item, index) => (
-            <article key={item.slug} className="home-card" style={{ '--card-accent': item.accent } as React.CSSProperties}>
+            <article
+              key={item.slug}
+              className="home-card"
+              data-card={item.slug}
+              style={{ '--card-accent': item.accent } as React.CSSProperties}
+            >
               <Link className="home-card__link" to={item.href} aria-label={`Open ${item.label} page`}>
                 <span className="home-card__number">0{index + 1}</span>
                 <span className="home-card__media">
-                  <img src={item.image} alt="" width="683" height="2048" />
+                  <img src={item.image} alt="" width="724" height="2172" />
+                  <span className="home-card__title" aria-hidden="true">{item.label}</span>
                   <span className="home-card__open">
                     Open <ArrowDownRight aria-hidden="true" />
                   </span>
