@@ -1,7 +1,7 @@
-import aboutImage from '../../tmp/z/ChatGPT Image Aug 3, 2026, 09_46_57 PM (1).png';
-import projectsImage from '../../tmp/z/ChatGPT Image Aug 3, 2026, 09_46_57 PM (2).png';
-import skillsImage from '../../tmp/z/ChatGPT Image Aug 3, 2026, 09_46_58 PM (3).png';
-import blogImage from '../../tmp/z/ChatGPT Image Aug 3, 2026, 09_46_58 PM (4).png';
+import aboutImage from '../../img/1.png';
+import projectsImage from '../../img/2.png';
+import skillsImage from '../../img/3.png';
+import blogImage from '../../img/4.png';
 
 export type PageSlug = 'about' | 'projects' | 'skills' | 'blog';
 
