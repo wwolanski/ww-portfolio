@@ -217,6 +217,7 @@ button {
 
 .home-card {
   min-width: 0;
+  container: home-card / inline-size;
   transition: filter 260ms ease, opacity 260ms ease;
 }
 
@@ -228,33 +229,42 @@ button {
   --card-image-hover-scale: 1.025;
   --card-title-color: #fff5df;
   --card-title-top: clamp(0.75rem, 2vw, 1.75rem);
-  --card-title-size: clamp(2.8rem, 5.2vw, 5.2rem);
+  --card-title-size: clamp(2rem, 30cqw, 5.2rem);
+  --card-title-compact-size: clamp(1rem, 22cqw, 2rem);
+  --card-title-mobile-size: clamp(1.05rem, 5.4vw, 1.8rem);
+  --card-title-scale-x: 1;
   --card-title-letter-spacing: 0.015em;
 }
 
 .home-card[data-card="about"] {
   --card-title-color: #063f3e;
   --card-image-position: 50% 25%;
-  --card-title-size: clamp(2.8rem, 5.2vw, 5.2rem);
+  --card-title-size: clamp(2rem, 31cqw, 5.2rem);
+  --card-title-compact-size: clamp(1rem, 22cqw, 2rem);
 }
 
 .home-card[data-card="projects"] {
   --card-title-color: #ffe0ad;
   --card-image-position: 50% 40%;
-  --card-title-size: clamp(2.4rem, 4.6vw, 4.6rem);
+  --card-title-size: clamp(2rem, 30cqw, 5.2rem);
+  --card-title-compact-size: clamp(0.9rem, 22cqw, 2rem);
+  --card-title-scale-x: 0.84;
+  --card-title-mobile-size: clamp(1rem, 5vw, 1.7rem);
   --card-title-letter-spacing: 0.005em;
 }
 
 .home-card[data-card="skills"] {
   --card-title-color: #fff0dc;
   --card-image-position: 50% 50%;
-  --card-title-size: clamp(2.6rem, 4.9vw, 4.9rem);
+  --card-title-size: clamp(2rem, 30cqw, 5.2rem);
+  --card-title-compact-size: clamp(0.95rem, 22cqw, 2rem);
 }
 
 .home-card[data-card="blog"] {
   --card-title-color: #fff5df;
   --card-image-position: 50% 110%;
-  --card-title-size: clamp(2.8rem, 5.2vw, 5.2rem);
+  --card-title-size: clamp(2rem, 30cqw, 5.2rem);
+  --card-title-compact-size: clamp(1rem, 22cqw, 2rem);
 }
 
 .home-card__link {
@@ -293,8 +303,15 @@ button {
   line-height: 0.9;
   text-align: center;
   text-transform: uppercase;
+  white-space: nowrap;
   text-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
   pointer-events: none;
+}
+
+.home-card__title-text {
+  display: inline-block;
+  transform: scaleX(var(--card-title-scale-x));
+  transform-origin: center;
 }
 
 .home-card__number {
@@ -1146,6 +1163,21 @@ button {
   }
 }
 
+@media (min-width: 761px) and (max-width: 1050px) {
+  .home-card__title {
+    top: 0.5rem;
+    right: 0.35rem;
+    left: 0.35rem;
+    padding: 0.3rem 0.25rem 0.25rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.72);
+    font-size: var(--card-title-compact-size);
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 760px) {
   .home-page {
     height: auto;
@@ -1194,6 +1226,19 @@ button {
   .home-card__media {
     height: auto;
     aspect-ratio: 0.39;
+  }
+
+  .home-card__title {
+    top: 0.55rem;
+    right: 0.45rem;
+    left: 0.45rem;
+    padding: 0.35rem 0.3rem 0.25rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.72);
+    font-size: var(--card-title-mobile-size);
+    letter-spacing: 0.01em;
+    line-height: 0.95;
+    white-space: nowrap;
   }
 
   .home-card p {

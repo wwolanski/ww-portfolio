@@ -34,7 +34,9 @@ export function HomePage() {
                 <span className="home-card__number">0{index + 1}</span>
                 <span className="home-card__media">
                   <img src={item.image} alt="" width="724" height="2172" />
-                  <span className="home-card__title" aria-hidden="true">{item.label}</span>
+                  <span className="home-card__title" aria-hidden="true">
+                    <span className="home-card__title-text">{item.label}</span>
+                  </span>
                   <span className="home-card__open">
                     Open <ArrowDownRight aria-hidden="true" />
                   </span>
