@@ -253,7 +253,7 @@ button {
 
 .home-card[data-card="blog"] {
   --card-title-color: #fff5df;
-  --card-image-position: 50% 100%;
+  --card-image-position: 50% 110%;
   --card-title-size: clamp(2.8rem, 5.2vw, 5.2rem);
 }
 
