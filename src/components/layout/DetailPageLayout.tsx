@@ -18,8 +18,8 @@ export function DetailPageLayout({ page, eyebrow, title, intro, children }: Deta
 
   return (
     <div className="detail-page" style={{ '--page-accent': item.accent } as React.CSSProperties}>
-      <aside className="visual-panel" aria-label={`${item.label} artwork`}>
-        <img src={item.image} alt="" width="683" height="2048" />
+      <aside className="visual-panel" data-page={page} aria-label={`${item.label} artwork`}>
+        <img src={item.image} alt="" width="724" height="2172" />
         <Link to="/" className="back-link">
           <ArrowLeft aria-hidden="true" /> Home
         </Link>
