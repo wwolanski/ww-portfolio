@@ -1,7 +1,7 @@
-import aboutImage from '../../img/1.png';
-import projectsImage from '../../img/2.png';
-import skillsImage from '../../img/3.png';
-import blogImage from '../../img/4.png';
+import aboutImage from '../../img/vectorized/1.svg';
+import projectsImage from '../../img/vectorized/2.svg';
+import skillsImage from '../../img/vectorized/3.svg';
+import blogImage from '../../img/vectorized/4.svg';
 
 export type PageSlug = 'about' | 'projects' | 'skills' | 'blog';
 

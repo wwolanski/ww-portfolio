@@ -8,19 +8,18 @@ export function HomePage() {
   return (
     <main id="main-content" className="home-page">
       <div className="home-shell">
-        <header className="home-header">
-          <p className="home-kicker">Full-stack software developer</p>
-          <ThemeToggle />
-        </header>
+        <div className="home-intro">
+          <header className="home-header">
+            <p className="home-kicker">Full-stack software developer</p>
+            <ThemeToggle />
+          </header>
 
-        <div className="home-title-wrap">
-          <h1 className="home-title" aria-label="Wojciech Wolanski">
-            <span>Wojciech</span>
-            <span>Wolanski</span>
-          </h1>
-          <span className="ai-mark" aria-label="AI engineering">
-            AI<span className="ai-underline" />
-          </span>
+          <div className="home-title-wrap">
+            <h1 className="home-title" aria-label="Wojciech Wolanski">
+              <span className="home-title__line">Wojciech</span>
+              <span className="home-title__line home-title__line--last">Wolanski</span>
+            </h1>
+          </div>
         </div>
 
         <section className="home-grid" aria-label="Portfolio sections">

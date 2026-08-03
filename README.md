@@ -46,6 +46,6 @@ Static TypeScript modules are used for content because the site currently has on
 
 ## Trade-offs
 
-The supplied PNG artwork remains raster because it is the defining visual asset and exact reproduction matters more than vector scalability here. It is loaded once by Vite and reused as both the home cards and route panels. Before a production launch, equivalent AVIF/WebP exports should be generated from the originals to reduce transfer size while keeping PNG fallbacks.
+The supplied artwork is loaded as SVG because it is the defining visual asset and should remain sharp at every size. It is loaded once by Vite and reused as both the home cards and route panels.
 
 The newsletter and project URLs are presentation-ready placeholders. They intentionally do not simulate a successful backend operation; production deployment should connect them to real endpoints and validation at the server boundary.
