@@ -1,3 +1,7 @@
-img/
-.vscode/
+node_modules
+dist
+coverage
+.DS_Store
+*.local
 tmp/
+.vscode/
