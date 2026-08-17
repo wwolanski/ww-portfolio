@@ -1,5 +1,8 @@
 # Wojciech Wolanski — portfolio
 
+## Source of truth
+
+
 A high-fidelity, responsive implementation of the supplied visual concept. The landing page keeps the original editorial composition while every artwork becomes an interactive entry into a dedicated page.
 
 ## Stack

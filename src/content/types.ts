@@ -1,0 +1,200 @@
+export type CopyBlock = {
+  readonly before: string;
+  readonly emphasis?: string;
+  readonly after?: string;
+};
+
+export type HeroContent = {
+  readonly eyebrow: string;
+  readonly title: readonly string[];
+  readonly lead: CopyBlock;
+  readonly tags: readonly string[];
+  readonly accentTag?: string;
+};
+
+export type Principle = {
+  readonly icon: string;
+  readonly title: string;
+  readonly text: string;
+};
+
+export type WorkflowStep = {
+  readonly index: string;
+  readonly title: string;
+  readonly text: string;
+};
+
+export type ProcessStep = WorkflowStep;
+
+export type TimelineItem = {
+  readonly date: string;
+  readonly title: string;
+  readonly text: string;
+};
+
+export type StatementContent = {
+  readonly kicker: string;
+  readonly title: string;
+  readonly text: string;
+};
+
+export type CallToAction = {
+  readonly eyebrow: string;
+  readonly title: string;
+  readonly label: string;
+  readonly target: string;
+};
+
+export type HomeCard = {
+  readonly label: string;
+  readonly description: string;
+};
+
+export type HomeContent = {
+  readonly kicker: string;
+  readonly portfolioSections: string;
+  readonly cards: {
+    readonly about: HomeCard;
+    readonly projects: HomeCard;
+    readonly skills: HomeCard;
+    readonly blog: HomeCard;
+  };
+  readonly basedIn: string;
+  readonly workingWorldwide: string;
+};
+
+export type AboutContent = {
+  readonly hero: HeroContent;
+  readonly story: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly lead: string;
+    readonly paragraphs: readonly CopyBlock[];
+    readonly micro: string;
+  };
+  readonly principles: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly items: readonly Principle[];
+  };
+  readonly workflow: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly steps: readonly WorkflowStep[];
+    readonly example: {
+      readonly label: string;
+      readonly title: string;
+      readonly text: string;
+      readonly steps: readonly ProcessStep[];
+    };
+  };
+  readonly timeline: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly items: readonly TimelineItem[];
+  };
+  readonly statement: StatementContent;
+  readonly cta: CallToAction;
+};
+
+export type ProjectDetail = {
+  readonly label: string;
+  readonly text: string;
+};
+
+export type Project = {
+  readonly index: string;
+  readonly category: string;
+  readonly status: string;
+  readonly title: string;
+  readonly description: string;
+  readonly facts: readonly string[];
+  readonly outcome: string;
+  readonly anchor: string;
+  readonly details: readonly ProjectDetail[];
+};
+
+export type ProjectsContent = {
+  readonly hero: HeroContent;
+  readonly selected: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly projects: readonly Project[];
+    readonly failure: {
+      readonly label: string;
+      readonly title: string;
+      readonly text: string;
+    };
+  };
+  readonly statement: StatementContent;
+  readonly cta: CallToAction;
+};
+
+export type Competency = {
+  readonly index: string;
+  readonly title: string;
+  readonly skills: readonly string[];
+};
+
+export type ToolBand = {
+  readonly title: string;
+  readonly tools: readonly string[];
+};
+
+export type VerificationCard = {
+  readonly title: string;
+  readonly text: string;
+  readonly highlighted?: boolean;
+};
+
+export type SkillsContent = {
+  readonly hero: HeroContent;
+  readonly competencies: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly items: readonly Competency[];
+  };
+  readonly stack: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly bands: readonly ToolBand[];
+  };
+  readonly architecture: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly title: string;
+    readonly paragraphs: readonly CopyBlock[];
+    readonly points: readonly string[];
+  };
+  readonly verification: {
+    readonly heading: string;
+    readonly intro: string;
+    readonly cards: readonly VerificationCard[];
+  };
+  readonly statement: StatementContent;
+  readonly cta: CallToAction;
+};
+
+export type Article = {
+  readonly title: string;
+  readonly category: string;
+  readonly date: string;
+  readonly readTime: string;
+  readonly description: string;
+};
+
+export type BlogContent = {
+  readonly eyebrow: string;
+  readonly title: readonly string[];
+  readonly intro: string;
+  readonly sectionHeading: string;
+  readonly sectionIntro: string;
+  readonly articles: readonly Article[];
+};
+
+export type PortfolioContent = {
+  readonly about: AboutContent;
+  readonly projects: ProjectsContent;
+  readonly skills: SkillsContent;
+  readonly blog: BlogContent;
+};

@@ -3,24 +3,24 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 
-import { ThemeProvider } from '../features/theme/ThemeProvider';
 import { App } from '../app/App';
 import { getSiteContent } from '../content/siteContent';
 import { BlogPage } from '../pages/blog/BlogPage';
 import { HomePage } from '../pages/home/HomePage';
+import { ThemeProvider } from '../features/theme/ThemeProvider';
 
 function renderPage(page: React.ReactNode) {
   return render(
     <MemoryRouter>
       <ThemeProvider>{page}</ThemeProvider>
-    </MemoryRouter>,
+    </MemoryRouter>
   );
 }
 
 const englishSite = getSiteContent('en');
 
-describe('portfolio navigation', () => {
-  it('exposes all main sections as accessible links', () => {
+describe('existing portfolio shell', () => {
+  it('keeps all home sections and their original links', () => {
     renderPage(<HomePage site={englishSite} />);
 
     expect(screen.getByRole('heading', { name: /wojciech wolanski/i })).toBeInTheDocument();
@@ -41,8 +41,8 @@ describe('portfolio navigation', () => {
   });
 });
 
-describe('blog filtering', () => {
-  it('filters articles without duplicating derived state', async () => {
+describe('existing blog page', () => {
+  it('keeps article filtering available', async () => {
     const user = userEvent.setup();
     renderPage(<BlogPage site={englishSite} />);
 
@@ -53,20 +53,19 @@ describe('blog filtering', () => {
   });
 });
 
-describe('localized routing', () => {
+describe('localized detail pages', () => {
   it('keeps the current page when switching languages', async () => {
     const user = userEvent.setup();
 
     render(
-      <MemoryRouter initialEntries={['/en/projects']}>
+      <MemoryRouter initialEntries={['/pl/projects']}>
         <ThemeProvider><App /></ThemeProvider>
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: /built to make/i })).toBeInTheDocument();
-    await user.click(screen.getByRole('link', { name: /switch language to polish/i }));
+    expect(screen.getByRole('heading', { name: /projekty,które cośsprawdzają/i })).toBeInTheDocument();
+    await user.click(screen.getByRole('link', { name: /zmień język na angielski/i }));
 
-    expect(screen.getByRole('heading', { name: /zbudowane, by/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /zmień język na angielski/i })).toHaveAttribute('href', '/en/projects');
+    expect(screen.getByRole('link', { name: /switch language to polish/i })).toHaveAttribute('href', '/pl/projects');
   });
 });

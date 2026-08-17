@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowUpRight } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router';
 import type { ReactNode } from 'react';
 
@@ -11,7 +11,7 @@ type DetailPageLayoutProps = {
   readonly page: PageSlug;
   readonly eyebrow: string;
   readonly title: ReactNode;
-  readonly intro: string;
+  readonly intro: ReactNode;
   readonly children: ReactNode;
 };
 
@@ -38,16 +38,6 @@ export function DetailPageLayout({ site, page, eyebrow, title, intro, children }
           </header>
           {children}
         </main>
-
-        <footer className="detail-footer">
-          <div>
-            <span>{site.messages.common.footerQuestion}</span>
-            <strong>{site.messages.common.footerTitle}</strong>
-          </div>
-          <a href="mailto:hello@wollanski.dev">
-            {site.messages.common.startConversation} <ArrowUpRight aria-hidden="true" />
-          </a>
-        </footer>
       </div>
     </div>
   );

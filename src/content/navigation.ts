@@ -3,8 +3,7 @@ import projectsImage from '../../img/2.png';
 import skillsImage from '../../img/3.png';
 import blogImage from '../../img/4.png';
 
-import type { Locale } from '../routing/locale';
-import type { Messages } from './messages';
+import type { HomeContent } from './types';
 
 export type PageSlug = 'about' | 'projects' | 'skills' | 'blog';
 
@@ -27,27 +26,12 @@ const navigationMeta = [
   { slug: 'blog', image: blogImage, accent: '#13b6d0' },
 ] as const satisfies readonly NavigationMeta[];
 
-const descriptions = {
-  en: {
-    about: 'Who I am, what I build, and how I think about software.',
-    projects: 'Selected web, backend, and AI projects with real impact.',
-    skills: 'Technologies, tools, and problem-solving strengths I use every day.',
-    blog: 'Notes, tutorials, and insights on development, architecture, and AI.',
-  },
-  pl: {
-    about: 'Kim jestem, co tworzę i jak myślę o oprogramowaniu.',
-    projects: 'Wybrane projekty webowe, backendowe i AI z realnym wpływem.',
-    skills: 'Technologie, narzędzia i sposoby rozwiązywania problemów, których używam na co dzień.',
-    blog: 'Notatki, poradniki i spostrzeżenia o programowaniu, architekturze i AI.',
-  },
-} as const satisfies Record<Locale, Record<PageSlug, string>>;
-
-export function getNavigationItems(messages: Messages, locale: Locale): readonly NavigationItem[] {
+export function getNavigationItems(cards: HomeContent['cards']): readonly NavigationItem[] {
   return navigationMeta.map((item) => ({
     ...item,
-    label: messages.nav[item.slug],
+    label: cards[item.slug].label,
     href: `/${item.slug}`,
-    description: descriptions[locale][item.slug],
+    description: cards[item.slug].description,
   }));
 }
 

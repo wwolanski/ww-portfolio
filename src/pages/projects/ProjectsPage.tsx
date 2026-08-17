@@ -1,54 +1,71 @@
 import { ArrowUpRight } from 'lucide-react';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
+import { FooterCta, Statement } from '../../components/ui/ClosingSections';
+import { InlineCopy } from '../../components/ui/InlineCopy';
 import { SectionHeading } from '../../components/ui/SectionHeading';
+import type { Project } from '../../content/types';
 import type { SiteContent } from '../../content/siteContent';
 
 type ProjectsPageProps = { readonly site: SiteContent };
 
 export function ProjectsPage({ site }: ProjectsPageProps) {
   const { projects: content } = site.portfolio;
-  const [titleLineOne, titleLineTwo] = content.title;
 
   return (
     <DetailPageLayout
       site={site}
       page="projects"
-      eyebrow={content.eyebrow}
-      title={<>{titleLineOne}<br />{titleLineTwo}</>}
-      intro={content.intro}
+      eyebrow={content.hero.eyebrow}
+      title={<PageTitle lines={content.hero.title} />}
+      intro={<InlineCopy copy={content.hero.lead} />}
     >
-      <section className="content-section projects-section">
-        <SectionHeading index="01" title={content.sectionHeading} text={content.sectionIntro} />
+      <section className="content-section prototype-section">
+        <SectionHeading index="01" title={content.selected.heading} text={content.selected.intro} />
         <div className="project-list">
-          {content.projects.map((project, index) => (
-            <article key={project.title} className="project-row">
-              <div className="project-meta">
-                <span>0{index + 1}</span>
-                <span>{project.category}</span>
-              </div>
-              <div className="project-body">
-                <div className="project-title-row">
-                  <h3>{project.title}</h3>
-                  <a href={project.href} target="_blank" rel="noreferrer" aria-label={site.messages.projects.github(project.title)}>
-                    <ArrowUpRight aria-hidden="true" />
-                  </a>
-                </div>
-                <p>{project.summary}</p>
-                <ul aria-label={site.messages.projects.technologies(project.title)}>
-                  {project.technologies.map((technology) => <li key={technology}>{technology}</li>)}
-                </ul>
-                <strong>{project.metric}</strong>
-              </div>
-            </article>
-          ))}
+          {content.selected.projects.map((project) => <ProjectRow key={project.title} project={project} site={site} />)}
+        </div>
+        <div className="prototype-failure-box">
+          <div><span className="prototype-mini-label">{content.selected.failure.label}</span><h3>{content.selected.failure.title}</h3></div>
+          <div><p>{content.selected.failure.text}</p></div>
         </div>
       </section>
 
-      <section className="content-section project-note">
-        <p>{content.noteLead}</p>
-        <span>{content.noteText}</span>
-      </section>
+      <Statement content={content.statement} />
+      <FooterCta site={site} content={content.cta} />
     </DetailPageLayout>
   );
+}
+
+type ProjectRowProps = {
+  readonly project: Project;
+  readonly site: SiteContent;
+};
+
+function ProjectRow({ project, site }: ProjectRowProps) {
+  return (
+    <article className="project-row prototype-project-row">
+      <div className="project-meta">
+        <span>{project.index}</span>
+        <span>{project.category}</span>
+        <span className="prototype-status">{project.status}</span>
+      </div>
+      <div className="project-body">
+        <div className="project-title-row">
+          <h3>{project.title}</h3>
+          <a href={`#${project.anchor}`} aria-label={site.messages.common.projectDetails(project.title)}><ArrowUpRight aria-hidden="true" /></a>
+        </div>
+        <p>{project.description}</p>
+        <ul>{project.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul>
+        <strong>{project.outcome}</strong>
+        <div className="prototype-project-details" id={project.anchor}>
+          {project.details.map((detail) => <div key={detail.label}><b>{detail.label}</b><span>{detail.text}</span></div>)}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function PageTitle({ lines }: { readonly lines: readonly string[] }) {
+  return <>{lines.map((line, index) => <span key={`${line}-${index}`}>{line}{index < lines.length - 1 && <br />}</span>)}</>;
 }

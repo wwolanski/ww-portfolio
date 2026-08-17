@@ -9,14 +9,14 @@ import { ThemeToggle } from '../../features/theme/ThemeToggle';
 type HomePageProps = { readonly site: SiteContent };
 
 export function HomePage({ site }: HomePageProps) {
-  const { locale, messages, navigation } = site;
+  const { locale, messages, home, navigation } = site;
 
   return (
     <main id="main-content" className="home-page">
       <div className="home-shell">
         <div className="home-intro">
           <header className="home-header">
-            <p className="home-kicker">{messages.home.kicker}</p>
+            <p className="home-kicker">{home.kicker}</p>
             <div className="home-header-actions">
               <LanguageSwitcher locale={locale} messages={messages} />
               <ThemeToggle messages={messages} />
@@ -31,7 +31,7 @@ export function HomePage({ site }: HomePageProps) {
           </div>
         </div>
 
-        <section className="home-grid" aria-label={messages.home.portfolioSections}>
+        <section className="home-grid" aria-label={home.portfolioSections}>
           {navigation.map((item, index) => (
             <article
               key={item.slug}
@@ -39,7 +39,7 @@ export function HomePage({ site }: HomePageProps) {
               data-card={item.slug}
               style={{ '--card-accent': item.accent } as React.CSSProperties}
             >
-              <Link className="home-card__link" to={getLocalizedPath(locale, item.href)} aria-label={messages.home.openPage(item.label)}>
+              <Link className="home-card__link" to={getLocalizedPath(locale, item.href)} aria-label={messages.actions.openPage(item.label)}>
                 <span className="home-card__number">0{index + 1}</span>
                 <span className="home-card__media">
                   <img src={item.image} alt="" width="724" height="2172" />
@@ -47,7 +47,7 @@ export function HomePage({ site }: HomePageProps) {
                     <span className="home-card__title-text">{item.label}</span>
                   </span>
                   <span className="home-card__open">
-                    {messages.home.open} <ArrowDownRight aria-hidden="true" />
+                    {messages.actions.open} <ArrowDownRight aria-hidden="true" />
                   </span>
                 </span>
               </Link>
@@ -57,7 +57,7 @@ export function HomePage({ site }: HomePageProps) {
         </section>
 
         <footer className="home-footer">
-          <span>{messages.home.basedIn} · {messages.home.workingWorldwide}</span>
+          <span>{home.basedIn} · {home.workingWorldwide}</span>
           <span>© {new Date().getFullYear()}</span>
         </footer>
       </div>
