@@ -3,24 +3,28 @@ import { ArrowUpRight, Clock3 } from 'lucide-react';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { SectionHeading } from '../../components/ui/SectionHeading';
-import { articles } from '../../content/portfolio';
+import type { SiteContent } from '../../content/siteContent';
 
-const categories = ['All', ...new Set(articles.map((article) => article.category))] as const;
+type BlogPageProps = { readonly site: SiteContent };
 
-export function BlogPage() {
-  const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>('All');
-  const visibleArticles = articles.filter((article) => activeCategory === 'All' || article.category === activeCategory);
+export function BlogPage({ site }: BlogPageProps) {
+  const { blog: content } = site.portfolio;
+  const [titleLineOne, titleLineTwo] = content.title;
+  const categories = [site.messages.blog.all, ...new Set(content.articles.map((article) => article.category))];
+  const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const visibleArticles = content.articles.filter((article) => activeCategory === categories[0] || article.category === activeCategory);
 
   return (
     <DetailPageLayout
+      site={site}
       page="blog"
-      eyebrow="Notes & ideas · 04"
-      title={<>Thinking<br />in public.</>}
-      intro="Field notes on building maintainable systems, useful AI, and software teams that keep learning. Written to clarify ideas and share what works."
+      eyebrow={content.eyebrow}
+      title={<>{titleLineOne}<br />{titleLineTwo}</>}
+      intro={content.intro}
     >
       <section className="content-section blog-section">
-        <SectionHeading index="01" title="Latest writing" text="Practical ideas for people who build digital products." />
-        <div className="filter-row" role="group" aria-label="Filter articles by category">
+        <SectionHeading index="01" title={content.sectionHeading} text={content.sectionIntro} />
+        <div className="filter-row" role="group" aria-label={site.messages.blog.filterArticles}>
           {categories.map((category) => (
             <button
               key={category}
@@ -41,12 +45,12 @@ export function BlogPage() {
                 <div className="article-meta">
                   <span>{article.category}</span>
                   <span>{article.date}</span>
-                  <span><Clock3 aria-hidden="true" /> {article.readTime}</span>
+                  <span><Clock3 aria-hidden="true" /> {site.messages.blog.readTime(article.readTime)}</span>
                 </div>
                 <h3>{article.title}</h3>
                 <p>{article.description}</p>
               </div>
-              <button type="button" aria-label={`Read ${article.title}`}>
+              <button type="button" aria-label={site.messages.blog.readArticle(article.title)}>
                 <ArrowUpRight aria-hidden="true" />
               </button>
             </article>
@@ -55,12 +59,12 @@ export function BlogPage() {
       </section>
 
       <aside className="newsletter">
-        <span>No noise. Just useful ideas.</span>
-        <h2>Occasional notes for thoughtful builders.</h2>
+        <span>{site.messages.blog.newsletterEyebrow}</span>
+        <h2>{site.messages.blog.newsletterTitle}</h2>
         <form onSubmit={(event) => event.preventDefault()}>
-          <label htmlFor="newsletter-email">Work email</label>
-          <input id="newsletter-email" type="email" placeholder="you@company.com" required />
-          <button type="submit">Subscribe <ArrowUpRight aria-hidden="true" /></button>
+          <label htmlFor="newsletter-email">{site.messages.blog.workEmail}</label>
+          <input id="newsletter-email" type="email" placeholder={site.messages.blog.emailPlaceholder} required />
+          <button type="submit">{site.messages.blog.subscribe} <ArrowUpRight aria-hidden="true" /></button>
         </form>
       </aside>
     </DetailPageLayout>

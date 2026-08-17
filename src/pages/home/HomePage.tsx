@@ -1,17 +1,26 @@
 import { ArrowDownRight } from 'lucide-react';
 import { Link } from 'react-router';
 
-import { navigationItems } from '../../content/navigation';
+import { LanguageSwitcher } from '../../components/layout/LanguageSwitcher';
+import type { SiteContent } from '../../content/siteContent';
+import { getLocalizedPath } from '../../routing/locale';
 import { ThemeToggle } from '../../features/theme/ThemeToggle';
 
-export function HomePage() {
+type HomePageProps = { readonly site: SiteContent };
+
+export function HomePage({ site }: HomePageProps) {
+  const { locale, messages, navigation } = site;
+
   return (
     <main id="main-content" className="home-page">
       <div className="home-shell">
         <div className="home-intro">
           <header className="home-header">
-            <p className="home-kicker">Full-stack software developer</p>
-            <ThemeToggle />
+            <p className="home-kicker">{messages.home.kicker}</p>
+            <div className="home-header-actions">
+              <LanguageSwitcher locale={locale} messages={messages} />
+              <ThemeToggle messages={messages} />
+            </div>
           </header>
 
           <div className="home-title-wrap">
@@ -22,15 +31,15 @@ export function HomePage() {
           </div>
         </div>
 
-        <section className="home-grid" aria-label="Portfolio sections">
-          {navigationItems.map((item, index) => (
+        <section className="home-grid" aria-label={messages.home.portfolioSections}>
+          {navigation.map((item, index) => (
             <article
               key={item.slug}
               className="home-card"
               data-card={item.slug}
               style={{ '--card-accent': item.accent } as React.CSSProperties}
             >
-              <Link className="home-card__link" to={item.href} aria-label={`Open ${item.label} page`}>
+              <Link className="home-card__link" to={getLocalizedPath(locale, item.href)} aria-label={messages.home.openPage(item.label)}>
                 <span className="home-card__number">0{index + 1}</span>
                 <span className="home-card__media">
                   <img src={item.image} alt="" width="724" height="2172" />
@@ -38,7 +47,7 @@ export function HomePage() {
                     <span className="home-card__title-text">{item.label}</span>
                   </span>
                   <span className="home-card__open">
-                    Open <ArrowDownRight aria-hidden="true" />
+                    {messages.home.open} <ArrowDownRight aria-hidden="true" />
                   </span>
                 </span>
               </Link>
@@ -48,7 +57,7 @@ export function HomePage() {
         </section>
 
         <footer className="home-footer">
-          <span>Based in Poland · Working worldwide</span>
+          <span>{messages.home.basedIn} · {messages.home.workingWorldwide}</span>
           <span>© {new Date().getFullYear()}</span>
         </footer>
       </div>

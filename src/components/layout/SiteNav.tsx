@@ -1,21 +1,28 @@
 import { ArrowUpRight } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 
-import { navigationItems } from '../../content/navigation';
+import type { SiteContent } from '../../content/siteContent';
+import { getLocalizedPath } from '../../routing/locale';
+import { LanguageSwitcher } from './LanguageSwitcher';
 import { ThemeToggle } from '../../features/theme/ThemeToggle';
 
-type SiteNavProps = { readonly compact?: boolean };
+type SiteNavProps = {
+  readonly site: SiteContent;
+  readonly compact?: boolean;
+};
 
-export function SiteNav({ compact = false }: SiteNavProps) {
+export function SiteNav({ site, compact = false }: SiteNavProps) {
+  const { locale, messages, navigation } = site;
+
   return (
     <header className={compact ? 'site-nav site-nav--compact' : 'site-nav'}>
-      <Link className="site-mark" to="/" aria-label="Wojciech Wolanski — home">
+      <Link className="site-mark" to={`/${locale}`} aria-label={messages.common.home}>
         WW<span>.</span>
       </Link>
 
-      <nav className="site-links" aria-label="Primary navigation">
-        {navigationItems.map((item) => (
-          <NavLink key={item.slug} to={item.href}>
+      <nav className="site-links" aria-label={messages.common.primaryNavigation}>
+        {navigation.map((item) => (
+          <NavLink key={item.slug} to={getLocalizedPath(locale, item.href)}>
             {item.label}
           </NavLink>
         ))}
@@ -27,7 +34,8 @@ export function SiteNav({ compact = false }: SiteNavProps) {
             Let’s talk <ArrowUpRight aria-hidden="true" />
           </a>
         )}
-        <ThemeToggle />
+        <LanguageSwitcher locale={locale} messages={messages} />
+        <ThemeToggle messages={messages} />
       </div>
     </header>
   );

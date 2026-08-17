@@ -2,20 +2,26 @@ import { ArrowUpRight } from 'lucide-react';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { SectionHeading } from '../../components/ui/SectionHeading';
-import { projects } from '../../content/portfolio';
+import type { SiteContent } from '../../content/siteContent';
 
-export function ProjectsPage() {
+type ProjectsPageProps = { readonly site: SiteContent };
+
+export function ProjectsPage({ site }: ProjectsPageProps) {
+  const { projects: content } = site.portfolio;
+  const [titleLineOne, titleLineTwo] = content.title;
+
   return (
     <DetailPageLayout
+      site={site}
       page="projects"
-      eyebrow="Selected work · 02"
-      title={<>Built to make<br />a difference.</>}
-      intro="A selection of products shaped from first sketch to production. Each one balances user needs, technical constraints, and measurable outcomes."
+      eyebrow={content.eyebrow}
+      title={<>{titleLineOne}<br />{titleLineTwo}</>}
+      intro={content.intro}
     >
       <section className="content-section projects-section">
-        <SectionHeading index="01" title="Featured projects" text="Full-stack work across product, platform, and applied AI." />
+        <SectionHeading index="01" title={content.sectionHeading} text={content.sectionIntro} />
         <div className="project-list">
-          {projects.map((project, index) => (
+          {content.projects.map((project, index) => (
             <article key={project.title} className="project-row">
               <div className="project-meta">
                 <span>0{index + 1}</span>
@@ -24,12 +30,12 @@ export function ProjectsPage() {
               <div className="project-body">
                 <div className="project-title-row">
                   <h3>{project.title}</h3>
-                  <a href={project.href} target="_blank" rel="noreferrer" aria-label={`View ${project.title} on GitHub`}>
+                  <a href={project.href} target="_blank" rel="noreferrer" aria-label={site.messages.projects.github(project.title)}>
                     <ArrowUpRight aria-hidden="true" />
                   </a>
                 </div>
                 <p>{project.summary}</p>
-                <ul aria-label={`${project.title} technologies`}>
+                <ul aria-label={site.messages.projects.technologies(project.title)}>
                   {project.technologies.map((technology) => <li key={technology}>{technology}</li>)}
                 </ul>
                 <strong>{project.metric}</strong>
@@ -40,8 +46,8 @@ export function ProjectsPage() {
       </section>
 
       <section className="content-section project-note">
-        <p>Good software is a sequence of good decisions.</p>
-        <span>Every case study can be discussed in detail during an interview — including constraints, rejected approaches, and lessons learned.</span>
+        <p>{content.noteLead}</p>
+        <span>{content.noteText}</span>
       </section>
     </DetailPageLayout>
   );

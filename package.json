@@ -18,6 +18,7 @@
     "@fontsource/dm-sans": "latest",
     "@fontsource/montserrat": "latest",
     "@fontsource/roboto-condensed": "latest",
+    "@iconify/react": "^6.0.2",
     "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest",

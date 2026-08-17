@@ -2,20 +2,26 @@ import { Check, Terminal } from 'lucide-react';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { SectionHeading } from '../../components/ui/SectionHeading';
-import { skillGroups } from '../../content/portfolio';
+import type { SiteContent } from '../../content/siteContent';
 
-export function SkillsPage() {
+type SkillsPageProps = { readonly site: SiteContent };
+
+export function SkillsPage({ site }: SkillsPageProps) {
+  const { skills: content } = site.portfolio;
+  const [titleLineOne, titleLineTwo] = content.title;
+
   return (
     <DetailPageLayout
+      site={site}
       page="skills"
-      eyebrow="Toolkit · 03"
-      title={<>Wide range.<br />Sharp judgment.</>}
-      intro="Technology is a means, not the destination. I choose tools for their fit, understand their trade-offs, and combine them into systems teams can confidently own."
+      eyebrow={content.eyebrow}
+      title={<>{titleLineOne}<br />{titleLineTwo}</>}
+      intro={content.intro}
     >
       <section className="content-section">
-        <SectionHeading index="01" title="Capabilities" text="A T-shaped toolkit with product engineering at its core." />
+        <SectionHeading index="01" title={content.sectionHeading} text={content.sectionIntro} />
         <div className="skills-grid">
-          {skillGroups.map((group) => (
+          {content.groups.map((group) => (
             <article key={group.title}>
               <header>
                 <span>{group.index}</span>
@@ -32,16 +38,16 @@ export function SkillsPage() {
       </section>
 
       <section className="content-section engineering-section">
-        <SectionHeading index="02" title="Beyond the stack" />
+        <SectionHeading index="02" title={content.beyondStackHeading} />
         <div className="engineering-card">
           <Terminal aria-hidden="true" />
           <div>
-            <h3>Engineering is more than syntax.</h3>
-            <p>I bring discovery, system design, accessibility, testing, security thinking, observability, and clear technical communication into the same workflow.</p>
+            <h3>{content.beyondStackTitle}</h3>
+            <p>{content.beyondStackText}</p>
           </div>
         </div>
-        <div className="strength-list" aria-label="Engineering strengths">
-          {['Product discovery', 'Technical leadership', 'System design', 'Performance', 'Accessibility', 'Mentoring'].map((item, index) => (
+        <div className="strength-list" aria-label={site.messages.skills.engineeringStrengths}>
+          {content.strengths.map((item, index) => (
             <span key={item}><small>0{index + 1}</small>{item}</span>
           ))}
         </div>

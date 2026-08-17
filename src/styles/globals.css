@@ -133,6 +133,12 @@ button {
   min-height: 42px;
 }
 
+.home-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .home-kicker,
 .page-eyebrow {
   margin: 0;
@@ -172,6 +178,61 @@ button {
 
 .theme-toggle svg {
   width: 18px;
+}
+
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.2rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+}
+
+.language-switcher__option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 32px;
+  padding: 0.2rem 0.45rem 0.2rem 0.3rem;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.language-switcher__option:hover,
+.language-switcher__option:focus-visible,
+.language-switcher__option.is-current {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+
+.language-switcher__option:hover {
+  transform: translateY(-1px);
+}
+
+.language-switcher__option svg {
+  flex: 0 0 auto;
+}
+
+.home-page .language-switcher {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.home-page .language-switcher__option {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.home-page .language-switcher__option:hover,
+.home-page .language-switcher__option:focus-visible,
+.home-page .language-switcher__option.is-current {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .home-title-wrap {
