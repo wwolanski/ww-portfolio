@@ -16,26 +16,28 @@ export function SiteNav({ site, compact = false }: SiteNavProps) {
 
   return (
     <header className={compact ? 'site-nav site-nav--compact' : 'site-nav'}>
-      <Link className="site-mark" to={`/${locale}`} aria-label={messages.common.home}>
-        WW<span>.</span>
-      </Link>
+      <div className="site-nav__inner">
+        <Link className="site-mark" to={`/${locale}`} aria-label={messages.common.home}>
+          W<span>W</span>.
+        </Link>
 
-      <nav className="site-links" aria-label={messages.common.primaryNavigation}>
-        {navigation.map((item) => (
-          <NavLink key={item.slug} to={getLocalizedPath(locale, item.href)}>
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
+        <nav className="site-links" aria-label={messages.common.primaryNavigation}>
+          {navigation.map((item) => (
+            <NavLink key={item.slug} to={getLocalizedPath(locale, item.href)}>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
 
-      <div className="site-actions">
-        {!compact && (
-          <a className="availability" href="mailto:hello@wollanski.dev">
-            Let’s talk <ArrowUpRight aria-hidden="true" />
-          </a>
-        )}
-        <LanguageSwitcher locale={locale} messages={messages} />
-        <ThemeToggle messages={messages} />
+        <div className="site-actions">
+          {!compact && (
+            <a className="availability" href="mailto:hello@wollanski.dev">
+              Let’s talk <ArrowUpRight aria-hidden="true" />
+            </a>
+          )}
+          <LanguageSwitcher locale={locale} messages={messages} />
+          <ThemeToggle messages={messages} />
+        </div>
       </div>
     </header>
   );

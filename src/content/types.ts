@@ -136,6 +136,18 @@ export type Competency = {
   readonly skills: readonly string[];
 };
 
+export type SkillsShowcase = {
+  readonly eyebrow: string;
+  readonly title: readonly string[];
+  readonly intro: string;
+  readonly columns: readonly {
+    readonly title: string;
+    readonly skills: readonly string[];
+  }[];
+  readonly softTitle: string;
+  readonly softSkills: readonly string[];
+};
+
 export type ToolBand = {
   readonly title: string;
   readonly tools: readonly string[];
@@ -149,6 +161,7 @@ export type VerificationCard = {
 
 export type SkillsContent = {
   readonly hero: HeroContent;
+  readonly showcase: SkillsShowcase;
   readonly competencies: {
     readonly heading: string;
     readonly intro: string;

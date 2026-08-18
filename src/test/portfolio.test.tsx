@@ -5,8 +5,10 @@ import { describe, expect, it } from 'vitest';
 
 import { App } from '../app/App';
 import { getSiteContent } from '../content/siteContent';
+import { AboutPage } from '../pages/about/AboutPage';
 import { BlogPage } from '../pages/blog/BlogPage';
 import { HomePage } from '../pages/home/HomePage';
+import { SkillsPage } from '../pages/skills/SkillsPage';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
 
 function renderPage(page: React.ReactNode) {
@@ -18,6 +20,7 @@ function renderPage(page: React.ReactNode) {
 }
 
 const englishSite = getSiteContent('en');
+const polishSite = getSiteContent('pl');
 
 describe('existing portfolio shell', () => {
   it('keeps all home sections and their original links', () => {
@@ -67,5 +70,30 @@ describe('localized detail pages', () => {
     await user.click(screen.getByRole('link', { name: /zmień język na angielski/i }));
 
     expect(screen.getByRole('link', { name: /switch language to polish/i })).toHaveAttribute('href', '/pl/projects');
+  });
+});
+
+describe('v7 detail visuals', () => {
+  it('renders the illustrated about workflow and timeline', () => {
+    const { container } = renderPage(<AboutPage site={polishSite} />);
+
+    expect(container.querySelector('.visual-panel[data-page="about"]')).toBeInTheDocument();
+    expect(container.querySelector('.ai-workflow')).toBeInTheDocument();
+    expect(container.querySelectorAll('.ai-orb img')).toHaveLength(6);
+    expect(container.querySelector('.process-visual img')).toBeInTheDocument();
+    expect(container.querySelectorAll('.timeline-thumb img')).toHaveLength(4);
+  });
+
+  it('renders the new skills showcase and blog card rail', () => {
+    const { container, unmount } = renderPage(<SkillsPage site={polishSite} />);
+
+    expect(container.querySelector('.skills-showcase')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Umiejętności miękkie' })).toBeInTheDocument();
+    expect(container.querySelector('.wide-media img')).toBeInTheDocument();
+
+    unmount();
+    const blog = renderPage(<BlogPage site={polishSite} />);
+    expect(blog.container.querySelector('.visual-panel[data-page="blog"]')).toBeInTheDocument();
+    expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .pv-card')).toHaveLength(3);
   });
 });
