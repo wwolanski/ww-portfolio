@@ -1,0 +1,101 @@
+.mdx-image-gallery {
+  --gallery-bleed: clamp(3.5rem, 10vw, 8rem);
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 42px;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  width: calc(100% + var(--gallery-bleed));
+  margin: 2rem 0 2.5rem;
+  margin-left: calc(var(--gallery-bleed) * -0.5);
+  align-items: center;
+}
+
+.mdx-image-gallery__frame {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.mdx-content .mdx-image-gallery__image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(62vh, 560px);
+  margin: 0;
+  border: 0;
+  background: transparent;
+  object-fit: contain;
+}
+
+.mdx-image-gallery__button {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  align-self: center;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  background: rgba(8, 8, 8, 0.66);
+  cursor: pointer;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.mdx-image-gallery__button:hover {
+  border-color: var(--page-accent);
+  color: #080808;
+  background: var(--page-accent);
+}
+
+.mdx-image-gallery__button:focus-visible {
+  outline-color: var(--page-accent);
+}
+
+.mdx-image-gallery__button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.mdx-image-gallery__counter {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 50%;
+  padding: 0.22rem 0.55rem;
+  color: #fff;
+  background: rgba(8, 8, 8, 0.7);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.mdx-image-gallery--empty {
+  padding: 2rem 1.25rem;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  text-align: center;
+}
+
+.mdx-image-gallery--empty p {
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .mdx-image-gallery__frame {
+    width: 100%;
+  }
+
+  .mdx-image-gallery {
+    --gallery-bleed: 2rem;
+    grid-template-columns: 36px minmax(0, 1fr) 36px;
+  }
+
+  .mdx-image-gallery__button {
+    width: 36px;
+    height: 36px;
+  }
+}

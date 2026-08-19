@@ -1637,6 +1637,34 @@ button {
   text-transform: uppercase;
 }
 
+.project-content-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1.45rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: transparent;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.project-content-button svg {
+  width: 15px;
+}
+
+.project-content-button:hover {
+  color: #080808;
+  border-color: var(--page-accent);
+  background: var(--page-accent);
+  transform: translateY(-2px);
+}
+
 /* Skills */
 .skills-grid {
   display: grid;
@@ -2443,34 +2471,6 @@ button {
   line-height: 1.6;
 }
 
-.prototype-failure-box {
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  margin-top: 2.5rem;
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--page-accent) 5%, transparent);
-}
-
-.prototype-failure-box > div {
-  padding: 2rem;
-}
-
-.prototype-failure-box > div:first-child {
-  border-right: 1px solid var(--line);
-}
-
-.prototype-failure-box h3 {
-  margin: 1rem 0 0;
-  font-size: 1.8rem;
-  line-height: 1.2;
-}
-
-.prototype-failure-box p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.7;
-}
-
 .prototype-skills-grid ul {
   columns: 2;
 }
@@ -2611,7 +2611,6 @@ button {
 @media (max-width: 760px) {
   .prototype-about-grid,
   .prototype-process-head,
-  .prototype-failure-box,
   .prototype-fit-grid {
     grid-template-columns: 1fr;
   }
@@ -2675,10 +2674,6 @@ button {
     margin-left: 0;
   }
 
-  .prototype-failure-box > div:first-child {
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
 }
 
 /* Keep the v7 shell rules last so they win over the original prototype defaults. */

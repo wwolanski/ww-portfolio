@@ -22,6 +22,27 @@ type RawMessages = {
     readonly artwork: string;
     readonly projectDetails: string;
   };
+  readonly projectContent: {
+    readonly description: string;
+    readonly caseStudy: string;
+    readonly openDescription: string;
+    readonly openCaseStudy: string;
+    readonly close: string;
+    readonly loading: string;
+    readonly preparation: string;
+    readonly error: string;
+    readonly onlyPolish: string;
+    readonly viewPolish: string;
+  };
+  readonly content: {
+    readonly imageGallery: {
+      readonly label: string;
+      readonly previous: string;
+      readonly next: string;
+      readonly image: string;
+      readonly empty: string;
+    };
+  };
   readonly actions: {
     readonly openPage: string;
     readonly open: string;
@@ -57,6 +78,27 @@ export type Messages = {
     readonly backHome: string;
     readonly artwork: (label: string) => string;
     readonly projectDetails: (title: string) => string;
+  };
+  readonly projectContent: {
+    readonly description: string;
+    readonly caseStudy: string;
+    readonly openDescription: (title: string) => string;
+    readonly openCaseStudy: (title: string) => string;
+    readonly close: string;
+    readonly loading: string;
+    readonly preparation: string;
+    readonly error: string;
+    readonly onlyPolish: string;
+    readonly viewPolish: string;
+  };
+  readonly content: {
+    readonly imageGallery: {
+      readonly label: string;
+      readonly previous: string;
+      readonly next: string;
+      readonly image: (index: number) => string;
+      readonly empty: string;
+    };
   };
   readonly actions: {
     readonly openPage: (label: string) => string;
@@ -100,6 +142,27 @@ function createMessages(copy: RawMessages): Messages {
       backHome: copy.common.backHome,
       artwork: (label) => interpolate(copy.common.artwork, { label }),
       projectDetails: (title) => interpolate(copy.common.projectDetails, { title }),
+    },
+    projectContent: {
+      description: copy.projectContent.description,
+      caseStudy: copy.projectContent.caseStudy,
+      openDescription: (title) => interpolate(copy.projectContent.openDescription, { title }),
+      openCaseStudy: (title) => interpolate(copy.projectContent.openCaseStudy, { title }),
+      close: copy.projectContent.close,
+      loading: copy.projectContent.loading,
+      preparation: copy.projectContent.preparation,
+      error: copy.projectContent.error,
+      onlyPolish: copy.projectContent.onlyPolish,
+      viewPolish: copy.projectContent.viewPolish,
+    },
+    content: {
+      imageGallery: {
+        label: copy.content.imageGallery.label,
+        previous: copy.content.imageGallery.previous,
+        next: copy.content.imageGallery.next,
+        image: (index) => interpolate(copy.content.imageGallery.image, { index: String(index) }),
+        empty: copy.content.imageGallery.empty,
+      },
     },
     actions: {
       openPage: (label) => interpolate(copy.actions.openPage, { label }),

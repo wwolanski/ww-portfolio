@@ -102,7 +102,12 @@ export type ProjectDetail = {
   readonly text: string;
 };
 
+export type ProjectContentAction = 'description' | 'case-study';
+
 export type Project = {
+  readonly slug: string;
+  readonly contentAction: ProjectContentAction;
+  readonly caseStudySlug?: string;
   readonly index: string;
   readonly category: string;
   readonly status: string;
@@ -120,11 +125,6 @@ export type ProjectsContent = {
     readonly heading: string;
     readonly intro: string;
     readonly projects: readonly Project[];
-    readonly failure: {
-      readonly label: string;
-      readonly title: string;
-      readonly text: string;
-    };
   };
   readonly statement: StatementContent;
   readonly cta: CallToAction;

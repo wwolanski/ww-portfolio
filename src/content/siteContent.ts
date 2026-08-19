@@ -11,7 +11,7 @@ import plBlog from './locales/pl/blog.json';
 import plHome from './locales/pl/home.json';
 import plProjects from './locales/pl/projects.json';
 import plSkills from './locales/pl/skills.json';
-import type { HomeContent, PortfolioContent } from './types';
+import type { HomeContent, PortfolioContent, Project, ProjectsContent } from './types';
 
 export type SiteContent = {
   readonly locale: Locale;
@@ -26,16 +26,31 @@ const homeContent = {
   pl: plHome,
 } satisfies Record<Locale, HomeContent>;
 
+function normalizeProjectsContent(content: { readonly selected: { readonly projects: readonly { readonly contentAction?: string }[] } }): ProjectsContent {
+  const projects = content.selected.projects.map((project) => ({
+    ...project,
+    contentAction: project.contentAction === 'case-study' ? 'case-study' : 'description',
+  })) as unknown as readonly Project[];
+
+  return {
+    ...content,
+    selected: {
+      ...content.selected,
+      projects,
+    },
+  } as ProjectsContent;
+}
+
 const portfolioContent = {
   en: {
     about: enAbout,
-    projects: enProjects,
+    projects: normalizeProjectsContent(enProjects),
     skills: enSkills,
     blog: enBlog,
   },
   pl: {
     about: plAbout,
-    projects: plProjects,
+    projects: normalizeProjectsContent(plProjects),
     skills: plSkills,
     blog: plBlog,
   },

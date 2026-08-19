@@ -1,16 +1,46 @@
+import { useCallback, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
+import { ProjectModal } from '../../components/ui/ProjectModal';
 import { SectionHeading } from '../../components/ui/SectionHeading';
 import type { Project } from '../../content/types';
 import type { SiteContent } from '../../content/siteContent';
+import { getLocalizedPath } from '../../routing/locale';
 
 type ProjectsPageProps = { readonly site: SiteContent };
 
 export function ProjectsPage({ site }: ProjectsPageProps) {
   const { projects: content } = site.portfolio;
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const activeProjectSlug = searchParams.get('caseStudy');
+  const activeProject = content.selected.projects.find((project) => project.slug === activeProjectSlug) ?? null;
+
+  const openProject = useCallback((project: Project, trigger: HTMLButtonElement) => {
+    triggerRef.current = trigger;
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.set('caseStudy', project.slug);
+      return next;
+    });
+  }, [setSearchParams]);
+
+  const closeProject = useCallback(() => {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.delete('caseStudy');
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
+
+  const viewPolishVersion = useCallback((slug: string) => {
+    void navigate(`${getLocalizedPath('pl', '/projects')}?caseStudy=${encodeURIComponent(slug)}`);
+  }, [navigate]);
 
   return (
     <DetailPageLayout
@@ -23,16 +53,22 @@ export function ProjectsPage({ site }: ProjectsPageProps) {
       <section className="content-section prototype-section">
         <SectionHeading index="01" title={content.selected.heading} text={content.selected.intro} />
         <div className="project-list">
-          {content.selected.projects.map((project) => <ProjectRow key={project.title} project={project} site={site} />)}
-        </div>
-        <div className="prototype-failure-box">
-          <div><span className="prototype-mini-label">{content.selected.failure.label}</span><h3>{content.selected.failure.title}</h3></div>
-          <div><p>{content.selected.failure.text}</p></div>
+          {content.selected.projects.map((project) => <ProjectRow key={project.slug} project={project} site={site} onOpen={openProject} />)}
         </div>
       </section>
 
       <Statement content={content.statement} />
       <FooterCta site={site} content={content.cta} />
+      {activeProject && (
+        <ProjectModal
+          project={activeProject}
+          locale={site.locale}
+          messages={site.messages}
+          triggerRef={triggerRef}
+          onClose={closeProject}
+          onViewPolish={() => viewPolishVersion(activeProject.caseStudySlug ?? activeProject.slug)}
+        />
+      )}
     </DetailPageLayout>
   );
 }
@@ -40,9 +76,17 @@ export function ProjectsPage({ site }: ProjectsPageProps) {
 type ProjectRowProps = {
   readonly project: Project;
   readonly site: SiteContent;
+  readonly onOpen: (project: Project, trigger: HTMLButtonElement) => void;
 };
 
-function ProjectRow({ project, site }: ProjectRowProps) {
+function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
+  const contentLabel = project.contentAction === 'case-study'
+    ? site.messages.projectContent.caseStudy
+    : site.messages.projectContent.description;
+  const contentAriaLabel = project.contentAction === 'case-study'
+    ? site.messages.projectContent.openCaseStudy(project.title)
+    : site.messages.projectContent.openDescription(project.title);
+
   return (
     <article className="project-row prototype-project-row">
       <div className="project-meta">
@@ -58,6 +102,15 @@ function ProjectRow({ project, site }: ProjectRowProps) {
         <p>{project.description}</p>
         <ul>{project.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul>
         <strong>{project.outcome}</strong>
+        <button
+          type="button"
+          className="project-content-button"
+          aria-label={contentAriaLabel}
+          onClick={(event) => onOpen(project, event.currentTarget)}
+        >
+          <span>{contentLabel}</span>
+          <ArrowUpRight aria-hidden="true" />
+        </button>
         <div className="prototype-project-details" id={project.anchor}>
           {project.details.map((detail) => <div key={detail.label}><b>{detail.label}</b><span>{detail.text}</span></div>)}
         </div>
