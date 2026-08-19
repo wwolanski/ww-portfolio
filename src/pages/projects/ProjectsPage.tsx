@@ -7,6 +7,7 @@ import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { ProjectModal } from '../../components/ui/ProjectModal';
 import { SectionHeading } from '../../components/ui/SectionHeading';
+import { getProjectLogo } from '../../content/projectLogos';
 import type { Project } from '../../content/types';
 import type { SiteContent } from '../../content/siteContent';
 import { getLocalizedPath } from '../../routing/locale';
@@ -86,13 +87,15 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
   const contentAriaLabel = project.contentAction === 'case-study'
     ? site.messages.projectContent.openCaseStudy(project.title)
     : site.messages.projectContent.openDescription(project.title);
+  const logo = getProjectLogo(project.slug);
 
   return (
-    <article className="project-row prototype-project-row">
+    <article className="project-row prototype-project-row" data-project-slug={project.slug}>
       <div className="project-meta">
         <span>{project.index}</span>
         <span>{project.category}</span>
         <span className="prototype-status">{project.status}</span>
+        <ProjectLogo project={project} src={logo} />
       </div>
       <div className="project-body">
         <div className="project-title-row">
@@ -117,6 +120,40 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
       </div>
     </article>
   );
+}
+
+type ProjectLogoProps = {
+  readonly project: Project;
+  readonly src: string | null;
+};
+
+function ProjectLogo({ project, src }: ProjectLogoProps) {
+  return (
+    <div
+      className={`project-logo${src ? '' : ' project-logo--placeholder'}`}
+      role="img"
+      aria-label={`Project logo: ${project.title}`}
+    >
+      {src ? (
+        <img src={src} alt="" loading="lazy" decoding="async" />
+      ) : (
+        <>
+          <span className="project-logo__mark" aria-hidden="true">{getProjectMonogram(project.title)}</span>
+          <small aria-hidden="true">logo</small>
+        </>
+      )}
+    </div>
+  );
+}
+
+function getProjectMonogram(title: string): string {
+  return title
+    .split(/[\s/-]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word.charAt(0))
+    .join('')
+    .toUpperCase();
 }
 
 function PageTitle({ lines }: { readonly lines: readonly string[] }) {

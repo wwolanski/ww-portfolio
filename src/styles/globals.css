@@ -1564,6 +1564,53 @@ button {
   font-size: 1.25rem;
 }
 
+.project-logo {
+  display: grid;
+  width: min(100%, 112px);
+  aspect-ratio: 1;
+  min-width: 0;
+  overflow: hidden;
+  place-items: center;
+  align-self: center;
+  margin-top: 1.35rem;
+  border: 0;
+  border-radius: 1rem;
+  background: transparent;
+  box-shadow: none;
+}
+
+.project-logo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  object-fit: contain;
+}
+
+.project-logo--placeholder {
+  align-content: center;
+  gap: 0.15rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--page-accent) 12%, transparent), transparent 60%),
+    var(--surface-elevated);
+}
+
+.project-logo__mark {
+  color: var(--page-accent);
+  font-family: var(--font-condensed);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  letter-spacing: 0.04em;
+  line-height: 0.85;
+}
+
+.project-logo--placeholder small {
+  color: var(--muted);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .project-title-row {
   display: flex;
   align-items: center;
@@ -2046,8 +2093,24 @@ button {
   }
 
   .project-meta {
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: baseline;
+    column-gap: 1rem;
+    row-gap: 0.7rem;
+  }
+
+  .project-meta > span:nth-child(2) {
+    grid-column: 2;
+  }
+
+  .project-meta > span:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .project-meta .project-logo {
+    grid-column: 1 / -1;
+    justify-self: center;
   }
 
   .skills-grid {
@@ -2609,6 +2672,10 @@ button {
 }
 
 @media (max-width: 760px) {
+  .prototype-project-row {
+    grid-template-columns: 1fr;
+  }
+
   .prototype-about-grid,
   .prototype-process-head,
   .prototype-fit-grid {

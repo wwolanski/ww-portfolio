@@ -10,6 +10,7 @@ import * as contentLoader from '../content/mdx/loader';
 import { loadContent } from '../content/mdx/loader';
 import Kukla2DFixture from '../content/locales/pl/projects/kukla2d/pl.mdx';
 import OrderHubFixture from '../content/locales/pl/projects/orderhub-pos-wms/pl.mdx';
+import { getProjectLogo } from '../content/projectLogos';
 import { getSiteContent } from '../content/siteContent';
 import { ProjectsPage } from '../pages/projects/ProjectsPage';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
@@ -39,10 +40,18 @@ const spriteImages = getContentImages({
 });
 
 describe('project content system', () => {
+  it('resolves the OrderHub logo through the slug-bound logo directory', () => {
+    expect(getProjectLogo('orderhub-pos-wms')).toMatch(/\/img\/logos\/ohub\//);
+    expect(getProjectLogo('bank-statement-converter')).toBeNull();
+  });
+
   it('renders the abandoned project as a regular list row with actions for every project', () => {
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
     expect(container.querySelectorAll('.project-row')).toHaveLength(6);
+    expect(container.querySelectorAll('.project-logo')).toHaveLength(6);
+    expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-meta .project-logo img')).toBeInTheDocument();
+    expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-body .project-logo')).not.toBeInTheDocument();
     expect(container.querySelector('.prototype-failure-box')).not.toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /otwórz (opis projektu|case study):/i })).toHaveLength(6);
   });
