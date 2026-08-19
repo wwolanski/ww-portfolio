@@ -1558,7 +1558,7 @@ button {
   text-transform: uppercase;
 }
 
-.project-meta span:first-child {
+.project-meta > span:first-child {
   color: var(--page-accent);
   font-family: var(--font-condensed);
   font-size: 1.25rem;
