@@ -35,6 +35,9 @@ type RawMessages = {
     readonly viewPolish: string;
   };
   readonly content: {
+    readonly tableOfContents: string;
+    readonly openTableOfContents: string;
+    readonly closeTableOfContents: string;
     readonly imageGallery: {
       readonly label: string;
       readonly previous: string;
@@ -92,6 +95,9 @@ export type Messages = {
     readonly viewPolish: string;
   };
   readonly content: {
+    readonly tableOfContents: string;
+    readonly openTableOfContents: string;
+    readonly closeTableOfContents: string;
     readonly imageGallery: {
       readonly label: string;
       readonly previous: string;
@@ -156,6 +162,9 @@ function createMessages(copy: RawMessages): Messages {
       viewPolish: copy.projectContent.viewPolish,
     },
     content: {
+      tableOfContents: copy.content.tableOfContents,
+      openTableOfContents: copy.content.openTableOfContents,
+      closeTableOfContents: copy.content.closeTableOfContents,
       imageGallery: {
         label: copy.content.imageGallery.label,
         previous: copy.content.imageGallery.previous,

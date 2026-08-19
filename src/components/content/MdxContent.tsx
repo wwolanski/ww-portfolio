@@ -1,11 +1,12 @@
 import { MDXProvider } from '@mdx-js/react';
 import type { MDXComponents } from 'mdx/types.js';
-import type { ComponentProps } from 'react';
+import { useRef, type ComponentProps } from 'react';
 
 import './MdxContent.css';
 import { ImageGallery } from './ImageGallery';
 import { ContentAlert } from './ContentAlert';
 import { contentAlertTypes, type ContentAlertType } from './contentAlertTypes';
+import { MdxTableOfContents } from './MdxTableOfContents';
 import type { ContentAssetScope, ContentDocument } from '../../content/mdx/loader';
 import type { Messages } from '../../content/messages';
 
@@ -81,11 +82,22 @@ export function MdxContent({ document, messages, scope }: MdxContentProps) {
       : () => null,
   } satisfies MDXComponents;
 
+  const articleRef = useRef<HTMLElement | null>(null);
+
   return (
-    <article className="mdx-content">
-      <MDXProvider components={scopedComponents}>
-        <Component />
-      </MDXProvider>
-    </article>
+    <div className="mdx-content-layout">
+      <MdxTableOfContents
+        articleRef={articleRef}
+        contentKey={Component}
+        label={messages.content.tableOfContents}
+        openLabel={messages.content.openTableOfContents}
+        closeLabel={messages.content.closeTableOfContents}
+      />
+      <article ref={articleRef} className="mdx-content">
+        <MDXProvider components={scopedComponents}>
+          <Component />
+        </MDXProvider>
+      </article>
+    </div>
   );
 }

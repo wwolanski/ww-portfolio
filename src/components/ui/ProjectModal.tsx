@@ -117,10 +117,7 @@ export function ProjectModal({
         onClick={(event) => event.stopPropagation()}
       >
         <header className="project-modal__header">
-          <div>
-            <span>{project.category}</span>
-            <strong>{project.status}</strong>
-          </div>
+          <h2 className="project-modal__title">{project.title}</h2>
           <button ref={closeButtonRef} type="button" className="project-modal__close" onClick={onClose} aria-label={messages.projectContent.close}>
             <X aria-hidden="true" />
           </button>

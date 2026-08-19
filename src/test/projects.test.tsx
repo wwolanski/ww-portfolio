@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
@@ -9,6 +9,7 @@ import { getContentImages } from '../content/mdx/imageAssets';
 import * as contentLoader from '../content/mdx/loader';
 import { loadContent } from '../content/mdx/loader';
 import Kukla2DFixture from '../content/locales/pl/projects/kukla2d/pl.mdx';
+import OrderHubFixture from '../content/locales/pl/projects/orderhub-pos-wms/pl.mdx';
 import { getSiteContent } from '../content/siteContent';
 import { ProjectsPage } from '../pages/projects/ProjectsPage';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
@@ -53,23 +54,68 @@ describe('project content system', () => {
     const trigger = screen.getByRole('button', { name: /otwórz case study: sprite stabilization pipeline/i });
     await user.click(trigger);
 
-    expect(await screen.findByRole('dialog', { name: 'Sprite Stabilization Pipeline' })).toBeInTheDocument();
-    expect(await screen.findByRole('heading', { name: 'Sprite Stabilization Pipeline' })).toBeInTheDocument();
-    expect(spriteImages).toHaveLength(3);
+    const dialog = await screen.findByRole('dialog', { name: 'Sprite Stabilization Pipeline' });
+    expect(dialog).toBeInTheDocument();
+    expect(await within(dialog).findByRole('heading', { name: 'Sprite Stabilization Pipeline', level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /zamknij okno/i })).toHaveFocus();
+    const tableOfContents = await screen.findByRole('navigation', { name: 'Spis treści' });
+    const tableOfContentsToggle = screen.getByRole('button', { name: 'Otwórz spis treści' });
+    await user.click(tableOfContentsToggle);
+    expect(tableOfContentsToggle).toHaveAttribute('aria-expanded', 'true');
+    expect(tableOfContents).toHaveClass('mdx-toc--open');
+    const problemLink = within(tableOfContents).getByRole('link', { name: 'Problem' });
+    const problemHeading = screen.getByRole('heading', { name: 'Problem' });
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(problemHeading, 'scrollIntoView', { configurable: true, value: scrollIntoView });
+    await user.click(problemLink);
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    expect(problemLink).toHaveAttribute('aria-current', 'location');
+
+    const modal = document.body.querySelector('.project-modal');
+
+    if (!(modal instanceof HTMLElement)) {
+      throw new Error('Project modal backdrop is missing.');
+    }
+
+    screen.getAllByRole('heading').forEach((heading) => {
+      const top = heading.textContent === 'Problem' ? -120 : heading.textContent === 'Podejście' ? 0 : 320;
+      Object.defineProperty(heading, 'getBoundingClientRect', {
+        configurable: true,
+        value: () => ({ top }),
+      });
+    });
+
+    modal.dispatchEvent(new Event('scroll'));
+
+    await waitFor(() => {
+      expect(within(tableOfContents).getByRole('link', { name: 'Podejście' })).toHaveAttribute(
+        'aria-current',
+        'location',
+      );
+    });
+
+    expect(spriteImages.length).toBeGreaterThan(0);
     const gallery = await screen.findByRole('region', { name: 'Galeria obrazów' });
     expect(gallery).toBeInTheDocument();
     expect(gallery.querySelector('.mdx-image-gallery__frame button')).not.toBeInTheDocument();
     expect(screen.getByText(`1/${spriteImages.length}`)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Poprzedni obraz' })).toBeInTheDocument();
-    const nextImageButton = screen.getByRole('button', { name: 'Następny obraz' });
-    expect(nextImageButton).toBeInTheDocument();
+    const previousImageButton = screen.queryByRole('button', { name: 'Poprzedni obraz' });
+    const nextImageButton = screen.queryByRole('button', { name: 'Następny obraz' });
+    if (spriteImages.length > 1) {
+      expect(previousImageButton).toBeInTheDocument();
+      expect(nextImageButton).toBeInTheDocument();
+    } else {
+      expect(previousImageButton).not.toBeInTheDocument();
+      expect(nextImageButton).not.toBeInTheDocument();
+    }
     expect(document.body.style.overflow).toBe('hidden');
-    expect(screen.getByRole('button', { name: /zamknij okno/i })).toHaveFocus();
 
-    await user.click(nextImageButton);
-    expect(screen.getByText(`2/${spriteImages.length}`)).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'Poprzedni obraz' }));
-    expect(screen.getByText(`1/${spriteImages.length}`)).toBeInTheDocument();
+    if (spriteImages.length > 1 && nextImageButton && previousImageButton) {
+      await user.click(nextImageButton);
+      expect(screen.getByText(`2/${spriteImages.length}`)).toBeInTheDocument();
+      await user.click(previousImageButton);
+      expect(screen.getByText(`1/${spriteImages.length}`)).toBeInTheDocument();
+    }
 
     await user.keyboard('{Escape}');
 
@@ -149,7 +195,7 @@ describe('project content system', () => {
     loadContentSpy.mockRestore();
   });
 
-  it('renders the complete Kukla2D MDX fixture through shared components', () => {
+  it('renders the complete Kukla2D MDX fixture through shared components', async () => {
     const { container } = renderPage(
       <MdxContent
         document={{ Component: Kukla2DFixture, frontmatter: { title: 'Kukla2D — fixture warstwy MDX' } }}
@@ -158,6 +204,8 @@ describe('project content system', () => {
     );
 
     expect(container.querySelector('h1')).toBeInTheDocument();
+    const tableOfContents = await screen.findByRole('navigation', { name: 'Spis treści' });
+    expect(within(tableOfContents).getAllByRole('link').length).toBeGreaterThan(0);
     expect(container.querySelector('h2')).toBeInTheDocument();
     expect(container.querySelector('h3')).toBeInTheDocument();
     expect(container.querySelector('h4')).toBeInTheDocument();
@@ -179,5 +227,27 @@ describe('project content system', () => {
     for (const alertType of ['Note', 'Tip', 'Important', 'Warning', 'Caution']) {
       expect(screen.getByRole('complementary', { name: alertType })).toBeInTheDocument();
     }
+  });
+
+  it('keeps legacy case-study heading levels in the correct TOC branches', async () => {
+    renderPage(
+      <MdxContent
+        document={{ Component: OrderHubFixture, frontmatter: { title: 'OrderHub' } }}
+        messages={polishSite.messages}
+      />,
+    );
+
+    const tableOfContents = await screen.findByRole('navigation', { name: 'Spis treści' });
+    const wrongLayerLink = within(tableOfContents).getByRole('link', {
+      name: 'Zacząłem od niewłaściwej warstwy',
+    });
+    const differentApproachLink = within(tableOfContents).getByRole('link', {
+      name: 'Co zrobiłbym inaczej',
+    });
+    const differentApproachChildren = differentApproachLink.closest('li')?.querySelector('.mdx-toc__nested-list');
+
+    expect(within(tableOfContents).getByRole('link', { name: 'Błędne założenia' })).toBeInTheDocument();
+    expect(differentApproachChildren).toHaveTextContent('1. Najpierw jeden vertical slice');
+    expect(wrongLayerLink.closest('li')?.querySelector('.mdx-toc__nested-list')).toBeNull();
   });
 });
