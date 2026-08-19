@@ -1,3 +1,5 @@
+import type { ProjectTag } from './projectTags';
+
 export type CopyBlock = {
   readonly before: string;
   readonly emphasis?: string;
@@ -110,7 +112,7 @@ export type Project = {
   readonly caseStudySlug?: string;
   readonly index: string;
   readonly category: string;
-  readonly status: string;
+  readonly tags: readonly ProjectTag[];
   readonly title: string;
   readonly description: string;
   readonly facts: readonly string[];

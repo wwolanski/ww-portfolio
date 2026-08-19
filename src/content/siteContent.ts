@@ -1,6 +1,7 @@
 import type { Locale } from '../routing/locale';
 import { getNavigationItems, type NavigationItem } from './navigation';
 import { messages, type Messages } from './messages';
+import { isProjectTag } from './projectTags';
 import enAbout from './locales/en/about.json';
 import enBlog from './locales/en/blog.json';
 import enHome from './locales/en/home.json';
@@ -26,11 +27,23 @@ const homeContent = {
   pl: plHome,
 } satisfies Record<Locale, HomeContent>;
 
-function normalizeProjectsContent(content: { readonly selected: { readonly projects: readonly { readonly contentAction?: string }[] } }): ProjectsContent {
-  const projects = content.selected.projects.map((project) => ({
+type RawProject = Omit<Project, 'contentAction' | 'tags'> & {
+  readonly contentAction?: string;
+  readonly tags: readonly string[];
+};
+
+type RawProjectsContent = Omit<ProjectsContent, 'selected'> & {
+  readonly selected: Omit<ProjectsContent['selected'], 'projects'> & {
+    readonly projects: readonly RawProject[];
+  };
+};
+
+function normalizeProjectsContent(content: RawProjectsContent): ProjectsContent {
+  const projects: readonly Project[] = content.selected.projects.map(({ contentAction, tags, ...project }) => ({
     ...project,
-    contentAction: project.contentAction === 'case-study' ? 'case-study' : 'description',
-  })) as unknown as readonly Project[];
+    tags: tags.filter(isProjectTag),
+    contentAction: contentAction === 'case-study' ? 'case-study' : 'description',
+  }));
 
   return {
     ...content,
@@ -38,7 +51,7 @@ function normalizeProjectsContent(content: { readonly selected: { readonly proje
       ...content.selected,
       projects,
     },
-  } as ProjectsContent;
+  };
 }
 
 const portfolioContent = {

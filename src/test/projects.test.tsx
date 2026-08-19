@@ -45,7 +45,7 @@ describe('project content system', () => {
     expect(getProjectLogo('bank-statement-converter')).toBeNull();
   });
 
-  it('renders the abandoned project as a regular list row with actions for every project', () => {
+  it('renders the discontinued project as a regular list row with actions for every project', () => {
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
     expect(container.querySelectorAll('.project-row')).toHaveLength(6);
@@ -54,6 +54,31 @@ describe('project content system', () => {
     expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-body .project-logo')).not.toBeInTheDocument();
     expect(container.querySelector('.prototype-failure-box')).not.toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /otwórz (opis projektu|case study):/i })).toHaveLength(6);
+  });
+
+  it('renders every project tag from the JSON configuration', () => {
+    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const expectedTags = {
+      'bank-statement-converter': ['shipped'],
+      kukla2d: ['shipped', 'in-development', 'public-beta'],
+      taxhelper: ['in-development'],
+      repoatlas: ['in-development'],
+      'orderhub-pos-wms': ['prototype-paused'],
+      'gpt_img_2-spritesheet-processor': ['discontinued', 'public-beta'],
+    };
+
+    for (const [slug, tags] of Object.entries(expectedTags)) {
+      const row = container.querySelector<HTMLElement>(`[data-project-slug="${slug}"]`);
+
+      if (!row) {
+        throw new Error(`Project row ${slug} is missing.`);
+      }
+
+      expect(Array.from(row.querySelectorAll<HTMLElement>('[data-project-tag]')).map((badge) => badge.dataset.projectTag))
+        .toEqual(tags);
+    }
+
+    expect(container.querySelectorAll('.project-badge')).toHaveLength(9);
   });
 
   it('opens the Sprite case study, renders MDX content, and restores focus on close', async () => {

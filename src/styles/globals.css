@@ -2104,7 +2104,7 @@ button {
     grid-column: 2;
   }
 
-  .project-meta > span:nth-child(3) {
+  .project-meta > .project-tags {
     grid-column: 1 / -1;
   }
 
@@ -2486,23 +2486,6 @@ button {
 
 .prototype-project-row {
   grid-template-columns: 150px 1fr;
-}
-
-.prototype-status {
-  display: inline-flex !important;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 0.7rem;
-  color: var(--muted) !important;
-  font-size: 0.65rem !important;
-}
-
-.prototype-status::before {
-  width: 0.35rem;
-  height: 0.35rem;
-  content: "";
-  border-radius: 50%;
-  background: var(--page-accent);
 }
 
 .prototype-project-details {

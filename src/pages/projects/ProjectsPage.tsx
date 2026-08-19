@@ -6,6 +6,7 @@ import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { ProjectModal } from '../../components/ui/ProjectModal';
+import { ProjectBadge } from '../../components/ui/ProjectBadge';
 import { SectionHeading } from '../../components/ui/SectionHeading';
 import { getProjectLogo } from '../../content/projectLogos';
 import type { Project } from '../../content/types';
@@ -94,7 +95,9 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
       <div className="project-meta">
         <span>{project.index}</span>
         <span>{project.category}</span>
-        <span className="prototype-status">{project.status}</span>
+        <div className="project-tags">
+          {project.tags.map((tag) => <ProjectBadge key={tag} tag={tag} />)}
+        </div>
         <ProjectLogo project={project} src={logo} />
       </div>
       <div className="project-body">

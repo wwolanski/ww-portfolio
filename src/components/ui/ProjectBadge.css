@@ -1,0 +1,115 @@
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.project-badge {
+  --project-badge-color: #6f757d;
+  --project-badge-solid-foreground: #fff;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  width: max-content;
+  min-height: 1.65rem;
+  padding: 0.28rem 0.65rem;
+  border: 1px solid transparent;
+  color: var(--project-badge-color);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  line-height: 1.15;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+
+.project-badge[data-project-tag="shipped"] {
+  --project-badge-color: #23834b;
+  --project-badge-solid-foreground: #fff;
+}
+
+.project-badge[data-project-tag="in-development"] {
+  --project-badge-color: var(--page-accent, #f4a51c);
+  --project-badge-solid-foreground: #171714;
+}
+
+.project-badge[data-project-tag="discontinued"] {
+  --project-badge-color: #c53e43;
+  --project-badge-solid-foreground: #fff;
+}
+
+.project-badge[data-project-tag="prototype-paused"] {
+  --project-badge-color: #707780;
+  --project-badge-solid-foreground: #fff;
+}
+
+.project-badge[data-project-tag="public-beta"] {
+  --project-badge-color: #2377bd;
+  --project-badge-solid-foreground: #fff;
+}
+
+.project-badge--pill {
+  border-color: color-mix(in srgb, var(--project-badge-color) 34%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--project-badge-color) 13%, transparent);
+}
+
+.project-badge--basic {
+  border-color: color-mix(in srgb, var(--project-badge-color) 34%, transparent);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--project-badge-color) 13%, transparent);
+}
+
+.project-badge--solid {
+  border-color: var(--project-badge-color);
+  border-radius: 999px;
+  color: var(--project-badge-solid-foreground);
+  background: var(--project-badge-color);
+}
+
+.project-badge--dot {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.project-badge__dot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--project-badge-color);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--project-badge-color) 14%, transparent);
+}
+
+:root.dark .project-badge[data-project-tag="shipped"] {
+  --project-badge-color: #59c981;
+  --project-badge-solid-foreground: #07130b;
+}
+
+:root.dark .project-badge[data-project-tag="in-development"] {
+  --project-badge-color: var(--page-accent, #f7b52e);
+  --project-badge-solid-foreground: #171714;
+}
+
+:root.dark .project-badge[data-project-tag="discontinued"] {
+  --project-badge-color: #ef7377;
+  --project-badge-solid-foreground: #1c0809;
+}
+
+:root.dark .project-badge[data-project-tag="prototype-paused"] {
+  --project-badge-color: #b2b7bf;
+  --project-badge-solid-foreground: #171717;
+}
+
+:root.dark .project-badge[data-project-tag="public-beta"] {
+  --project-badge-color: #67b0ee;
+  --project-badge-solid-foreground: #07131e;
+}
