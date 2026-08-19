@@ -1,9 +1,9 @@
 name: Quality
 
+# Temporarily manual-only while the repository content source is being reorganized.
+# Restore the automatic pull_request and push triggers when CI is ready to return.
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   check:
