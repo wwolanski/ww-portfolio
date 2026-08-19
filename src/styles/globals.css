@@ -2558,14 +2558,6 @@ button {
   gap: 0.5rem;
 }
 
-.prototype-tool-band span {
-  padding: 0.4rem 0.6rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  font-size: 0.68rem;
-}
-
 .prototype-engineering-card {
   grid-template-columns: 80px 1fr;
   gap: 2rem;

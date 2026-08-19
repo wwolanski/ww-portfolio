@@ -2,6 +2,7 @@ import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { SectionHeading } from '../../components/ui/SectionHeading';
+import { TechTag } from '../../components/ui/TechTag';
 import type { SiteContent } from '../../content/siteContent';
 
 import architectureImage from '../../../img/architecture-repo.webp';
@@ -73,7 +74,7 @@ export function SkillsPage({ site }: SkillsPageProps) {
       <section className="content-section prototype-section">
         <SectionHeading index="03" title={content.stack.heading} text={content.stack.intro} />
         <div className="prototype-tool-bands">
-          {content.stack.bands.map((band) => <div className="prototype-tool-band" key={band.title}><strong>{band.title}</strong><div>{band.tools.map((tool) => <span key={tool}>{tool}</span>)}</div></div>)}
+          {content.stack.bands.map((band) => <div className="prototype-tool-band" key={band.title}><strong>{band.title}</strong><div>{band.tools.map((tool) => <TechTag key={tool} name={tool} variant="badge" />)}</div></div>)}
         </div>
       </section>
 

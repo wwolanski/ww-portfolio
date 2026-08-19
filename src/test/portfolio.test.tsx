@@ -4,7 +4,9 @@ import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 
 import { App } from '../app/App';
+import { getTechTagDefinition } from '../content/techTags';
 import { getSiteContent } from '../content/siteContent';
+import { TechTag } from '../components/ui/TechTag';
 import { AboutPage } from '../pages/about/AboutPage';
 import { BlogPage } from '../pages/blog/BlogPage';
 import { HomePage } from '../pages/home/HomePage';
@@ -95,5 +97,26 @@ describe('v7 detail visuals', () => {
     const blog = renderPage(<BlogPage site={polishSite} />);
     expect(blog.container.querySelector('.visual-panel[data-page="blog"]')).toBeInTheDocument();
     expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .pv-card')).toHaveLength(3);
+  });
+
+  it('registers and renders every technology in the practical stack', () => {
+    const stackTools = polishSite.portfolio.skills.stack.bands.flatMap((band) => band.tools);
+    const { container } = renderPage(<SkillsPage site={polishSite} />);
+
+    expect(stackTools.every((tool) => getTechTagDefinition(tool))).toBe(true);
+    expect(container.querySelectorAll('.tech-tag--badge')).toHaveLength(stackTools.length);
+    expect(container.querySelectorAll('[data-tech-tag="Supabase — obecnie poznaję"]')).toHaveLength(1);
+  });
+
+  it('supports badge and icon-only tech tag variants', () => {
+    const { container } = renderPage(
+      <div>
+        <TechTag name="React" variant="badge" />
+        <TechTag name="React" variant="icon" />
+      </div>,
+    );
+
+    expect(container.querySelector('.tech-tag--badge')).toBeInTheDocument();
+    expect(container.querySelector('.tech-tag--icon')).toHaveAttribute('aria-label', 'React');
   });
 });
