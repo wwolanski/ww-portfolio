@@ -190,21 +190,12 @@ export type SkillsContent = {
   readonly cta: CallToAction;
 };
 
-export type Article = {
-  readonly title: string;
-  readonly category: string;
-  readonly date: string;
-  readonly readTime: string;
-  readonly description: string;
-};
-
 export type BlogContent = {
   readonly eyebrow: string;
   readonly title: readonly string[];
   readonly intro: string;
   readonly sectionHeading: string;
   readonly sectionIntro: string;
-  readonly articles: readonly Article[];
 };
 
 export type PortfolioContent = {

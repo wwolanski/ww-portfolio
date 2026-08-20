@@ -46,15 +46,15 @@ describe('existing portfolio shell', () => {
   });
 });
 
-describe('existing blog page', () => {
-  it('keeps article filtering available', async () => {
+describe('blog page', () => {
+  it('keeps article filtering available while using Polish MDX content', async () => {
     const user = userEvent.setup();
     renderPage(<BlogPage site={englishSite} />);
 
-    await user.click(screen.getByRole('button', { name: 'AI' }));
+    await user.click(await screen.findByRole('button', { name: 'AI (1)' }));
 
-    expect(screen.getByRole('heading', { name: /rag pipelines, explained/i })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: /practical guide to docker/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /pipeline’y rag bez tajemnic/i })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: /praktyczny przewodnik po dockerze/i })).not.toBeInTheDocument();
   });
 });
 

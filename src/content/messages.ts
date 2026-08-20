@@ -54,6 +54,13 @@ type RawMessages = {
     readonly filterArticles: string;
     readonly all: string;
     readonly readArticle: string;
+    readonly articleTags: string;
+    readonly backToBlog: string;
+    readonly loadingIndex: string;
+    readonly errorIndex: string;
+    readonly loadingArticle: string;
+    readonly missingArticle: string;
+    readonly errorArticle: string;
     readonly newsletterEyebrow: string;
     readonly newsletterTitle: string;
     readonly workEmail: string;
@@ -114,6 +121,13 @@ export type Messages = {
     readonly filterArticles: string;
     readonly all: string;
     readonly readArticle: (title: string) => string;
+    readonly articleTags: string;
+    readonly backToBlog: string;
+    readonly loadingIndex: string;
+    readonly errorIndex: string;
+    readonly loadingArticle: string;
+    readonly missingArticle: string;
+    readonly errorArticle: string;
     readonly newsletterEyebrow: string;
     readonly newsletterTitle: string;
     readonly workEmail: string;
@@ -181,6 +195,13 @@ function createMessages(copy: RawMessages): Messages {
       filterArticles: copy.blog.filterArticles,
       all: copy.blog.all,
       readArticle: (title) => interpolate(copy.blog.readArticle, { title }),
+      articleTags: copy.blog.articleTags,
+      backToBlog: copy.blog.backToBlog,
+      loadingIndex: copy.blog.loadingIndex,
+      errorIndex: copy.blog.errorIndex,
+      loadingArticle: copy.blog.loadingArticle,
+      missingArticle: copy.blog.missingArticle,
+      errorArticle: copy.blog.errorArticle,
       newsletterEyebrow: copy.blog.newsletterEyebrow,
       newsletterTitle: copy.blog.newsletterTitle,
       workEmail: copy.blog.workEmail,

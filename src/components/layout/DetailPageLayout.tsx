@@ -6,6 +6,8 @@ import { getNavigationItem, type PageSlug } from '../../content/navigation';
 import type { SiteContent } from '../../content/siteContent';
 import { SiteNav } from './SiteNav';
 
+import './DetailPageLayout.css';
+
 import aboutImage from '../../../img/detail-about.webp';
 import projectsImage from '../../../img/detail-projects.webp';
 import skillsImage from '../../../img/detail-skills.webp';
@@ -16,10 +18,11 @@ type DetailPageLayoutProps = {
   readonly eyebrow: string;
   readonly title: ReactNode;
   readonly intro: ReactNode;
+  readonly showHero?: boolean;
   readonly children: ReactNode;
 };
 
-export function DetailPageLayout({ site, page, eyebrow, title, intro, children }: DetailPageLayoutProps) {
+export function DetailPageLayout({ site, page, eyebrow, title, intro, showHero = true, children }: DetailPageLayoutProps) {
   const item = getNavigationItem(site.navigation, page);
   const visual = getVisualMeta(page, site.locale);
 
@@ -43,12 +46,14 @@ export function DetailPageLayout({ site, page, eyebrow, title, intro, children }
 
       <div className="detail-content">
         <SiteNav site={site} compact />
-        <main id="main-content">
-          <header className="page-hero">
-            <p className="page-eyebrow">{eyebrow}</p>
-            <h1>{title}</h1>
-            <p className="page-intro">{intro}</p>
-          </header>
+        <main id="main-content" className={showHero ? undefined : 'detail-main--document'}>
+          {showHero ? (
+            <header className="page-hero">
+              <p className="page-eyebrow">{eyebrow}</p>
+              <h1>{title}</h1>
+              <p className="page-intro">{intro}</p>
+            </header>
+          ) : null}
           {children}
         </main>
       </div>

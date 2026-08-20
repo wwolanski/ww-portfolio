@@ -3,5 +3,6 @@ declare module '*.mdx' {
 
   const content: MDXContent;
 
+  export const frontmatter: Readonly<Record<string, unknown>>;
   export default content;
 }

@@ -1,18 +1,74 @@
-import { useState } from 'react';
-import { ArrowUpRight, Clock3 } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Clock3 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router';
 
+import '../../components/ui/TagChip.css';
+import { ContentDocumentView } from '../../components/content/ContentDocumentView';
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { SectionHeading } from '../../components/ui/SectionHeading';
+import { getBlogArticles, type BlogArticle } from '../../content/mdx/blogIndex';
 import type { SiteContent } from '../../content/siteContent';
+
+import './BlogPage.css';
 
 type BlogPageProps = { readonly site: SiteContent };
 
+type TagFilter = {
+  readonly tag: string | null;
+  readonly count: number;
+};
+
 export function BlogPage({ site }: BlogPageProps) {
   const { blog: content } = site.portfolio;
+  const [articles, setArticles] = useState<readonly BlogArticle[] | null>(null);
+  const [articleIndexError, setArticleIndexError] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTag, setActiveTag] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    void getBlogArticles()
+      .then((nextArticles) => {
+        if (isActive) {
+          setArticles(nextArticles);
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          setArticleIndexError(true);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const activeArticleSlug = searchParams.get('article');
+  const activeArticle = articles?.find((article) => article.slug === activeArticleSlug) ?? null;
+  const tagFilters = articles ? buildTagFilters(articles) : [];
+  const visibleArticles = articles && activeTag
+    ? articles.filter((article) => article.tags.includes(activeTag))
+    : articles ?? [];
   const [titleLineOne, titleLineTwo] = content.title;
-  const categories = [site.messages.blog.all, ...new Set(content.articles.map((article) => article.category))];
-  const [activeCategory, setActiveCategory] = useState(categories[0]);
-  const visibleArticles = content.articles.filter((article) => activeCategory === categories[0] || article.category === activeCategory);
+
+  function openArticle(article: BlogArticle) {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.set('article', article.slug);
+      return next;
+    });
+  }
+
+  function closeArticle() {
+    setActiveTag(null);
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current);
+      next.delete('article');
+      return next;
+    }, { replace: true });
+  }
 
   return (
     <DetailPageLayout
@@ -21,36 +77,99 @@ export function BlogPage({ site }: BlogPageProps) {
       eyebrow={content.eyebrow}
       title={<>{titleLineOne}<br />{titleLineTwo}</>}
       intro={content.intro}
+      showHero={!activeArticle}
     >
+      {articles === null ? (
+        <BlogIndexState message={articleIndexError ? site.messages.blog.errorIndex : site.messages.blog.loadingIndex} isError={articleIndexError} />
+      ) : activeArticle ? (
+        <BlogArticleView article={activeArticle} site={site} onBack={closeArticle} />
+      ) : (
+        <BlogIndex
+          site={site}
+          content={content}
+          tagFilters={tagFilters}
+          activeTag={activeTag}
+          visibleArticles={visibleArticles}
+          onSelectTag={setActiveTag}
+          onOpenArticle={openArticle}
+        />
+      )}
+    </DetailPageLayout>
+  );
+}
+
+type BlogIndexStateProps = {
+  readonly message: string;
+  readonly isError: boolean;
+};
+
+function BlogIndexState({ message, isError }: BlogIndexStateProps) {
+  return (
+    <section className={`content-document-state${isError ? ' content-document-state--error' : ''}`} role={isError ? 'alert' : 'status'} aria-live="polite">
+      <p>{message}</p>
+    </section>
+  );
+}
+
+type BlogIndexProps = {
+  readonly site: SiteContent;
+  readonly content: SiteContent['portfolio']['blog'];
+  readonly tagFilters: readonly TagFilter[];
+  readonly activeTag: string | null;
+  readonly visibleArticles: readonly BlogArticle[];
+  readonly onSelectTag: (tag: string | null) => void;
+  readonly onOpenArticle: (article: BlogArticle) => void;
+};
+
+function BlogIndex({
+  site,
+  content,
+  tagFilters,
+  activeTag,
+  visibleArticles,
+  onSelectTag,
+  onOpenArticle,
+}: BlogIndexProps) {
+  return (
+    <>
       <section className="content-section blog-section">
         <SectionHeading index="01" title={content.sectionHeading} text={content.sectionIntro} />
-        <div className="filter-row" role="group" aria-label={site.messages.blog.filterArticles}>
-          {categories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              className={activeCategory === category ? 'active' : ''}
-              aria-pressed={activeCategory === category}
-              onClick={() => setActiveCategory(category)}
-            >
-              {category}
-            </button>
-          ))}
+        <div className="blog-filter-row" role="group" aria-label={site.messages.blog.filterArticles}>
+          {tagFilters.map((filter) => {
+            const isActive = activeTag === filter.tag;
+            const label = filter.tag ?? site.messages.blog.all;
+
+            return (
+              <button
+                key={filter.tag ?? 'all'}
+                type="button"
+                className={`tag-chip tag-chip--interactive${isActive ? ' tag-chip--active' : ''}`}
+                aria-pressed={isActive}
+                onClick={() => onSelectTag(filter.tag)}
+              >
+                {label} ({filter.count})
+              </button>
+            );
+          })}
         </div>
-        <div className="article-list" aria-live="polite">
+        <div className="blog-article-list" aria-live="polite">
           {visibleArticles.map((article, index) => (
-            <article key={article.title}>
-              <div className="article-index">0{index + 1}</div>
-              <div className="article-body">
-                <div className="article-meta">
-                  <span>{article.category}</span>
-                  <span>{article.date}</span>
+            <article key={article.slug}>
+              <div className="blog-article-index">{String(index + 1).padStart(2, '0')}</div>
+              <div className="blog-article-body">
+                <div className="blog-article-meta">
+                  <span>{article.tags.join(' · ')}</span>
+                  <span>{formatArticleDate(article.date, site.locale)}</span>
                   <span><Clock3 aria-hidden="true" /> {site.messages.blog.readTime(article.readTime)}</span>
                 </div>
                 <h3>{article.title}</h3>
-                <p>{article.description}</p>
+                {article.description ? <p>{article.description}</p> : null}
               </div>
-              <button type="button" aria-label={site.messages.blog.readArticle(article.title)}>
+              <button
+                type="button"
+                aria-label={site.messages.blog.readArticle(article.title)}
+                onClick={() => onOpenArticle(article)}
+              >
                 <ArrowUpRight aria-hidden="true" />
               </button>
             </article>
@@ -58,7 +177,7 @@ export function BlogPage({ site }: BlogPageProps) {
         </div>
       </section>
 
-      <aside className="newsletter">
+      <aside className="blog-newsletter">
         <span>{site.messages.blog.newsletterEyebrow}</span>
         <h2>{site.messages.blog.newsletterTitle}</h2>
         <form onSubmit={(event) => event.preventDefault()}>
@@ -67,6 +186,83 @@ export function BlogPage({ site }: BlogPageProps) {
           <button type="submit">{site.messages.blog.subscribe} <ArrowUpRight aria-hidden="true" /></button>
         </form>
       </aside>
-    </DetailPageLayout>
+    </>
   );
+}
+
+type BlogArticleViewProps = {
+  readonly article: BlogArticle;
+  readonly site: SiteContent;
+  readonly onBack: () => void;
+};
+
+function BlogArticleView({ article, site, onBack }: BlogArticleViewProps) {
+  return (
+    <ContentDocumentView
+      key={article.slug}
+      request={{ type: 'blog', slug: article.slug, locale: 'pl' }}
+      messages={site.messages}
+      loadingMessage={site.messages.blog.loadingArticle}
+      missingMessage={site.messages.blog.missingArticle}
+      errorMessage={site.messages.blog.errorArticle}
+      variant="page"
+      topActions={(
+        <button
+          type="button"
+          className="blog-article__back-link"
+          onClick={onBack}
+          aria-label={site.messages.blog.backToBlog}
+        >
+          <ArrowLeft aria-hidden="true" />
+          <span>{site.messages.blog.backToBlog}</span>
+        </button>
+      )}
+      header={<BlogArticleHeader article={article} site={site} />}
+    />
+  );
+}
+
+type BlogArticleHeaderProps = {
+  readonly article: BlogArticle;
+  readonly site: SiteContent;
+};
+
+function BlogArticleHeader({ article, site }: BlogArticleHeaderProps) {
+  return (
+    <header className="blog-article-header">
+      <div className="blog-article-header__meta">
+        <span>{formatArticleDate(article.date, site.locale)}</span>
+        <span>{site.messages.blog.readTime(article.readTime)}</span>
+      </div>
+      <h1>{article.title}</h1>
+      {article.description ? <p>{article.description}</p> : null}
+      <ul className="blog-article-header__tags" aria-label={site.messages.blog.articleTags}>
+        {article.tags.map((tag) => <li key={tag} className="tag-chip">{tag}</li>)}
+      </ul>
+    </header>
+  );
+}
+
+function buildTagFilters(articles: readonly BlogArticle[]): readonly TagFilter[] {
+  const counts = new Map<string, number>();
+
+  for (const article of articles) {
+    for (const tag of article.tags) {
+      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    }
+  }
+
+  return [
+    { tag: null, count: articles.length },
+    ...Array.from(counts, ([tag, count]) => ({ tag, count })),
+  ];
+}
+
+function formatArticleDate(value: string, locale: SiteContent['locale']): string {
+  return new Intl.DateTimeFormat(locale, {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${value}T00:00:00Z`));
 }

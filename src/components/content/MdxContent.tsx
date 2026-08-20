@@ -1,6 +1,6 @@
 import { MDXProvider } from '@mdx-js/react';
 import type { MDXComponents } from 'mdx/types.js';
-import { useRef, type ComponentProps } from 'react';
+import { useRef, type ComponentProps, type ReactNode } from 'react';
 
 import './MdxContent.css';
 import { ImageGallery } from './ImageGallery';
@@ -14,7 +14,12 @@ type MdxContentProps = {
   readonly document: ContentDocument;
   readonly messages: Messages;
   readonly scope?: ContentAssetScope;
+  readonly variant?: MdxContentVariant;
+  readonly topActions?: ReactNode;
+  readonly header?: ReactNode;
 };
+
+export type MdxContentVariant = 'modal' | 'page';
 
 type AlertBlockquoteProps = ComponentProps<'blockquote'> & {
   readonly 'data-alert-type'?: string;
@@ -67,7 +72,14 @@ const contentComponents = {
   table: ContentTable,
 } satisfies MDXComponents;
 
-export function MdxContent({ document, messages, scope }: MdxContentProps) {
+export function MdxContent({
+  document,
+  messages,
+  scope,
+  variant = 'modal',
+  topActions,
+  header,
+}: MdxContentProps) {
   const Component = document.Component;
   const scopedComponents = {
     ...contentComponents,
@@ -85,7 +97,7 @@ export function MdxContent({ document, messages, scope }: MdxContentProps) {
   const articleRef = useRef<HTMLElement | null>(null);
 
   return (
-    <div className="mdx-content-layout">
+    <div className={`mdx-content-layout mdx-content-layout--${variant}`}>
       <MdxTableOfContents
         articleRef={articleRef}
         contentKey={Component}
@@ -94,6 +106,8 @@ export function MdxContent({ document, messages, scope }: MdxContentProps) {
         closeLabel={messages.content.closeTableOfContents}
       />
       <article ref={articleRef} className="mdx-content">
+        {topActions ? <div className="mdx-content__actions">{topActions}</div> : null}
+        {header}
         <MDXProvider components={scopedComponents}>
           <Component />
         </MDXProvider>

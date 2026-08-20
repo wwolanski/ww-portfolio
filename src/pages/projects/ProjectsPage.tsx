@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router';
 
+import '../../components/ui/TagChip.css';
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
@@ -106,7 +107,7 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
           <a href={`#${project.anchor}`} aria-label={site.messages.common.projectDetails(project.title)}><ArrowUpRight aria-hidden="true" /></a>
         </div>
         <p>{project.description}</p>
-        <ul>{project.facts.map((fact) => <li key={fact}>{fact}</li>)}</ul>
+        <ul>{project.facts.map((fact) => <li key={fact} className="tag-chip">{fact}</li>)}</ul>
         <strong>{project.outcome}</strong>
         <button
           type="button"
