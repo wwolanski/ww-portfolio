@@ -2,6 +2,7 @@ import { ArrowDownRight } from 'lucide-react';
 import { Link } from 'react-router';
 
 import { LanguageSwitcher } from '../../components/layout/LanguageSwitcher';
+import { InlineCopy } from '../../components/ui/InlineCopy';
 import type { SiteContent } from '../../content/siteContent';
 import { getLocalizedPath } from '../../routing/locale';
 import { ThemeToggle } from '../../features/theme/ThemeToggle';
@@ -16,7 +17,7 @@ export function HomePage({ site }: HomePageProps) {
       <div className="home-shell">
         <div className="home-intro">
           <header className="home-header">
-            <p className="home-kicker">{home.kicker}</p>
+            <p className="home-kicker"><InlineCopy copy={home.kicker} /></p>
             <div className="home-header-actions">
               <LanguageSwitcher locale={locale} messages={messages} />
               <ThemeToggle messages={messages} />
@@ -51,13 +52,13 @@ export function HomePage({ site }: HomePageProps) {
                   </span>
                 </span>
               </Link>
-              <p>{item.description}</p>
+              <p><InlineCopy copy={item.description} /></p>
             </article>
           ))}
         </section>
 
         <footer className="home-footer">
-          <span>{home.basedIn} · {home.workingWorldwide}</span>
+          <span><InlineCopy copy={`${home.basedIn} · ${home.workingWorldwide}`} /></span>
           <span>© {new Date().getFullYear()}</span>
         </footer>
       </div>

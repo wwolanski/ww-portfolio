@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { getNavigationItem, type PageSlug } from '../../content/navigation';
 import type { SiteContent } from '../../content/siteContent';
+import { InlineCopy } from '../ui/InlineCopy';
 import { SiteNav } from './SiteNav';
 
 import './DetailPageLayout.css';
@@ -49,7 +50,7 @@ export function DetailPageLayout({ site, page, eyebrow, title, intro, showHero =
         <main id="main-content" className={showHero ? undefined : 'detail-main--document'}>
           {showHero ? (
             <header className="page-hero">
-              <p className="page-eyebrow">{eyebrow}</p>
+              <p className="page-eyebrow"><InlineCopy copy={eyebrow} /></p>
               <h1>{title}</h1>
               <p className="page-intro">{intro}</p>
             </header>

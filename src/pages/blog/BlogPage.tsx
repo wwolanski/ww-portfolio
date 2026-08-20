@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router';
 import '../../components/ui/TagChip.css';
 import { ContentDocumentView } from '../../components/content/ContentDocumentView';
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
+import { InlineCopy } from '../../components/ui/InlineCopy';
 import { SectionHeading } from '../../components/ui/SectionHeading';
 import { getBlogArticles, type BlogArticle } from '../../content/mdx/blogIndex';
 import type { SiteContent } from '../../content/siteContent';
@@ -75,8 +76,8 @@ export function BlogPage({ site }: BlogPageProps) {
       site={site}
       page="blog"
       eyebrow={content.eyebrow}
-      title={<>{titleLineOne}<br />{titleLineTwo}</>}
-      intro={content.intro}
+      title={<><InlineCopy copy={titleLineOne ?? ''} /><br /><InlineCopy copy={titleLineTwo ?? ''} /></>}
+      intro={<InlineCopy copy={content.intro} />}
       showHero={!activeArticle}
     >
       {articles === null ? (
@@ -162,8 +163,8 @@ function BlogIndex({
                   <span>{formatArticleDate(article.date, site.locale)}</span>
                   <span><Clock3 aria-hidden="true" /> {site.messages.blog.readTime(article.readTime)}</span>
                 </div>
-                <h3>{article.title}</h3>
-                {article.description ? <p>{article.description}</p> : null}
+                <h3><InlineCopy copy={article.title} /></h3>
+                {article.description ? <p><InlineCopy copy={article.description} /></p> : null}
               </div>
               <button
                 type="button"
@@ -234,8 +235,8 @@ function BlogArticleHeader({ article, site }: BlogArticleHeaderProps) {
         <span>{formatArticleDate(article.date, site.locale)}</span>
         <span>{site.messages.blog.readTime(article.readTime)}</span>
       </div>
-      <h1>{article.title}</h1>
-      {article.description ? <p>{article.description}</p> : null}
+      <h1><InlineCopy copy={article.title} /></h1>
+      {article.description ? <p><InlineCopy copy={article.description} /></p> : null}
       <ul className="blog-article-header__tags" aria-label={site.messages.blog.articleTags}>
         {article.tags.map((tag) => <li key={tag} className="tag-chip">{tag}</li>)}
       </ul>

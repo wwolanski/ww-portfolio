@@ -1,3 +1,8 @@
+.inline-copy__strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
 .inline-copy__code {
   display: inline;
   padding: 0.08rem 0.3rem;

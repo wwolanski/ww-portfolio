@@ -9,6 +9,7 @@ describe('InlineCopy', () => {
     const { container } = render(<InlineCopy copy="A **bold**, *italic*, and `code`." />);
 
     expect(container.querySelector('strong')).toHaveTextContent('bold');
+    expect(container.querySelector('strong')).toHaveClass('inline-copy__strong');
     expect(container.querySelector('em')).toHaveTextContent('italic');
     expect(container.querySelector('code')).toHaveTextContent('code');
     expect(container.textContent).toBe('A bold, italic, and code.');

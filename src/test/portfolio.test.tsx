@@ -86,6 +86,18 @@ describe('v7 detail visuals', () => {
     expect(container.querySelectorAll('.timeline-thumb img')).toHaveLength(4);
   });
 
+  it('renders inline Markdown in prose content outside the hero lead', () => {
+    const { container } = renderPage(<AboutPage site={polishSite} />);
+    const workflowIntro = container.querySelector<HTMLElement>('.about-section--workflow .section-heading p');
+
+    if (!workflowIntro) {
+      throw new Error('Workflow intro is missing.');
+    }
+
+    expect(workflowIntro.querySelector('strong')).toHaveTextContent('Nie wymyślam koła na nowo, jeśli nie muszę.');
+    expect(workflowIntro.textContent).not.toContain('**');
+  });
+
   it('renders the new skills showcase and blog card rail', () => {
     const { container, unmount } = renderPage(<SkillsPage site={polishSite} />);
 

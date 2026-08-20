@@ -1,3 +1,5 @@
+import { InlineCopy } from './InlineCopy';
+
 type SectionHeadingProps = {
   readonly index: string;
   readonly title: string;
@@ -8,8 +10,8 @@ export function SectionHeading({ index, title, text }: SectionHeadingProps) {
   return (
     <header className="section-heading">
       <span>{index}</span>
-      <h2>{title}</h2>
-      {text && <p>{text}</p>}
+      <h2><InlineCopy copy={title} /></h2>
+      {text && <p><InlineCopy copy={text} /></p>}
     </header>
   );
 }

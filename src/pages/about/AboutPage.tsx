@@ -43,10 +43,10 @@ export function AboutPage({ site }: AboutPageProps) {
         <section className="content-section prototype-section about-section about-section--intro">
           <SectionHeading index="01" title={about.story.heading} text={about.story.intro} />
           <div className="prototype-about-grid">
-            <div><h3>{about.story.lead}</h3></div>
+            <div><h3><InlineCopy copy={about.story.lead} /></h3></div>
             <div>
               {about.story.paragraphs.map((paragraph, index) => <p key={`${paragraph}-${index}`}><InlineCopy copy={paragraph} /></p>)}
-              <p className="prototype-micro">{about.story.micro}</p>
+              <p className="prototype-micro"><InlineCopy copy={about.story.micro} /></p>
             </div>
           </div>
         </section>
@@ -58,8 +58,8 @@ export function AboutPage({ site }: AboutPageProps) {
               <article key={principle.title}>
                 <span className="principle-number">0{index + 1}</span>
                 <div className="prototype-principle-icon">{principle.icon}</div>
-                <h3>{principle.title}</h3>
-                <p>{principle.text}</p>
+                <h3><InlineCopy copy={principle.title} /></h3>
+                <p><InlineCopy copy={principle.text} /></p>
               </article>
             ))}
           </div>
@@ -73,8 +73,8 @@ export function AboutPage({ site }: AboutPageProps) {
                 <article className="ai-step" key={step.index}>
                   <div className="ai-orb"><img src={getIndexedAsset(workflowIcons, index)} alt="" /></div>
                   <b>{step.index}</b>
-                  <h3>{step.title}</h3>
-                  <p>{step.text}</p>
+                  <h3><InlineCopy copy={step.title} /></h3>
+                  <p><InlineCopy copy={step.text} /></p>
                 </article>
               ))}
             </div>
@@ -82,7 +82,7 @@ export function AboutPage({ site }: AboutPageProps) {
           <div className="prototype-process-case process-case-with-media">
             <div className="prototype-process-head">
               <div className="prototype-process-label">{about.workflow.example.label}</div>
-              <div><h3>{about.workflow.example.title}</h3><p>{about.workflow.example.text}</p></div>
+              <div><h3><InlineCopy copy={about.workflow.example.title} /></h3><p><InlineCopy copy={about.workflow.example.text} /></p></div>
             </div>
             <div className="process-visual" aria-hidden="true">
               <img src={aboutProcessImage} alt="" loading="lazy" />
@@ -91,7 +91,7 @@ export function AboutPage({ site }: AboutPageProps) {
             <div className="prototype-process-grid">
               {about.workflow.example.steps.map((step) => (
                 <div className="prototype-process-step" key={step.index}>
-                  <b>{step.index}</b><strong>{step.title}</strong><span>{step.text}</span>
+                  <b>{step.index}</b><strong><InlineCopy copy={step.title} /></strong><span><InlineCopy copy={step.text} /></span>
                 </div>
               ))}
             </div>
@@ -104,7 +104,7 @@ export function AboutPage({ site }: AboutPageProps) {
             {about.timeline.items.map((item, index) => (
               <article className="prototype-timeline-item timeline-item-enhanced" key={item.date}>
                 <div className="timeline-thumb"><img src={getIndexedAsset(timelineImages, index)} alt="" loading="lazy" /></div>
-                <div className="timeline-copy"><span className="prototype-date">{item.date}</span><h3>{item.title}</h3><p>{item.text}</p></div>
+                <div className="timeline-copy"><span className="prototype-date"><InlineCopy copy={item.date} /></span><h3><InlineCopy copy={item.title} /></h3><p><InlineCopy copy={item.text} /></p></div>
               </article>
             ))}
           </div>
@@ -118,7 +118,7 @@ export function AboutPage({ site }: AboutPageProps) {
 }
 
 function PageTitle({ lines }: { readonly lines: readonly string[] }): ReactNode {
-  return <>{lines.map((line, index) => <span key={`${line}-${index}`}>{line}{index < lines.length - 1 && <br />}</span>)}</>;
+  return <>{lines.map((line, index) => <span key={`${line}-${index}`}><InlineCopy copy={line} />{index < lines.length - 1 && <br />}</span>)}</>;
 }
 
 const workflowIcons = [

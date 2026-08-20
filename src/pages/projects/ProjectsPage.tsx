@@ -103,12 +103,12 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
       </div>
       <div className="project-body">
         <div className="project-title-row">
-          <h3>{project.title}</h3>
-          <a href={`#${project.anchor}`} aria-label={site.messages.common.projectDetails(project.title)}><ArrowUpRight aria-hidden="true" /></a>
-        </div>
-        <p>{project.description}</p>
-        <ul>{project.facts.map((fact) => <li key={fact} className="tag-chip">{fact}</li>)}</ul>
-        <strong>{project.outcome}</strong>
+        <h3><InlineCopy copy={project.title} /></h3>
+        <a href={`#${project.anchor}`} aria-label={site.messages.common.projectDetails(project.title)}><ArrowUpRight aria-hidden="true" /></a>
+      </div>
+        <p><InlineCopy copy={project.description} /></p>
+        <ul>{project.facts.map((fact) => <li key={fact} className="tag-chip"><InlineCopy copy={fact} /></li>)}</ul>
+        <strong><InlineCopy copy={project.outcome} /></strong>
         <button
           type="button"
           className="project-content-button"
@@ -119,7 +119,7 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
           <ArrowUpRight aria-hidden="true" />
         </button>
         <div className="prototype-project-details" id={project.anchor}>
-          {project.details.map((detail) => <div key={detail.label}><b>{detail.label}</b><span>{detail.text}</span></div>)}
+          {project.details.map((detail) => <div key={detail.label}><b><InlineCopy copy={detail.label} /></b><span><InlineCopy copy={detail.text} /></span></div>)}
         </div>
       </div>
     </article>
@@ -161,5 +161,5 @@ function getProjectMonogram(title: string): string {
 }
 
 function PageTitle({ lines }: { readonly lines: readonly string[] }) {
-  return <>{lines.map((line, index) => <span key={`${line}-${index}`}>{line}{index < lines.length - 1 && <br />}</span>)}</>;
+  return <>{lines.map((line, index) => <span key={`${line}-${index}`}><InlineCopy copy={line} />{index < lines.length - 1 && <br />}</span>)}</>;
 }

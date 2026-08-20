@@ -9,6 +9,7 @@ type ParseResult = {
 type Marker = '***' | '**' | '*';
 
 const inlineCodeClassName = 'inline-copy__code';
+const inlineStrongClassName = 'inline-copy__strong';
 
 export function renderInlineMarkdown(value: string): readonly ReactNode[] {
   return renderSequence(normalizeLineEndings(value), 0).nodes;
@@ -116,11 +117,11 @@ function renderSequence(source: string, start: number, closingMarker?: Marker): 
 function renderFormattedNode(marker: Marker, children: readonly ReactNode[], index: number): ReactNode {
   if (marker === '***') {
     const emphasis = createElement('em', null, children);
-    return createElement('strong', { key: `strong-${index}` }, emphasis);
+    return createElement('strong', { key: `strong-${index}`, className: inlineStrongClassName }, emphasis);
   }
 
   if (marker === '**') {
-    return createElement('strong', { key: `strong-${index}` }, children);
+    return createElement('strong', { key: `strong-${index}`, className: inlineStrongClassName }, children);
   }
 
   return createElement('em', { key: `em-${index}` }, children);
