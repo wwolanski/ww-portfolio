@@ -1,6 +1,9 @@
 node_modules
 dist
 coverage
+test-results/
+playwright-report/
+snapshots/
 .DS_Store
 *.local
 tmp/

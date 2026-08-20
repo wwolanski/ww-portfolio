@@ -404,19 +404,8 @@
   position: relative;
   display: grid;
   max-width: 720px;
-  margin-left: 284px;
   padding-left: 0;
   border-left: 0;
-}
-
-.timeline-enhanced::before {
-  position: absolute;
-  top: 42px;
-  bottom: 42px;
-  left: 42px;
-  width: 1px;
-  content: "";
-  background: linear-gradient(to bottom, color-mix(in srgb, var(--page-accent) 82%, transparent), var(--line) 82%, color-mix(in srgb, var(--page-accent) 25%, transparent));
 }
 
 .timeline-item-enhanced {
@@ -693,8 +682,6 @@
   }
 
   .ai-workflow-shell { margin-left: 0; }
-  .timeline-enhanced { margin-left: 250px; }
-
   .ai-workflow {
     grid-template-columns: repeat(3, 1fr);
     row-gap: 30px;
@@ -740,7 +727,6 @@
 
   .site-links { display: none; }
   .ai-workflow-shell { margin-left: 0; }
-  .timeline-enhanced { margin-left: 62px; }
   .ai-workflow { grid-template-columns: repeat(2, 1fr); row-gap: 28px; }
   .ai-step:nth-child(2n)::after { display: none; }
   .skills-showcase .headline { font-size: 3.4rem; }
@@ -788,8 +774,7 @@
   }
 
   .site-actions { margin-left: auto; }
-  .ai-workflow-shell,
-  .timeline-enhanced { margin-left: 0; }
+  .ai-workflow-shell { margin-left: 0; }
   .ai-workflow { grid-template-columns: 1fr; gap: 24px; }
   .ai-step { padding-top: 0; }
   .ai-step::after { display: none; }
@@ -2763,30 +2748,5 @@ button {
   .site-nav__inner {
     flex-wrap: wrap;
     padding-block: 12px;
-  }
-}
-
-/* The enhanced timeline replaces the prototype's padded left rail. */
-.prototype-timeline.timeline-enhanced {
-  margin-left: 284px;
-  padding-left: 0;
-  border-left: 0;
-}
-
-@media (max-width: 1180px) {
-  .prototype-timeline.timeline-enhanced {
-    margin-left: 250px;
-  }
-}
-
-@media (max-width: 900px) {
-  .prototype-timeline.timeline-enhanced {
-    margin-left: 62px;
-  }
-}
-
-@media (max-width: 760px) {
-  .prototype-timeline.timeline-enhanced {
-    margin-left: 0;
   }
 }
