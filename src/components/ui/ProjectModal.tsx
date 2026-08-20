@@ -45,9 +45,10 @@ export function ProjectModal({
   useEffect(() => {
     const previousActiveElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const openerElement = triggerRef.current;
-    const originalBodyOverflow = document.body.style.overflow;
+    const rootElement = document.documentElement;
+    const hadScrollLock = rootElement.classList.contains('is-scroll-locked');
 
-    document.body.style.overflow = 'hidden';
+    rootElement.classList.add('is-scroll-locked');
     closeButtonRef.current?.focus();
 
     function handleKeyDown(event: KeyboardEvent) {
@@ -89,7 +90,10 @@ export function ProjectModal({
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = originalBodyOverflow;
+
+      if (!hadScrollLock) {
+        rootElement.classList.remove('is-scroll-locked');
+      }
 
       const focusTarget = openerElement ?? previousActiveElement;
 

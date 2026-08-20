@@ -142,7 +142,8 @@ describe('project content system', () => {
       expect(previousImageButton).not.toBeInTheDocument();
       expect(nextImageButton).not.toBeInTheDocument();
     }
-    expect(document.body.style.overflow).toBe('hidden');
+    expect(document.documentElement).toHaveClass('is-scroll-locked');
+    expect(tableOfContents).toHaveClass('scrollbar-hidden');
 
     if (spriteImages.length > 1 && nextImageButton && previousImageButton) {
       await user.click(nextImageButton);
@@ -154,7 +155,7 @@ describe('project content system', () => {
     await user.keyboard('{Escape}');
 
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
-    expect(document.body.style.overflow).toBe('');
+    expect(document.documentElement).not.toHaveClass('is-scroll-locked');
     expect(trigger).toHaveFocus();
   });
 

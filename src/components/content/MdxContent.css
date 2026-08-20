@@ -22,7 +22,6 @@
   overflow-y: auto;
   padding: 1rem 1rem 2rem 1.25rem;
   border-right: 1px solid var(--line);
-  scrollbar-width: thin;
 }
 
 .mdx-toc__toggle,
@@ -605,7 +604,6 @@
     background: var(--surface-elevated);
     box-shadow: 1.5rem 0 3rem color-mix(in srgb, #000 32%, transparent);
     overflow-y: auto;
-    scrollbar-width: thin;
     transform: translateX(-105%);
     visibility: hidden;
     pointer-events: none;

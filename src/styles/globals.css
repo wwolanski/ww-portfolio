@@ -823,6 +823,9 @@
   --muted: #6b685f;
   --line: rgba(23, 23, 20, 0.17);
   --home-overlay: rgba(238, 233, 220, 0.76);
+  --scrollbar-track: #ded8ca;
+  --scrollbar-thumb: #817d73;
+  --scrollbar-thumb-hover: #5f5c54;
 }
 
 :root.dark {
@@ -834,6 +837,9 @@
   --muted: #aaa8a1;
   --line: rgba(255, 255, 255, 0.17);
   --home-overlay: rgba(0, 0, 0, 0.08);
+  --scrollbar-track: #11110f;
+  --scrollbar-thumb: #55534e;
+  --scrollbar-thumb-hover: #77746d;
 }
 
 * {
@@ -842,6 +848,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -849,6 +856,58 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background: var(--surface);
+}
+
+/* Keep the document width stable while modal content owns the scroll. */
+html.is-scroll-locked,
+html.is-scroll-locked body {
+  overflow: hidden;
+}
+
+/* One native scrollbar theme for the document and every nested scroll area. */
+* {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+  min-width: 32px;
+  min-height: 32px;
+  border: 2px solid var(--scrollbar-track);
+  border-radius: 999px;
+  background: var(--scrollbar-thumb);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+/* Use on compact scroll regions where the bar would add visual noise. */
+.scrollbar-hidden {
+  scrollbar-width: none;
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  * {
+    scrollbar-color: auto;
+  }
 }
 
 button,

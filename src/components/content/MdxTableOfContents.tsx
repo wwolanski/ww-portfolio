@@ -253,7 +253,7 @@ export function MdxTableOfContents({
       ) : null}
       <nav
         id="mdx-toc-navigation"
-        className={`mdx-toc${isOpen ? ' mdx-toc--open' : ''}`}
+        className={`mdx-toc scrollbar-hidden${isOpen ? ' mdx-toc--open' : ''}`}
         aria-label={label}
         aria-hidden={isMobile && !isOpen ? true : undefined}
       >
