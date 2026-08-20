@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { MdxContent } from '../components/content/MdxContent';
 import { ProjectCaseStudy } from '../components/content/ProjectCaseStudy';
@@ -37,6 +37,10 @@ const spriteImages = getContentImages({
   type: 'project',
   slug: 'gpt_img_2-spritesheet-processor',
   locale: 'pl',
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe('project content system', () => {
@@ -99,27 +103,36 @@ describe('project content system', () => {
     expect(tableOfContents).toHaveClass('mdx-toc--open');
     const problemLink = within(tableOfContents).getByRole('link', { name: 'Problem' });
     const problemHeading = screen.getByRole('heading', { name: 'Problem' });
-    const scrollIntoView = vi.fn();
-    Object.defineProperty(problemHeading, 'scrollIntoView', { configurable: true, value: scrollIntoView });
-    await user.click(problemLink);
-    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
-    expect(problemLink).toHaveAttribute('aria-current', 'location');
+    const modalBody = dialog.closest('.project-modal')?.querySelector<HTMLElement>('.project-modal__body');
 
-    const modal = document.body.querySelector('.project-modal');
-
-    if (!(modal instanceof HTMLElement)) {
-      throw new Error('Project modal backdrop is missing.');
+    if (!modalBody) {
+      throw new Error('Project modal scroll viewport is missing.');
     }
 
+    const scrollTo = vi.fn();
+    Object.defineProperty(modalBody, 'scrollTop', { configurable: true, value: 100, writable: true });
+    Object.defineProperty(modalBody, 'scrollTo', { configurable: true, value: scrollTo });
+    Object.defineProperty(modalBody, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => ({ height: 800, top: 64 }),
+    });
+    Object.defineProperty(problemHeading, 'getBoundingClientRect', {
+      configurable: true,
+      value: () => ({ top: 300 }),
+    });
+    await user.click(problemLink);
+    await waitFor(() => expect(scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 312 }));
+    expect(problemLink).toHaveAttribute('aria-current', 'location');
+
     screen.getAllByRole('heading').forEach((heading) => {
-      const top = heading.textContent === 'Problem' ? -120 : heading.textContent === 'Podejście' ? 0 : 320;
+      const top = heading.textContent === 'Problem' ? -120 : heading.textContent === 'Podejście' ? 160 : 320;
       Object.defineProperty(heading, 'getBoundingClientRect', {
         configurable: true,
         value: () => ({ top }),
       });
     });
 
-    modal.dispatchEvent(new Event('scroll'));
+    modalBody.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
       expect(within(tableOfContents).getByRole('link', { name: 'Podejście' })).toHaveAttribute(
@@ -157,6 +170,48 @@ describe('project content system', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(document.documentElement).not.toHaveClass('is-scroll-locked');
     expect(trigger).toHaveFocus();
+  });
+
+  it('gives the mobile table-of-contents drawer its own scroll state and restores focus on close', async () => {
+    vi.stubGlobal('matchMedia', vi.fn().mockImplementation((query: string) => ({
+      matches: query === '(max-width: 900px)',
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })));
+
+    const user = userEvent.setup();
+    renderPage(<ProjectsPage site={polishSite} />);
+
+    await user.click(screen.getByRole('button', { name: /otwórz case study: sprite stabilization pipeline/i }));
+    const toggle = await screen.findByRole('button', { name: 'Otwórz spis treści' });
+    const article = await screen.findByRole('heading', { name: 'Sprite Stabilization Pipeline', level: 1 })
+      .then((heading) => heading.closest('article'));
+    const scrollViewport = document.querySelector<HTMLElement>('.project-modal__body');
+
+    if (!article || !scrollViewport) {
+      throw new Error('Mobile project content shell is missing.');
+    }
+
+    await user.click(toggle);
+
+    await waitFor(() => {
+      expect(scrollViewport).toHaveClass('is-toc-open');
+      expect(article).toHaveAttribute('inert');
+      expect(screen.getByRole('navigation', { name: 'Spis treści' })).toHaveClass('mdx-toc--open');
+    });
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => {
+      expect(scrollViewport).not.toHaveClass('is-toc-open');
+      expect(article).not.toHaveAttribute('inert');
+      expect(toggle).toHaveFocus();
+    });
   });
 
   it('shows a centered placeholder for projects without an MDX document', async () => {

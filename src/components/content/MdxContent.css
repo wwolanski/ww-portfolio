@@ -15,13 +15,16 @@
 
 .mdx-toc {
   position: sticky;
-  top: var(--project-modal-header-offset, 4.5rem);
+  top: 0;
   align-self: start;
-  height: calc(100vh - var(--project-modal-header-offset, 4.5rem));
+  height: calc(100vh - var(--project-modal-header-height, 4.5rem));
+  height: calc(100dvh - var(--project-modal-header-height, 4.5rem));
   box-sizing: border-box;
   overflow-y: auto;
   padding: 1rem 1rem 2rem 1.25rem;
   border-right: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-elevated) 72%, var(--surface));
+  overscroll-behavior: contain;
 }
 
 .mdx-toc__toggle,
@@ -30,8 +33,10 @@
 }
 
 .mdx-toc__label {
-  margin: 0 0 0.75rem;
-  color: var(--muted);
+  margin: 0 0 0.9rem;
+  padding: 0.25rem 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--page-accent);
   font-size: 0.62rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -46,8 +51,8 @@
 }
 
 .mdx-toc__nested-list {
-  margin: 0.15rem 0 0.35rem;
-  padding-inline-start: 0.7rem;
+  margin: 0.2rem 0 0.45rem 0.65rem;
+  padding-inline-start: 0.55rem;
   border-left: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
   list-style: none;
 }
@@ -67,23 +72,26 @@
 
 .mdx-toc__link {
   display: block;
-  padding: 0.35rem 0.65rem;
+  margin-block: 1px;
+  padding: 0.42rem 0.65rem;
   border-left: 2px solid transparent;
   color: var(--muted);
   font-size: 0.72rem;
   line-height: 1.35;
   text-decoration: none;
-  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
 }
 
 .mdx-toc__link:hover {
   color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+  transform: translateX(2px);
 }
 
 .mdx-toc__item.is-active .mdx-toc__link {
   border-left-color: var(--page-accent);
   color: var(--ink);
-  background: color-mix(in srgb, var(--page-accent) 8%, var(--surface));
+  background: color-mix(in srgb, var(--page-accent) 11%, var(--surface));
 }
 
 .mdx-toc__item:has(.mdx-toc__item.is-active) > .mdx-toc__link {
@@ -141,9 +149,14 @@
   text-transform: uppercase;
 }
 
+.mdx-content h1,
 .mdx-content h2,
 .mdx-content h3 {
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 1.5rem;
+}
+
+.mdx-content :is(h1, h2, h3)[tabindex="-1"]:focus {
+  outline: none;
 }
 
 .mdx-content h1 {
@@ -552,8 +565,8 @@
 
   .mdx-toc__toggle {
     position: fixed;
-    z-index: 6;
-    top: 0.8rem;
+    z-index: 12;
+    top: calc(var(--project-modal-header-height, 4.5rem) / 2);
     left: 1rem;
     display: grid;
     width: 40px;
@@ -562,8 +575,10 @@
     border: 1px solid var(--page-accent);
     color: var(--page-accent);
     background: var(--surface-elevated);
+    box-shadow: 0 6px 18px color-mix(in srgb, #000 18%, transparent);
     cursor: pointer;
-    transition: background 160ms ease, color 160ms ease;
+    transform: translateY(-50%);
+    transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
   }
 
   .mdx-toc__toggle:hover {
@@ -578,8 +593,8 @@
 
   .mdx-toc__scrim {
     position: fixed;
-    z-index: 4;
-    inset: var(--project-modal-header-offset, 4.5rem) 0 0;
+    z-index: 8;
+    inset: var(--project-modal-header-height, 4.5rem) 0 0;
     display: block;
     border: 0;
     background: color-mix(in srgb, #000 58%, transparent);
@@ -588,22 +603,23 @@
 
   .mdx-toc {
     position: fixed;
-    z-index: 5;
-    top: var(--project-modal-header-offset, 4.5rem);
+    z-index: 9;
+    top: var(--project-modal-header-height, 4.5rem);
     bottom: 0;
     left: 0;
-    width: min(86vw, 21rem);
+    width: min(calc(100vw - 3.5rem), 23rem);
     height: auto;
     max-height: none;
     margin: 0;
-    padding: 1.25rem 1rem 2rem 1.25rem;
+    padding: 1.1rem 1rem max(2rem, env(safe-area-inset-bottom)) 1rem;
     border-top: 0;
     border-right: 1px solid var(--line);
     border-bottom: 0;
     border-left: 0;
     background: var(--surface-elevated);
-    box-shadow: 1.5rem 0 3rem color-mix(in srgb, #000 32%, transparent);
+    box-shadow: 1.5rem 0 3rem color-mix(in srgb, #000 38%, transparent);
     overflow-y: auto;
+    overscroll-behavior: contain;
     transform: translateX(-105%);
     visibility: hidden;
     pointer-events: none;
@@ -617,7 +633,8 @@
   }
 
   .mdx-toc__label {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
+    padding-top: 0;
   }
 
   .mdx-toc__list {

@@ -1,5 +1,5 @@
 import { Menu, X } from 'lucide-react';
-import { useEffect, useState, type MouseEvent, type RefObject } from 'react';
+import { useEffect, useId, useRef, useState, type MouseEvent, type RefObject } from 'react';
 import type { MDXContent } from 'mdx/types.js';
 
 type MdxTableOfContentsProps = {
@@ -23,6 +23,47 @@ type HeadingEntry = {
   readonly element: HTMLHeadingElement;
   readonly id: string;
 };
+
+const contentTopGap = 24;
+const readingLineViewportRatio = 0.18;
+const minimumReadingLineOffset = 72;
+const maximumReadingLineOffset = 160;
+
+function getScrollContainer(article: HTMLElement): HTMLElement | null {
+  return article.closest<HTMLElement>('.project-modal__body');
+}
+
+function getReadingLine(scrollContainer: HTMLElement | null): number {
+  const viewportBounds = scrollContainer?.getBoundingClientRect();
+  const viewportTop = viewportBounds?.top ?? 0;
+  const viewportHeight = viewportBounds?.height ?? window.innerHeight;
+  const readingLineOffset = Math.min(
+    maximumReadingLineOffset,
+    Math.max(minimumReadingLineOffset, viewportHeight * readingLineViewportRatio),
+  );
+
+  return viewportTop + readingLineOffset;
+}
+
+function scrollToHeading(article: HTMLElement, target: HTMLElement) {
+  const scrollContainer = getScrollContainer(article);
+  const behavior = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+  if (scrollContainer) {
+    const top = scrollContainer.scrollTop
+      + target.getBoundingClientRect().top
+      - scrollContainer.getBoundingClientRect().top
+      - contentTopGap;
+
+    scrollContainer.scrollTo({ top: Math.max(0, top), behavior });
+    return;
+  }
+
+  window.scrollTo({
+    top: Math.max(0, window.scrollY + target.getBoundingClientRect().top - contentTopGap),
+    behavior,
+  });
+}
 
 function createHeadingId(text: string, index: number): string {
   const slug = text
@@ -98,6 +139,9 @@ export function MdxTableOfContents({
   openLabel,
   closeLabel,
 }: MdxTableOfContentsProps) {
+  const navigationId = useId();
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
+  const navigationRef = useRef<HTMLElement | null>(null);
   const [items, setItems] = useState<readonly TableOfContentsItem[]>([]);
   const [activeId, setActiveId] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -109,7 +153,13 @@ export function MdxTableOfContents({
     }
 
     const mediaQuery = window.matchMedia('(max-width: 900px)');
-    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+    const updateIsMobile = () => {
+      setIsMobile(mediaQuery.matches);
+
+      if (!mediaQuery.matches) {
+        setIsOpen(false);
+      }
+    };
 
     updateIsMobile();
     mediaQuery.addEventListener('change', updateIsMobile);
@@ -129,6 +179,7 @@ export function MdxTableOfContents({
         event.preventDefault();
         event.stopPropagation();
         setIsOpen(false);
+        window.requestAnimationFrame(() => toggleRef.current?.focus());
       }
     }
 
@@ -138,6 +189,34 @@ export function MdxTableOfContents({
       document.removeEventListener('keydown', handleKeyDown, true);
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const article = articleRef.current;
+    const scrollContainer = article ? getScrollContainer(article) : null;
+
+    if (!article || !scrollContainer || !isMobile) {
+      return undefined;
+    }
+
+    scrollContainer.classList.toggle('is-toc-open', isOpen);
+    article.toggleAttribute('inert', isOpen);
+
+    let focusFrame = 0;
+
+    if (isOpen) {
+      focusFrame = window.requestAnimationFrame(() => {
+        const activeLink = navigationRef.current?.querySelector<HTMLAnchorElement>('[aria-current="location"]');
+        const firstLink = navigationRef.current?.querySelector<HTMLAnchorElement>('.mdx-toc__link');
+        (activeLink ?? firstLink)?.focus();
+      });
+    }
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      scrollContainer.classList.remove('is-toc-open');
+      article.removeAttribute('inert');
+    };
+  }, [articleRef, isMobile, isOpen]);
 
   useEffect(() => {
     const article = articleRef.current;
@@ -154,19 +233,11 @@ export function MdxTableOfContents({
     setItems(nextItems);
     setActiveId(entries[0]?.id ?? '');
 
-    const scrollRoot = article.closest<HTMLElement>('.project-modal');
+    const scrollRoot = getScrollContainer(article);
     const scrollTarget: Window | HTMLElement = scrollRoot ?? window;
-    const stickyHeader = scrollRoot?.querySelector<HTMLElement>('.project-modal__header');
-
-    function getActivationLine() {
-      const rootTop = scrollRoot?.getBoundingClientRect().top ?? 0;
-      const headerBottom = stickyHeader?.getBoundingClientRect().bottom ?? rootTop + 80;
-
-      return headerBottom + 24;
-    }
 
     function updateActiveFromScroll() {
-      const activationLine = getActivationLine();
+      const activationLine = getReadingLine(scrollRoot);
       let currentId = entries[0]?.id ?? '';
 
       entries.forEach((entry) => {
@@ -175,14 +246,26 @@ export function MdxTableOfContents({
         }
       });
 
+      const isAtEnd = scrollRoot
+        ? scrollRoot.scrollHeight > scrollRoot.clientHeight
+          && scrollRoot.scrollTop + scrollRoot.clientHeight >= scrollRoot.scrollHeight - 2
+        : document.documentElement.scrollHeight > window.innerHeight
+          && window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+
+      if (isAtEnd) {
+        currentId = entries.at(-1)?.id ?? currentId;
+      }
+
       setActiveId((previousId) => (previousId === currentId ? previousId : currentId));
     }
 
     updateActiveFromScroll();
     scrollTarget.addEventListener('scroll', updateActiveFromScroll, { passive: true });
+    window.addEventListener('resize', updateActiveFromScroll, { passive: true });
 
     return () => {
       scrollTarget.removeEventListener('scroll', updateActiveFromScroll);
+      window.removeEventListener('resize', updateActiveFromScroll);
     };
   }, [articleRef, contentKey]);
 
@@ -198,13 +281,28 @@ export function MdxTableOfContents({
       ? Array.from(article.querySelectorAll<HTMLElement>('h1, h2, h3')).find((heading) => heading.id === id)
       : undefined;
 
-    if (!target) {
+    if (!article || !target) {
       return;
     }
 
     setActiveId(id);
     setIsOpen(false);
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    window.requestAnimationFrame(() => {
+      if (!document.contains(target)) {
+        return;
+      }
+
+      scrollToHeading(article, target);
+
+      const hadTabIndex = target.hasAttribute('tabindex');
+      target.tabIndex = -1;
+      target.focus({ preventScroll: true });
+
+      if (!hadTabIndex) {
+        target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
+      }
+    });
   }
 
   function renderItems(tocItems: readonly TableOfContentsItem[], nested = false) {
@@ -234,10 +332,11 @@ export function MdxTableOfContents({
   return (
     <>
       <button
+        ref={toggleRef}
         type="button"
         className="mdx-toc__toggle"
         aria-expanded={isOpen}
-        aria-controls="mdx-toc-navigation"
+        aria-controls={navigationId}
         aria-label={isOpen ? closeLabel : openLabel}
         onClick={() => setIsOpen((open) => !open)}
       >
@@ -248,11 +347,15 @@ export function MdxTableOfContents({
           type="button"
           className="mdx-toc__scrim"
           aria-label={closeLabel}
-          onClick={() => setIsOpen(false)}
+          onClick={() => {
+            setIsOpen(false);
+            window.requestAnimationFrame(() => toggleRef.current?.focus());
+          }}
         />
       ) : null}
       <nav
-        id="mdx-toc-navigation"
+        ref={navigationRef}
+        id={navigationId}
         className={`mdx-toc scrollbar-hidden${isOpen ? ' mdx-toc--open' : ''}`}
         aria-label={label}
         aria-hidden={isMobile && !isOpen ? true : undefined}

@@ -62,7 +62,8 @@ export function ProjectModal({
         return;
       }
 
-      const focusableElements = Array.from(panelRef.current.querySelectorAll<HTMLElement>(focusableSelector));
+      const focusableElements = Array.from(panelRef.current.querySelectorAll<HTMLElement>(focusableSelector))
+        .filter((element) => element.tabIndex >= 0 && !element.closest('[inert], [aria-hidden="true"]'));
 
       if (focusableElements.length === 0) {
         event.preventDefault();
