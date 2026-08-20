@@ -1,15 +1,11 @@
-import type { CopyBlock } from '../../content/types';
+import './InlineCopy.css';
+
+import { renderInlineMarkdown } from './inlineMarkdown';
 
 type InlineCopyProps = {
-  readonly copy: CopyBlock;
+  readonly copy: string;
 };
 
 export function InlineCopy({ copy }: InlineCopyProps) {
-  return (
-    <>
-      {copy.before}
-      {copy.emphasis && <strong>{copy.emphasis}</strong>}
-      {copy.after}
-    </>
-  );
+  return <>{renderInlineMarkdown(copy)}</>;
 }

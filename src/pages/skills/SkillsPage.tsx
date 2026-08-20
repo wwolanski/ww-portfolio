@@ -84,7 +84,7 @@ export function SkillsPage({ site }: SkillsPageProps) {
           <div className="wide-media" aria-hidden="true"><img src={architectureImage} alt="" loading="lazy" /></div>
           <div>
             <h3>{content.architecture.title}</h3>
-            {content.architecture.paragraphs.map((paragraph, index) => <p key={`${paragraph.before}-${index}`}><InlineCopy copy={paragraph} /></p>)}
+            {content.architecture.paragraphs.map((paragraph, index) => <p key={`${paragraph}-${index}`}><InlineCopy copy={paragraph} /></p>)}
             <div className="prototype-mini-row">{content.architecture.points.map((point, index) => <span key={point}><b>0{index + 1}</b>{point}</span>)}</div>
           </div>
         </div>

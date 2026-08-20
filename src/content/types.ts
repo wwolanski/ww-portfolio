@@ -1,15 +1,9 @@
 import type { ProjectTag } from './projectTags';
 
-export type CopyBlock = {
-  readonly before: string;
-  readonly emphasis?: string;
-  readonly after?: string;
-};
-
 export type HeroContent = {
   readonly eyebrow: string;
   readonly title: readonly string[];
-  readonly lead: CopyBlock;
+  readonly lead: string;
   readonly tags: readonly string[];
   readonly accentTag?: string;
 };
@@ -71,7 +65,7 @@ export type AboutContent = {
     readonly heading: string;
     readonly intro: string;
     readonly lead: string;
-    readonly paragraphs: readonly CopyBlock[];
+    readonly paragraphs: readonly string[];
     readonly micro: string;
   };
   readonly principles: {
@@ -178,7 +172,7 @@ export type SkillsContent = {
     readonly heading: string;
     readonly intro: string;
     readonly title: string;
-    readonly paragraphs: readonly CopyBlock[];
+    readonly paragraphs: readonly string[];
     readonly points: readonly string[];
   };
   readonly verification: {

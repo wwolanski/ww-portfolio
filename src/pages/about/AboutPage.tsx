@@ -45,7 +45,7 @@ export function AboutPage({ site }: AboutPageProps) {
           <div className="prototype-about-grid">
             <div><h3>{about.story.lead}</h3></div>
             <div>
-              {about.story.paragraphs.map((paragraph, index) => <p key={`${paragraph.before}-${index}`}><InlineCopy copy={paragraph} /></p>)}
+              {about.story.paragraphs.map((paragraph, index) => <p key={`${paragraph}-${index}`}><InlineCopy copy={paragraph} /></p>)}
               <p className="prototype-micro">{about.story.micro}</p>
             </div>
           </div>
