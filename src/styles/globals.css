@@ -264,8 +264,8 @@
 .ai-workflow {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  --ai-gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  --ai-gap: 0px;
   gap: var(--ai-gap);
   margin-inline: auto;
 }
@@ -1536,43 +1536,11 @@ button {
   color: var(--muted);
 }
 
-.principles-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
-}
-
-.principles-grid article {
-  position: relative;
-  min-height: 300px;
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  background: var(--surface-elevated);
-}
-
-.principles-grid svg {
-  width: 34px;
-  height: 34px;
-  margin: 3.5rem 0 2rem;
-  color: var(--page-accent);
-}
-
-.principle-number {
-  position: absolute;
-  top: 1.2rem;
-  right: 1.2rem;
-  color: var(--muted);
-  font-size: 0.72rem;
-}
-
-.principles-grid h3,
 .engineering-card h3 {
   margin: 0 0 0.8rem;
   font-size: 1.15rem;
 }
 
-.principles-grid p,
 .engineering-card p {
   margin: 0;
   color: var(--muted);
@@ -1581,16 +1549,16 @@ button {
 }
 
 /* Projects */
-.project-list {
-  border-top: 1px solid var(--line);
-}
-
 .project-row {
   display: grid;
   grid-template-columns: 180px 1fr;
   gap: 2rem;
   padding-block: 3.5rem;
   border-bottom: 1px solid var(--line);
+}
+
+.project-list .project-row:last-child {
+  border-bottom: 0;
 }
 
 .project-meta {
@@ -1657,11 +1625,14 @@ button {
 
 .project-title-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
 }
 
 .project-title-row h3 {
+  min-width: 0;
   margin: 0;
   font-family: var(--font-condensed);
   font-size: clamp(2.7rem, 5vw, 4.6rem);
@@ -1670,27 +1641,8 @@ button {
   text-transform: uppercase;
 }
 
-.project-title-row a {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
-}
-
-.project-title-row a:hover {
-  color: #080808;
-  background: var(--page-accent);
-  transform: rotate(8deg);
-}
-
-.project-title-row svg {
-  width: 19px;
+.project-title-row .project-content-button {
+  margin-top: 0;
 }
 
 .project-body > p {
@@ -1845,14 +1797,6 @@ button {
 
   .site-links {
     display: none;
-  }
-
-  .principles-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .principles-grid article {
-    min-height: 240px;
   }
 
   .project-row {
@@ -2052,77 +1996,12 @@ button {
 }
 
 /* Content migrated from the supplied prototype. The existing home, blog and shared navigation stay untouched. */
-.prototype-hero-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  padding: 1.5rem 0 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.prototype-tag {
-  padding: 0.45rem 0.65rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  font-size: 0.68rem;
-  font-weight: 700;
-}
-
-.prototype-tag.is-accent {
-  color: var(--page-accent);
-  border-color: color-mix(in srgb, var(--page-accent) 55%, var(--line));
-  background: color-mix(in srgb, var(--page-accent) 8%, transparent);
-}
-
 .prototype-section .section-heading {
   margin-bottom: 3rem;
 }
 
-.prototype-about-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: clamp(2rem, 5vw, 4rem);
-}
-
-.prototype-about-grid h3 {
-  margin: 0;
-  font-size: clamp(1.35rem, 2.5vw, 2rem);
-  font-weight: 600;
-  letter-spacing: -0.025em;
-  line-height: 1.35;
-}
-
-.prototype-about-grid p {
-  margin: 0 0 1.2rem;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.prototype-about-grid strong,
 .prototype-engineering-card strong {
   color: var(--ink);
-}
-
-.prototype-micro {
-  color: var(--muted) !important;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.prototype-principles-grid article {
-  min-height: 270px;
-}
-
-.prototype-principle-icon {
-  display: grid;
-  width: 2rem;
-  height: 2rem;
-  margin: 2.5rem 0 1.5rem;
-  place-items: center;
-  border: 1px solid color-mix(in srgb, var(--page-accent) 55%, var(--line));
-  color: var(--page-accent);
 }
 
 .prototype-flow {
@@ -2525,7 +2404,6 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .prototype-about-grid,
   .prototype-process-head,
   .prototype-fit-grid {
     grid-template-columns: 1fr;

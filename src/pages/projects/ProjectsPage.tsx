@@ -8,7 +8,6 @@ import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { ProjectModal } from '../../components/ui/ProjectModal';
 import { ProjectBadge } from '../../components/ui/ProjectBadge';
-import { SectionHeading } from '../../components/ui/SectionHeading';
 import { getProjectLogo } from '../../content/projectLogos';
 import type { Project } from '../../content/types';
 import type { SiteContent } from '../../content/siteContent';
@@ -54,7 +53,6 @@ export function ProjectsPage({ site }: ProjectsPageProps) {
       intro={<InlineCopy copy={content.hero.lead} />}
     >
       <section className="content-section prototype-section">
-        <SectionHeading index="01" title={content.selected.heading} text={content.selected.intro} />
         <div className="project-list">
           {content.selected.projects.map((project) => <ProjectRow key={project.slug} project={project} site={site} onOpen={openProject} />)}
         </div>
@@ -83,12 +81,8 @@ type ProjectRowProps = {
 };
 
 function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
-  const contentLabel = project.contentAction === 'case-study'
-    ? site.messages.projectContent.caseStudy
-    : site.messages.projectContent.description;
-  const contentAriaLabel = project.contentAction === 'case-study'
-    ? site.messages.projectContent.openCaseStudy(project.title)
-    : site.messages.projectContent.openDescription(project.title);
+  const contentLabel = site.messages.projectContent.caseStudy;
+  const contentAriaLabel = site.messages.projectContent.openCaseStudy(project.title);
   const logo = getProjectLogo(project.slug);
 
   return (
@@ -103,21 +97,20 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
       </div>
       <div className="project-body">
         <div className="project-title-row">
-        <h3><InlineCopy copy={project.title} /></h3>
-        <a href={`#${project.anchor}`} aria-label={site.messages.common.projectDetails(project.title)}><ArrowUpRight aria-hidden="true" /></a>
-      </div>
+          <h3><InlineCopy copy={project.title} /></h3>
+          <button
+            type="button"
+            className="project-content-button"
+            aria-label={contentAriaLabel}
+            onClick={(event) => onOpen(project, event.currentTarget)}
+          >
+            <span>{contentLabel}</span>
+            <ArrowUpRight aria-hidden="true" />
+          </button>
+        </div>
         <p><InlineCopy copy={project.description} /></p>
         <ul>{project.facts.map((fact) => <li key={fact} className="tag-chip"><InlineCopy copy={fact} /></li>)}</ul>
         <strong><InlineCopy copy={project.outcome} /></strong>
-        <button
-          type="button"
-          className="project-content-button"
-          aria-label={contentAriaLabel}
-          onClick={(event) => onOpen(project, event.currentTarget)}
-        >
-          <span>{contentLabel}</span>
-          <ArrowUpRight aria-hidden="true" />
-        </button>
         <div className="prototype-project-details" id={project.anchor}>
           {project.details.map((detail) => <div key={detail.label}><b><InlineCopy copy={detail.label} /></b><span><InlineCopy copy={detail.text} /></span></div>)}
         </div>

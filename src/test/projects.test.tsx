@@ -46,7 +46,7 @@ afterEach(() => {
 describe('project content system', () => {
   it('resolves the OrderHub logo through the slug-bound logo directory', () => {
     expect(getProjectLogo('orderhub-pos-wms')).toMatch(/\/img\/logos\/ohub\//);
-    expect(getProjectLogo('bank-statement-converter')).toBeNull();
+    expect(getProjectLogo('bank-statement-converter')).toMatch(/\/img\/logos\/bank-statement-converter\//);
   });
 
   it('renders the discontinued project as a regular list row with actions for every project', () => {
@@ -57,7 +57,9 @@ describe('project content system', () => {
     expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-meta .project-logo img')).toBeInTheDocument();
     expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-body .project-logo')).not.toBeInTheDocument();
     expect(container.querySelector('.prototype-failure-box')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: /otwórz (opis projektu|case study):/i })).toHaveLength(6);
+    expect(screen.getAllByRole('button', { name: /otwórz case-study:/i })).toHaveLength(6);
+    expect(container.querySelectorAll('.project-title-row .project-content-button')).toHaveLength(6);
+    expect(container.querySelectorAll('.project-body > .project-content-button')).toHaveLength(0);
   });
 
   it('renders every project tag from the JSON configuration', () => {
@@ -89,7 +91,7 @@ describe('project content system', () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
-    const trigger = screen.getByRole('button', { name: /otwórz case study: sprite stabilization pipeline/i });
+    const trigger = screen.getByRole('button', { name: /otwórz case-study: sprite stabilization pipeline/i });
     await user.click(trigger);
 
     const dialog = await screen.findByRole('dialog', { name: 'Sprite Stabilization Pipeline' });
@@ -187,7 +189,7 @@ describe('project content system', () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case study: sprite stabilization pipeline/i }));
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: sprite stabilization pipeline/i }));
     const toggle = await screen.findByRole('button', { name: 'Otwórz spis treści' });
     const article = await screen.findByRole('heading', { name: 'Sprite Stabilization Pipeline', level: 1 })
       .then((heading) => heading.closest('article'));
@@ -218,9 +220,9 @@ describe('project content system', () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz opis projektu: bank statement converter/i }));
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: bank statement converter/i }));
 
-    expect(await screen.findByText('Opis projektu jest w przygotowaniu.')).toBeInTheDocument();
+    expect(await screen.findByText('Case-study jest w przygotowaniu.')).toBeInTheDocument();
     expect(screen.getByRole('dialog', { name: 'Bank Statement Converter' })).toBeInTheDocument();
   });
 
@@ -238,7 +240,7 @@ describe('project content system', () => {
     const user = userEvent.setup();
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz opis projektu: bank statement converter/i }));
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: bank statement converter/i }));
     const backdrop = container.ownerDocument.body.querySelector('.project-modal');
 
     if (!(backdrop instanceof HTMLElement)) {
@@ -262,7 +264,7 @@ describe('project content system', () => {
       />,
     );
 
-    expect(screen.getByText('This project description is currently available only in Polish.')).toBeInTheDocument();
+    expect(screen.getByText('This case-study is currently available only in Polish.')).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'View Polish version' }));
     expect(onViewPolish).toHaveBeenCalledOnce();
   });
@@ -281,7 +283,7 @@ describe('project content system', () => {
       />,
     );
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Nie udało się wczytać opisu projektu.');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Nie udało się wczytać case-study.');
     loadContentSpy.mockRestore();
   });
 
@@ -337,7 +339,7 @@ describe('project content system', () => {
     const differentApproachChildren = differentApproachLink.closest('li')?.querySelector('.mdx-toc__nested-list');
 
     expect(within(tableOfContents).getByRole('link', { name: 'Błędne założenia' })).toBeInTheDocument();
-    expect(differentApproachChildren).toHaveTextContent('1. Najpierw jeden vertical slice');
+    expect(differentApproachChildren).toHaveTextContent('1. Najpierw zrozumieć zależności w domenie');
     expect(wrongLayerLink.closest('li')?.querySelector('.mdx-toc__nested-list')).toBeNull();
   });
 });

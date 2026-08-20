@@ -27,8 +27,7 @@ const homeContent = {
   pl: plHome,
 } satisfies Record<Locale, HomeContent>;
 
-type RawProject = Omit<Project, 'contentAction' | 'tags'> & {
-  readonly contentAction?: string;
+type RawProject = Omit<Project, 'tags'> & {
   readonly tags: readonly string[];
 };
 
@@ -39,10 +38,9 @@ type RawProjectsContent = Omit<ProjectsContent, 'selected'> & {
 };
 
 function normalizeProjectsContent(content: RawProjectsContent): ProjectsContent {
-  const projects: readonly Project[] = content.selected.projects.map(({ contentAction, tags, ...project }) => ({
+  const projects: readonly Project[] = content.selected.projects.map(({ tags, ...project }) => ({
     ...project,
     tags: tags.filter(isProjectTag),
-    contentAction: contentAction === 'case-study' ? 'case-study' : 'description',
   }));
 
   return {

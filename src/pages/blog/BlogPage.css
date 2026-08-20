@@ -31,6 +31,10 @@
   height: 16px;
 }
 
+.detail-page--blog .page-hero {
+  border-bottom: 0;
+}
+
 .mdx-content .blog-article-header {
   margin-bottom: 2rem;
   padding-bottom: 2rem;
@@ -80,7 +84,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 0;
+}
+
+.blog-filter-row--hero {
+  padding-block: 1.5rem 2rem;
+}
+
+.content-section.blog-section {
+  padding-top: 0;
 }
 
 .blog-article-list {

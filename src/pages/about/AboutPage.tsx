@@ -13,7 +13,6 @@ import timelineEarlyWebImage from '../../../img/timeline-early-web.webp';
 import timelineRetailImage from '../../../img/timeline-retail.webp';
 import workflowFeedbackIcon from '../../../img/icons/workflow-feedback.svg';
 import workflowImplementationIcon from '../../../img/icons/workflow-implementation.svg';
-import workflowIterationIcon from '../../../img/icons/workflow-iteration.svg';
 import workflowProblemIcon from '../../../img/icons/workflow-problem.svg';
 import workflowResearchIcon from '../../../img/icons/workflow-research.svg';
 import workflowSystemIcon from '../../../img/icons/workflow-system.svg';
@@ -34,32 +33,13 @@ export function AboutPage({ site }: AboutPageProps) {
       intro={<InlineCopy copy={about.hero.lead} />}
     >
       <div className="about-page">
-        {about.hero.tags.length > 0 && (
-          <div className="prototype-hero-meta">
-            {about.hero.tags.map((tag) => <span key={tag} className={tag === about.hero.accentTag ? 'prototype-tag is-accent' : 'prototype-tag'}>{tag}</span>)}
-          </div>
-        )}
-
-        <section className="content-section prototype-section about-section about-section--intro">
-          <SectionHeading index="01" title={about.story.heading} text={about.story.intro} />
-          <div className="prototype-about-grid">
-            <div><h3><InlineCopy copy={about.story.lead} /></h3></div>
-            <div>
-              {about.story.paragraphs.map((paragraph, index) => <p key={`${paragraph}-${index}`}><InlineCopy copy={paragraph} /></p>)}
-              <p className="prototype-micro"><InlineCopy copy={about.story.micro} /></p>
-            </div>
-          </div>
-        </section>
-
-        <section className="content-section prototype-section about-section about-section--principles">
-          <SectionHeading index="02" title={about.principles.heading} text={about.principles.intro} />
-          <div className="principles-grid prototype-principles-grid">
-            {about.principles.items.map((principle, index) => (
-              <article key={principle.title}>
-                <span className="principle-number">0{index + 1}</span>
-                <div className="prototype-principle-icon">{principle.icon}</div>
-                <h3><InlineCopy copy={principle.title} /></h3>
-                <p><InlineCopy copy={principle.text} /></p>
+        <section className="content-section prototype-section about-section about-section--timeline">
+          <SectionHeading index="01" title={about.timeline.heading} text={about.timeline.intro} />
+          <div className="prototype-timeline timeline-enhanced">
+            {about.timeline.items.map((item, index) => (
+              <article className="prototype-timeline-item timeline-item-enhanced" key={item.date}>
+                <div className="timeline-thumb"><img src={getIndexedAsset(timelineImages, index)} alt="" loading="lazy" /></div>
+                <div className="timeline-copy"><span className="prototype-date"><InlineCopy copy={item.date} /></span><h3><InlineCopy copy={item.title} /></h3><p><InlineCopy copy={item.text} /></p></div>
               </article>
             ))}
           </div>
@@ -98,18 +78,6 @@ export function AboutPage({ site }: AboutPageProps) {
           </div>
         </section>
 
-        <section className="content-section prototype-section about-section about-section--timeline">
-          <SectionHeading index="04" title={about.timeline.heading} text={about.timeline.intro} />
-          <div className="prototype-timeline timeline-enhanced">
-            {about.timeline.items.map((item, index) => (
-              <article className="prototype-timeline-item timeline-item-enhanced" key={item.date}>
-                <div className="timeline-thumb"><img src={getIndexedAsset(timelineImages, index)} alt="" loading="lazy" /></div>
-                <div className="timeline-copy"><span className="prototype-date"><InlineCopy copy={item.date} /></span><h3><InlineCopy copy={item.title} /></h3><p><InlineCopy copy={item.text} /></p></div>
-              </article>
-            ))}
-          </div>
-        </section>
-
         <Statement content={about.statement} />
         <FooterCta site={site} content={about.cta} />
       </div>
@@ -127,7 +95,6 @@ const workflowIcons = [
   workflowSystemIcon,
   workflowImplementationIcon,
   workflowFeedbackIcon,
-  workflowIterationIcon,
 ] as const;
 
 const timelineImages = [

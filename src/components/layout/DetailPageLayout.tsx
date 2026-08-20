@@ -28,7 +28,7 @@ export function DetailPageLayout({ site, page, eyebrow, title, intro, showHero =
   const visual = getVisualMeta(page, site.locale);
 
   return (
-    <div className="detail-page" style={{ '--page-accent': item.accent } as React.CSSProperties}>
+    <div className={`detail-page detail-page--${page}`} style={{ '--page-accent': item.accent } as React.CSSProperties}>
       <aside className="visual-panel" data-page={page} aria-label={site.messages.common.artwork(item.label)}>
         <div className="visual-panel__grid" aria-hidden="true" />
         {visual.image ? <img src={visual.image} alt="" width="768" height="768" /> : <BlogVisual />}

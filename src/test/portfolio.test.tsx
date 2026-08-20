@@ -81,7 +81,12 @@ describe('v7 detail visuals', () => {
 
     expect(container.querySelector('.visual-panel[data-page="about"]')).toBeInTheDocument();
     expect(container.querySelector('.ai-workflow')).toBeInTheDocument();
-    expect(container.querySelectorAll('.ai-orb img')).toHaveLength(6);
+    expect(container.querySelectorAll('.ai-orb img')).toHaveLength(5);
+    expect(container.querySelector('.prototype-hero-meta')).toBeNull();
+    expect(Array.from(container.querySelectorAll('.about-page > .about-section .section-heading h2')).map((heading) => heading.textContent?.trim())).toEqual([
+      'Droga do software',
+      'Workflow w praktyce',
+    ]);
     expect(container.querySelector('.process-visual img')).toBeInTheDocument();
     expect(container.querySelectorAll('.timeline-thumb img')).toHaveLength(4);
   });
@@ -117,6 +122,7 @@ describe('v7 detail visuals', () => {
     const { container } = renderPage(<SkillsPage site={polishSite} />);
 
     expect(screen.getByRole('heading', { name: 'Technologie, z którymi pracuję' })).toBeInTheDocument();
+    expect(container.querySelector('.content-section .section-heading h2')).toHaveTextContent('Technologie, z którymi pracuję');
     expect(stack.bands.map((band) => band.title)).toEqual([
       'Frontend',
       'UI Systems',

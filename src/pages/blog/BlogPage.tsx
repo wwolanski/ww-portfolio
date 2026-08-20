@@ -6,7 +6,6 @@ import '../../components/ui/TagChip.css';
 import { ContentDocumentView } from '../../components/content/ContentDocumentView';
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { InlineCopy } from '../../components/ui/InlineCopy';
-import { SectionHeading } from '../../components/ui/SectionHeading';
 import { getBlogArticles, type BlogArticle } from '../../content/mdx/blogIndex';
 import type { SiteContent } from '../../content/siteContent';
 
@@ -87,7 +86,6 @@ export function BlogPage({ site }: BlogPageProps) {
       ) : (
         <BlogIndex
           site={site}
-          content={content}
           tagFilters={tagFilters}
           activeTag={activeTag}
           visibleArticles={visibleArticles}
@@ -114,7 +112,6 @@ function BlogIndexState({ message, isError }: BlogIndexStateProps) {
 
 type BlogIndexProps = {
   readonly site: SiteContent;
-  readonly content: SiteContent['portfolio']['blog'];
   readonly tagFilters: readonly TagFilter[];
   readonly activeTag: string | null;
   readonly visibleArticles: readonly BlogArticle[];
@@ -124,7 +121,6 @@ type BlogIndexProps = {
 
 function BlogIndex({
   site,
-  content,
   tagFilters,
   activeTag,
   visibleArticles,
@@ -133,26 +129,25 @@ function BlogIndex({
 }: BlogIndexProps) {
   return (
     <>
-      <section className="content-section blog-section">
-        <SectionHeading index="01" title={content.sectionHeading} text={content.sectionIntro} />
-        <div className="blog-filter-row" role="group" aria-label={site.messages.blog.filterArticles}>
-          {tagFilters.map((filter) => {
-            const isActive = activeTag === filter.tag;
-            const label = filter.tag ?? site.messages.blog.all;
+      <div className="blog-filter-row blog-filter-row--hero" role="group" aria-label={site.messages.blog.filterArticles}>
+        {tagFilters.map((filter) => {
+          const isActive = activeTag === filter.tag;
+          const label = filter.tag ?? site.messages.blog.all;
 
-            return (
-              <button
-                key={filter.tag ?? 'all'}
-                type="button"
-                className={`tag-chip tag-chip--interactive${isActive ? ' tag-chip--active' : ''}`}
-                aria-pressed={isActive}
-                onClick={() => onSelectTag(filter.tag)}
-              >
-                {label} ({filter.count})
-              </button>
-            );
-          })}
-        </div>
+          return (
+            <button
+              key={filter.tag ?? 'all'}
+              type="button"
+              className={`tag-chip tag-chip--interactive${isActive ? ' tag-chip--active' : ''}`}
+              aria-pressed={isActive}
+              onClick={() => onSelectTag(filter.tag)}
+            >
+              {label} ({filter.count})
+            </button>
+          );
+        })}
+      </div>
+      <section className="content-section blog-section">
         <div className="blog-article-list" aria-live="polite">
           {visibleArticles.map((article, index) => (
             <article key={article.slug}>

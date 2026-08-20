@@ -8,12 +8,6 @@ export type HeroContent = {
   readonly accentTag?: string;
 };
 
-export type Principle = {
-  readonly icon: string;
-  readonly title: string;
-  readonly text: string;
-};
-
 export type WorkflowStep = {
   readonly index: string;
   readonly title: string;
@@ -61,18 +55,6 @@ export type HomeContent = {
 
 export type AboutContent = {
   readonly hero: HeroContent;
-  readonly story: {
-    readonly heading: string;
-    readonly intro: string;
-    readonly lead: string;
-    readonly paragraphs: readonly string[];
-    readonly micro: string;
-  };
-  readonly principles: {
-    readonly heading: string;
-    readonly intro: string;
-    readonly items: readonly Principle[];
-  };
   readonly workflow: {
     readonly heading: string;
     readonly intro: string;
@@ -98,11 +80,8 @@ export type ProjectDetail = {
   readonly text: string;
 };
 
-export type ProjectContentAction = 'description' | 'case-study';
-
 export type Project = {
   readonly slug: string;
-  readonly contentAction: ProjectContentAction;
   readonly caseStudySlug?: string;
   readonly index: string;
   readonly category: string;
@@ -188,8 +167,6 @@ export type BlogContent = {
   readonly eyebrow: string;
   readonly title: readonly string[];
   readonly intro: string;
-  readonly sectionHeading: string;
-  readonly sectionIntro: string;
 };
 
 export type PortfolioContent = {

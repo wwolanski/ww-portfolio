@@ -2,25 +2,24 @@
   --about-section-padding: clamp(3.75rem, 6vw, 6rem);
 }
 
-.about-page > .prototype-hero-meta {
-  margin-bottom: 0;
+.detail-page--about {
+  --about-hero-gap: clamp(4rem, 8vw, 7rem);
+}
+
+.detail-page--about .page-hero {
+  padding-bottom: var(--about-hero-gap);
 }
 
 .about-page > .about-section {
   padding-block: var(--about-section-padding);
 }
 
-.about-page > .about-section--intro {
-  padding-top: clamp(3.5rem, 5vw, 5.5rem);
+.about-page > .about-section--timeline {
+  padding-top: var(--about-hero-gap);
 }
 
 .about-page > .about-section .section-heading {
   margin-bottom: clamp(2rem, 3vw, 3rem);
-}
-
-.about-page > .about-section--intro .prototype-about-grid {
-  align-items: start;
-  gap: clamp(2rem, 4vw, 3.5rem);
 }
 
 .about-page > .about-section--timeline .prototype-timeline.timeline-enhanced {
@@ -50,16 +49,8 @@
     --about-section-padding: 3.75rem;
   }
 
-  .about-page > .about-section--intro {
-    padding-top: 3rem;
-  }
-
   .about-page > .about-section .section-heading {
     margin-bottom: 2.25rem;
-  }
-
-  .about-page > .about-section--intro .prototype-about-grid {
-    gap: 2rem;
   }
 
   .about-page > .about-section--timeline .prototype-timeline.timeline-enhanced {

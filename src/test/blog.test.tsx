@@ -61,6 +61,7 @@ describe('MDX blog', () => {
 
     expect(await screen.findByRole('button', { name: `Wszystkie (${articles.length})` })).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Najnowsze teksty' })).not.toBeInTheDocument();
 
     await user.click(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` }));
 
@@ -96,7 +97,8 @@ describe('MDX blog', () => {
     await user.click(screen.getByRole('button', { name: 'Powrót' }));
 
     expect(screen.getByTestId('location')).toHaveTextContent('/pl/blog');
-    expect(await screen.findByRole('heading', { name: 'Najnowsze teksty' })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: `Wszystkie (${(await getBlogArticles()).length})` })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Najnowsze teksty' })).not.toBeInTheDocument();
   });
 
   it('keeps the UI localized while loading Polish source content on the English route', async () => {

@@ -77,14 +77,6 @@ describe('migrated content', () => {
         'Mieszkam w Gdańsku, skąd pracuję AI-native. Buduję aplikacje, narzędzia i eksperymenty. Technologia, zarówno software, jak i hardware, była ze mną dużo wcześniej niż development. Do świata dev nie trafiłem jednak najkrótszą drogą.',
       ],
       [
-        content.about.story.paragraphs[0]!,
-        'Zaczynam od użytkownika i obecnego workflow. Sprawdzam istniejące rozwiązania, wymagania i ograniczenia, a następnie wybieram reprezentację problemu oraz technologię.',
-      ],
-      [
-        content.about.story.paragraphs[1]!,
-        'Pracuję szeroko: frontend, backend, API, dane, automatyzacja, AI i architektura aplikacji. Łączę te obszary w jeden workflow i w razie potrzeby szybko poznaję brakującą domenę.',
-      ],
-      [
         content.projects.hero.lead,
         'Projekty są na różnych etapach: od narzędzia shipped i publicznej bety po systemy rozwijane, prototyp oraz zakończony eksperyment. Każdy z nich pokazuje inny fragment procesu — od rozpoznania problemu po weryfikację założeń.',
       ],
