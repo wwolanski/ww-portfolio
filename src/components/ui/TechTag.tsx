@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 
-import { getTechTagDefinition, type TechTagIcon } from '../../content/techTags';
+import { getTechTagIcon, type TechTagIcon } from '../../content/techTags';
 
 import './TechTag.css';
 
@@ -11,11 +11,8 @@ type TechTagProps = {
   readonly variant?: TechTagVariant;
 };
 
-const fallbackIcon: TechTagIcon = { kind: 'iconify', name: 'lucide:code-2' };
-
 export function TechTag({ name, variant = 'badge' }: TechTagProps) {
-  const definition = getTechTagDefinition(name);
-  const tagIcon = definition?.icon ?? fallbackIcon;
+  const tagIcon = getTechTagIcon(name);
 
   return (
     <span
@@ -26,17 +23,21 @@ export function TechTag({ name, variant = 'badge' }: TechTagProps) {
       aria-label={variant === 'icon' ? name : undefined}
     >
       <span className="tech-tag__icon" aria-hidden="true">
-        <TechTagIcon icon={tagIcon} />
+        <TechTagIconView icon={tagIcon} />
       </span>
       {variant === 'badge' && <span className="tech-tag__label">{name}</span>}
     </span>
   );
 }
 
-function TechTagIcon({ icon }: { readonly icon: TechTagIcon }) {
+function TechTagIconView({ icon }: { readonly icon: TechTagIcon }) {
   if (icon.kind === 'image') {
     return <img src={icon.src} alt="" decoding="async" />;
   }
 
-  return <Icon icon={icon.name} width="1em" height="1em" aria-hidden="true" />;
+  if (icon.color === undefined) {
+    return <Icon icon={icon.name} width="1em" height="1em" aria-hidden="true" />;
+  }
+
+  return <Icon icon={icon.name} color={icon.color} width="1em" height="1em" aria-hidden="true" />;
 }

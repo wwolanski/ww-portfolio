@@ -99,13 +99,61 @@ describe('v7 detail visuals', () => {
     expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .pv-card')).toHaveLength(3);
   });
 
-  it('registers and renders every technology in the practical stack', () => {
-    const stackTools = polishSite.portfolio.skills.stack.bands.flatMap((band) => band.tools);
+  it('registers and renders every technology in the technologies list', () => {
+    const stack = polishSite.portfolio.skills.stack;
+    const stackTools = stack.bands.flatMap((band) => band.tools);
     const { container } = renderPage(<SkillsPage site={polishSite} />);
 
+    expect(screen.getByRole('heading', { name: 'Technologie, z którymi pracuję' })).toBeInTheDocument();
+    expect(stack.bands.map((band) => band.title)).toEqual([
+      'Frontend',
+      'UI Systems',
+      'Backend & APIs',
+      'Data & Search',
+      'AI & Coding Agents',
+      'MCP',
+      'Agentic Tooling',
+      'Quality & Delivery',
+    ]);
+    expect(stack.bands[7]?.tools).toEqual([
+      'CI/CD',
+      'Git',
+      'GitHub',
+      'Docker',
+      'Vitest',
+      'pytest',
+      'Playwright',
+      'ESLint',
+      'Knip',
+    ]);
+    expect(stack.bands[0]?.tools).not.toContain('Zustand');
+    expect(stack.bands[4]?.tools).not.toContain('Claude');
+    expect(stack.bands[6]?.tools).toEqual([
+      'CodeGraph',
+      'RTK',
+      'Google Stitch',
+      'Mermaid',
+      'Impeccable',
+    ]);
     expect(stackTools.every((tool) => getTechTagDefinition(tool))).toBe(true);
     expect(container.querySelectorAll('.tech-tag--badge')).toHaveLength(stackTools.length);
-    expect(container.querySelectorAll('[data-tech-tag="Supabase — obecnie poznaję"]')).toHaveLength(1);
+    expect(container.querySelectorAll('[data-tech-tag="CodeGraph (local)"]')).toHaveLength(1);
+    expect(container.querySelectorAll('[data-tech-tag="RTK"]')).toHaveLength(1);
+    expect(container.querySelectorAll('[data-tech-tag="CI/CD"]')).toHaveLength(1);
+    expect(container.querySelectorAll('[data-tech-tag="Git"]')).toHaveLength(1);
+    expect(container.querySelectorAll('[data-tech-tag="GitHub"]')).toHaveLength(1);
+    expect(container.querySelectorAll('[data-tech-tag="Claude"]')).toHaveLength(0);
+    expect(container.querySelectorAll('[data-tech-tag="Zustand"]')).toHaveLength(0);
+    expect(getTechTagDefinition('Git')?.icon).toEqual({ kind: 'iconify', name: 'skill-icons:git' });
+    expect(getTechTagDefinition('GitHub')?.icon).toEqual({ kind: 'iconify', name: 'simple-icons:github' });
+    expect(getTechTagDefinition('Mermaid')?.icon).toEqual({
+      kind: 'iconify',
+      name: 'simple-icons:mermaid',
+      color: '#ff3670',
+    });
+    expect(getTechTagDefinition('Claude')).toBeDefined();
+    expect(getTechTagDefinition('Zustand')).toBeDefined();
+    expect(getTechTagDefinition('toString')).toBeUndefined();
   });
 
   it('supports badge and icon-only tech tag variants', () => {

@@ -1,69 +1,111 @@
+import codeGraphIcon from '../assets/tech/codegraph.png';
+import context7Icon from '../assets/tech/context7.svg';
+import googleStitchIcon from '../assets/tech/google-stitch.png';
+import impeccableIcon from '../assets/tech/impeccable.png';
+import rtkIcon from '../assets/tech/rtk.png';
 import baseUiIcon from '../assets/tech/base-ui.png';
 import radixUiIcon from '../assets/tech/radix-ui.png';
 import shadcnUiIcon from '../assets/tech/shadcn-ui.png';
 import tanstackQueryIcon from '../assets/tech/tanstack-query.png';
-import zodIcon from '../assets/tech/zod.svg';
 
 export type TechTagIcon =
-  | { readonly kind: 'iconify'; readonly name: string }
+  | { readonly kind: 'iconify'; readonly name: string; readonly color?: string }
   | { readonly kind: 'image'; readonly src: string };
 
 export type TechTagDefinition = {
   readonly icon: TechTagIcon;
 };
 
-function icon(name: string): TechTagIcon {
-  return { kind: 'iconify', name };
+function icon(name: string, color?: string): TechTagIcon {
+  return color === undefined ? { kind: 'iconify', name } : { kind: 'iconify', name, color };
 }
 
 function image(src: string): TechTagIcon {
   return { kind: 'image', src };
 }
 
+// Used explicitly for technologies whose final brand asset will be added later.
+const temporaryIcon = icon('lucide:code-2');
+
 /**
- * The display labels in skills.json are the registry keys on purpose. This
- * keeps the content JSON unchanged while making every stack item icon-aware.
+ * Every label used by the practical technology list has one entry here.
+ * Iconify handles standard icon sets; local images are reserved for custom
+ * assets and the few icons that already exist in the portfolio materials.
  */
-export const TECH_TAG_REGISTRY: Readonly<Record<string, TechTagDefinition>> = {
+export const TECH_TAG_REGISTRY = {
+  // Frontend
   React: { icon: icon('skill-icons:react-dark') },
   TypeScript: { icon: icon('skill-icons:typescript') },
-  JavaScript: { icon: icon('skill-icons:javascript') },
-  Vite: { icon: icon('skill-icons:vite-dark') },
   'TanStack Query': { icon: image(tanstackQueryIcon) },
+  XState: { icon: icon('simple-icons:xstate') },
   Zustand: { icon: icon('devicon:zustand') },
-  Zod: { icon: image(zodIcon) },
+  'React Flow': { icon: temporaryIcon },
+  PixiJS: { icon: icon('devicon:pixijs') },
+  IndexedDB: { icon: temporaryIcon },
+
+  // UI Systems
+  'Tailwind CSS': { icon: icon('skill-icons:tailwindcss-dark') },
+  'shadcn/ui': { icon: image(shadcnUiIcon) },
   'Radix UI': { icon: image(radixUiIcon) },
   'Base UI': { icon: image(baseUiIcon) },
-  'shadcn/ui': { icon: image(shadcnUiIcon) },
-  'React Flow': { icon: icon('lucide:git-branch') },
+
+  // Backend & APIs
   Python: { icon: icon('skill-icons:python-dark') },
   FastAPI: { icon: icon('devicon:fastapi') },
-  Uvicorn: { icon: icon('lucide:server') },
-  SQLAlchemy: { icon: icon('lucide:database') },
+  Pydantic: { icon: icon('simple-icons:pydantic') },
+  SQLAlchemy: { icon: icon('simple-icons:sqlalchemy') },
+  Celery: { icon: icon('simple-icons:celery') },
+  OpenAPI: { icon: icon('devicon:openapi') },
+
+  // Data & Search
   PostgreSQL: { icon: icon('skill-icons:postgresql-dark') },
   Redis: { icon: icon('skill-icons:redis-dark') },
-  Celery: { icon: icon('simple-icons:celery') },
-  Alembic: { icon: icon('lucide:git-branch') },
-  'Supabase': { icon: icon('devicon:supabase') },
+  pgvector: { icon: temporaryIcon },
+  Qdrant: { icon: icon('simple-icons:qdrant') },
+
+  // AI & Coding Agents
   Cursor: { icon: icon('simple-icons:cursor') },
-  'GitHub Copilot': { icon: icon('simple-icons:githubcopilot') },
   Codex: { icon: icon('simple-icons:openai') },
   Claude: { icon: icon('simple-icons:anthropic') },
-  Kilocode: { icon: icon('lucide:code-2') },
-  OpenRouter: { icon: icon('lucide:route') },
-  MCP: { icon: icon('lucide:plug') },
-  Context7: { icon: icon('lucide:book-open') },
-  'code graphs': { icon: icon('lucide:network') },
+  'OpenAI API': { icon: icon('simple-icons:openai') },
+  'Gemini API': { icon: icon('simple-icons:googlegemini') },
+  OpenRouter: { icon: icon('simple-icons:openrouter') },
+  'LM Studio': { icon: icon('simple-icons:lmstudio') },
+  ComfyUI: { icon: temporaryIcon },
+
+  // MCP
+  Context7: { icon: image(context7Icon) },
+  'CodeGraph (local)': { icon: image(codeGraphIcon) },
+
+  // Agentic Tooling
+  CodeGraph: { icon: image(codeGraphIcon) },
+  RTK: { icon: image(rtkIcon) },
+  'Google Stitch': { icon: image(googleStitchIcon) },
+  Mermaid: { icon: icon('simple-icons:mermaid', '#ff3670') },
+  Impeccable: { icon: image(impeccableIcon) },
+
+  // Quality & Delivery
+  'CI/CD': { icon: icon('lucide:workflow') },
+  Git: { icon: icon('skill-icons:git') },
+  GitHub: { icon: icon('simple-icons:github') },
+  Docker: { icon: icon('skill-icons:docker') },
   Vitest: { icon: icon('simple-icons:vitest') },
   pytest: { icon: icon('devicon:pytest') },
   Playwright: { icon: icon('simple-icons:playwright') },
-  Git: { icon: icon('skill-icons:git') },
-  GitHub: { icon: icon('simple-icons:github') },
-  'CI/CD': { icon: icon('lucide:workflow') },
-  'Docker — lokalnie': { icon: icon('skill-icons:docker') },
-  Ruff: { icon: icon('lucide:check-check') },
-};
+  ESLint: { icon: icon('devicon:eslint') },
+  Knip: { icon: icon('simple-icons:knip') },
+} satisfies Readonly<Record<string, TechTagDefinition>>;
+
+export type TechTagName = keyof typeof TECH_TAG_REGISTRY;
 
 export function getTechTagDefinition(name: string): TechTagDefinition | undefined {
-  return TECH_TAG_REGISTRY[name];
+  if (!Object.hasOwn(TECH_TAG_REGISTRY, name)) {
+    return undefined;
+  }
+
+  return TECH_TAG_REGISTRY[name as TechTagName];
+}
+
+export function getTechTagIcon(name: string): TechTagIcon {
+  return getTechTagDefinition(name)?.icon ?? temporaryIcon;
 }
