@@ -22,6 +22,28 @@ describe('InlineCopy', () => {
     expect(container.textContent).toBe('bold italic');
   });
 
+  it('renders Markdown links with nested formatting and a decorative arrow', () => {
+    const { container } = render(<InlineCopy copy="**[RepoAtlas](/pl/projects?caseStudy=repoatlas)**" />);
+    const link = container.querySelector<HTMLAnchorElement>('a.inline-copy__link');
+
+    expect(link).toHaveAttribute('href', '/pl/projects?caseStudy=repoatlas');
+    expect(link).toHaveAccessibleName('RepoAtlas');
+    expect(link?.parentElement).toHaveClass('inline-copy__strong');
+    expect(link?.querySelector('.content-link__icon')).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelectorAll('.content-link__icon')).toHaveLength(1);
+    expect(container.textContent).toBe('RepoAtlas');
+  });
+
+  it('keeps links inside code, malformed links, and unsafe links as text', () => {
+    const copy = '`[code](/path)` [open](/path [unsafe](javascript:alert(1))';
+    const { container } = render(<InlineCopy copy={copy} />);
+
+    expect(container.querySelector('code')).toHaveTextContent('[code](/path)');
+    expect(container.querySelector('a')).not.toBeInTheDocument();
+    expect(container.querySelectorAll('.content-link__icon')).toHaveLength(0);
+    expect(container.textContent).toBe('[code](/path) [open](/path [unsafe](javascript:alert(1))');
+  });
+
   it('renders every newline as a line break, including stacked newlines', () => {
     const { container } = render(<InlineCopy copy={'first\n\nthird'} />);
 
@@ -78,7 +100,7 @@ describe('migrated content', () => {
       ],
       [
         content.projects.hero.lead,
-        'Projekty są na różnych etapach: od narzędzia shipped i publicznej bety po systemy rozwijane, prototyp oraz zakończony eksperyment. Każdy z nich pokazuje inny fragment procesu — od rozpoznania problemu po weryfikację założeń.',
+        'Są tu rzeczy skończone, rozwijane, zatrzymane i takie, które po prostu nie zadziałały. Razem dają obraz tego, czym do tej pory się zajmowałem.',
       ],
       [
         content.skills.hero.lead,

@@ -313,7 +313,9 @@ describe('project content system', () => {
     expect(screen.getAllByRole('checkbox')).toHaveLength(3);
     expect(screen.getAllByRole('checkbox')[0]).toBeChecked();
     expect(screen.getByText('tekst usunięty')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'https://example.com' })).toHaveAttribute('href', 'https://example.com');
+    const externalLink = screen.getByRole('link', { name: 'https://example.com' });
+    expect(externalLink).toHaveAttribute('href', 'https://example.com');
+    expect(externalLink.querySelector('.content-link__icon')).toHaveAttribute('aria-hidden', 'true');
     expect(screen.getByAltText('Podgląd testowego obrazu Kukla2D')).toHaveAttribute('src', '/img/main.png');
 
     for (const alertType of ['Note', 'Tip', 'Important', 'Warning', 'Caution']) {

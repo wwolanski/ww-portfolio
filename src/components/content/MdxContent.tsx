@@ -7,6 +7,7 @@ import { ImageGallery } from './ImageGallery';
 import { ContentAlert } from './ContentAlert';
 import { contentAlertTypes, type ContentAlertType } from './contentAlertTypes';
 import { MdxTableOfContents } from './MdxTableOfContents';
+import { ContentLink } from '../ui/ContentLink';
 import type { ContentAssetScope, ContentDocument } from '../../content/mdx/loader';
 import type { Messages } from '../../content/messages';
 
@@ -39,12 +40,6 @@ function ContentBlockquote({ 'data-alert-type': alertType, children, ...props }:
 
 function ContentImage({ alt = '', ...props }: ComponentProps<'img'>) {
   return <img {...props} alt={alt} loading="lazy" decoding="async" />;
-}
-
-function ContentLink({ target, rel, ...props }: ComponentProps<'a'>) {
-  const safeRel = target === '_blank' ? rel ?? 'noreferrer' : rel;
-
-  return <a {...props} target={target} rel={safeRel} />;
 }
 
 function ContentPre({ className, ...props }: ComponentProps<'pre'>) {

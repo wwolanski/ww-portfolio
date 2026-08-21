@@ -68,7 +68,7 @@ describe('localized detail pages', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: /projekty,które cośsprawdzają/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /projekty\s*w\s*praktyce\./i })).toBeInTheDocument();
     await user.click(screen.getByRole('link', { name: /zmień język na angielski/i }));
 
     expect(screen.getByRole('link', { name: /switch language to polish/i })).toHaveAttribute('href', '/pl/projects');
@@ -101,6 +101,21 @@ describe('v7 detail visuals', () => {
 
     expect(workflowIntro.querySelector('strong')).toHaveTextContent('Nie wymyślam koła na nowo, jeśli nie muszę.');
     expect(workflowIntro.textContent).not.toContain('**');
+  });
+
+  it('renders RepoAtlas links from JSON content with one decorative arrow', () => {
+    const about = renderPage(<AboutPage site={polishSite} />);
+    const aboutLink = screen.getByRole('link', { name: 'RepoAtlas' });
+
+    expect(aboutLink).toHaveAttribute('href', '/pl/projects?caseStudy=repoatlas');
+    expect(aboutLink.querySelectorAll('.content-link__icon')).toHaveLength(1);
+    about.unmount();
+
+    renderPage(<SkillsPage site={polishSite} />);
+    const skillsLink = screen.getByRole('link', { name: 'RepoAtlas' });
+
+    expect(skillsLink).toHaveAttribute('href', '/pl/projects?caseStudy=repoatlas');
+    expect(skillsLink.querySelectorAll('.content-link__icon')).toHaveLength(1);
   });
 
   it('reveals the complete example process on demand', async () => {

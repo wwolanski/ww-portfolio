@@ -1,5 +1,7 @@
 import { createElement, type ReactNode } from 'react';
 
+import { ContentLink } from './ContentLink';
+
 type ParseResult = {
   readonly nodes: ReactNode[];
   readonly index: number;
@@ -8,7 +10,14 @@ type ParseResult = {
 
 type Marker = '***' | '**' | '*';
 
+type InlineLink = {
+  readonly href: string;
+  readonly label: string;
+  readonly end: number;
+};
+
 const inlineCodeClassName = 'inline-copy__code';
+const inlineLinkClassName = 'inline-copy__link';
 const inlineStrongClassName = 'inline-copy__strong';
 
 export function renderInlineMarkdown(value: string): readonly ReactNode[] {
@@ -79,6 +88,23 @@ function renderSequence(source: string, start: number, closingMarker?: Marker): 
       text += character;
       index += 1;
       continue;
+    }
+
+    if (character === '[') {
+      const link = parseInlineLink(source, index);
+
+      if (link) {
+        flushText();
+        nodes.push(
+          createElement(
+            ContentLink,
+            { key: `link-${index}`, href: link.href, className: inlineLinkClassName },
+            renderSequence(link.label, 0).nodes,
+          ),
+        );
+        index = link.end;
+        continue;
+      }
     }
 
     const marker = getMarker(source, index);
@@ -158,8 +184,115 @@ function findClosingCode(source: string, start: number): number {
   return -1;
 }
 
-function isEscapableMarker(value: string | undefined): value is '*' | '`' | '\\' {
-  return value === '*' || value === '`' || value === '\\';
+function parseInlineLink(source: string, start: number): InlineLink | null {
+  const labelEnd = findClosingLinkLabel(source, start + 1);
+
+  if (labelEnd <= start + 1 || source[labelEnd + 1] !== '(') {
+    return null;
+  }
+
+  const hrefStart = labelEnd + 2;
+  const hrefEnd = findClosingLinkDestination(source, hrefStart);
+
+  if (hrefEnd < 0) {
+    return null;
+  }
+
+  const href = source.slice(hrefStart, hrefEnd).trim();
+
+  if (!isSafeInlineHref(href)) {
+    return null;
+  }
+
+  return {
+    href,
+    label: source.slice(start + 1, labelEnd),
+    end: hrefEnd + 1,
+  };
+}
+
+function findClosingLinkLabel(source: string, start: number): number {
+  let index = start;
+
+  while (index < source.length) {
+    if (source[index] === '\\' && source[index + 1] === ']') {
+      index += 2;
+      continue;
+    }
+
+    if (source[index] === ']') {
+      return index;
+    }
+
+    index += 1;
+  }
+
+  return -1;
+}
+
+function findClosingLinkDestination(source: string, start: number): number {
+  let depth = 0;
+  let index = start;
+
+  while (index < source.length) {
+    if (source[index] === '\\' && source[index + 1] !== undefined) {
+      index += 2;
+      continue;
+    }
+
+    if (source[index] === '(') {
+      depth += 1;
+      index += 1;
+      continue;
+    }
+
+    if (source[index] === ')') {
+      if (depth === 0) {
+        return index;
+      }
+
+      depth -= 1;
+    }
+
+    index += 1;
+  }
+
+  return -1;
+}
+
+function isSafeInlineHref(value: string): boolean {
+  if (!value || hasControlCharacter(value)) {
+    return false;
+  }
+
+  try {
+    const protocol = new URL(value, 'https://inline-copy.invalid').protocol;
+
+    return protocol === 'http:'
+      || protocol === 'https:'
+      || protocol === 'mailto:'
+      || protocol === 'tel:';
+  } catch {
+    return false;
+  }
+}
+
+function hasControlCharacter(value: string): boolean {
+  return Array.from(value).some((character) => {
+    const codePoint = character.codePointAt(0);
+
+    return codePoint !== undefined && (codePoint <= 0x1f || codePoint === 0x7f);
+  });
+}
+
+function isEscapableMarker(value: string | undefined): value is '*' | '`' | '\\' | '[' | ']' | '(' | ')' {
+  return value === '*'
+    || value === '`'
+    || value === '\\'
+    || value === '['
+    || value === ']'
+    || value === '('
+    || value === ')';
 }
 
 function normalizeLineEndings(value: string): string {
