@@ -1557,6 +1557,10 @@ button {
   border-bottom: 1px solid var(--line);
 }
 
+.detail-page--projects .project-list .project-row:first-child {
+  padding-top: 0;
+}
+
 .project-list .project-row:last-child {
   border-bottom: 0;
 }

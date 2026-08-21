@@ -154,8 +154,6 @@ export type SolutionBoundaryContent = {
   readonly practiceHeading: string;
   readonly examples: readonly { readonly title: string; readonly label: string }[];
   readonly musicNote: string;
-  readonly quote: string;
-  readonly quoteAccent: string;
 };
 
 export type SkillsContent = {

@@ -72,7 +72,6 @@ export function SkillsPage({ site }: SkillsPageProps) {
           </div>
         </section>
 
-        <BoundaryQuote content={content} />
       </section>
 
       <section className="content-section prototype-section">
@@ -213,16 +212,5 @@ function ConnectorArrow({ className = '' }: { readonly className?: string }) {
     <svg className={`boundary-connector-arrow ${className}`} viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <path d="M8 0v13M2.5 7.5 8 13l5.5-5.5" />
     </svg>
-  );
-}
-
-function BoundaryQuote({ content }: { readonly content: SolutionBoundaryContent }) {
-  const [before, after] = content.quote.split(content.quoteAccent);
-  return (
-    <blockquote className="solution-boundary__quote">
-      <span aria-hidden="true">“</span>
-      <p>{before}<strong>{content.quoteAccent}</strong>{after}</p>
-      <i aria-hidden="true" />
-    </blockquote>
   );
 }

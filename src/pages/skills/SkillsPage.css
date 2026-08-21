@@ -8,7 +8,8 @@
   --boundary-amber: var(--color-amber-accent);
   --boundary-purple: #bb74ff;
   --boundary-blue: #6ea3ff;
-  padding: clamp(5rem, 9vw, 8.5rem) 0 clamp(5rem, 8vw, 8rem);
+  padding: clamp(5rem, 9vw, 8.5rem) 0 clamp(4rem, 8vw, 7rem);
+  border-bottom: 1px solid var(--line);
 }
 
 .solution-boundary__hero {
@@ -289,12 +290,6 @@
 .solution-boundary__music-note svg { width: 2.25rem; height: 2.25rem; stroke-width: 1.5; }
 .solution-boundary__music-note p { margin: 0; color: var(--muted); font-size: .7rem; line-height: 1.65; }
 
-.solution-boundary__quote { position: relative; display: grid; grid-template-columns: 2.3rem 1fr; gap: 1.2rem; align-items: center; margin: clamp(3.5rem, 6vw, 5rem) 0 0; padding: 1.6rem 2rem; overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: linear-gradient(90deg, color-mix(in srgb, var(--page-accent) 3%, transparent), transparent 55%); }
-.solution-boundary__quote > span { color: var(--page-accent); font-family: Georgia, serif; font-size: 3.8rem; font-weight: 700; line-height: .6; }
-.solution-boundary__quote p { max-width: 48rem; margin: 0; color: var(--muted); font-size: .95rem; line-height: 1.65; }
-.solution-boundary__quote strong { color: var(--page-accent); }
-.solution-boundary__quote i { position: absolute; top: 1.5rem; right: 1.5rem; width: 3.2rem; height: 3.2rem; opacity: .55; background-image: radial-gradient(var(--page-accent) 1px, transparent 1px); background-size: 8px 8px; }
-
 @media (max-width: 1250px) {
   .solution-boundary__hero { grid-template-columns: 1fr; }
   .solution-boundary__intro { max-width: 42rem; }
@@ -313,7 +308,7 @@
 
 @media (max-width: 760px) {
   .detail-page--skills .detail-content > main.detail-main--document { width: min(100% - 2rem, 600px); }
-  .solution-boundary { padding-top: 4rem; }
+  .solution-boundary { padding-block: 4rem; }
   .solution-boundary__intro h1 { font-size: clamp(3.7rem, 17vw, 5.8rem); }
   .boundary-decision { padding: 1.2rem; }
   .boundary-decision__current { width: min(82%, 15rem); }
@@ -382,6 +377,4 @@
   .solution-boundary__principle { min-height: auto; }
   .solution-boundary__practice-grid { grid-template-columns: 1fr; }
   .solution-boundary__music-note { grid-column: auto; }
-  .solution-boundary__quote { grid-template-columns: 1.7rem 1fr; padding: 1.3rem 1rem; }
-  .solution-boundary__quote i { display: none; }
 }
