@@ -27,7 +27,7 @@ export function SkillsPage({ site }: SkillsPageProps) {
       <section className="solution-boundary" aria-labelledby="solution-boundary-title">
         <div className="solution-boundary__hero">
           <header className="solution-boundary__intro">
-            <p className="solution-boundary__eyebrow">{content.eyebrow}</p>
+            <p className="page-eyebrow">{content.eyebrow}</p>
             <h1 id="solution-boundary-title" aria-label={content.title.join(' ')}>
               {content.title.map((line) => <span key={line}>{line}{' '}</span>)}
             </h1>

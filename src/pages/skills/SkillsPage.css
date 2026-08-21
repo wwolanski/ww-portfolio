@@ -1,5 +1,5 @@
 .detail-page--skills .detail-content > main.detail-main--document {
-  width: min(100% - clamp(2rem, 5vw, 5rem), 1120px);
+  width: min(100% - clamp(3rem, 8vw, 8rem), 980px);
   margin-inline: auto;
 }
 
@@ -8,7 +8,7 @@
   --boundary-amber: var(--color-amber-accent);
   --boundary-purple: #bb74ff;
   --boundary-blue: #6ea3ff;
-  padding: clamp(4rem, 7vw, 7rem) 0 clamp(5rem, 8vw, 8rem);
+  padding: clamp(5rem, 9vw, 8.5rem) 0 clamp(5rem, 8vw, 8rem);
 }
 
 .solution-boundary__hero {
@@ -18,18 +18,10 @@
   align-items: start;
 }
 
-.solution-boundary__intro { padding-top: .25rem; }
-.solution-boundary__eyebrow {
-  margin: 0 0 2.2rem;
-  color: var(--page-accent);
-  font-size: .7rem;
-  font-weight: 800;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-}
+.solution-boundary__intro { padding-top: 0; }
 
 .solution-boundary__intro h1 {
-  margin: 0;
+  margin: 1.5rem 0 0;
   font-family: var(--font-condensed);
   font-size: clamp(3.8rem, 5.2vw, 6.2rem);
   font-weight: 400;
@@ -320,8 +312,8 @@
 }
 
 @media (max-width: 760px) {
-  .detail-page--skills .detail-content > main.detail-main--document { width: calc(100% - 2rem); }
-  .solution-boundary { padding-top: 3.5rem; }
+  .detail-page--skills .detail-content > main.detail-main--document { width: min(100% - 2rem, 600px); }
+  .solution-boundary { padding-top: 4rem; }
   .solution-boundary__intro h1 { font-size: clamp(3.7rem, 17vw, 5.8rem); }
   .boundary-decision { padding: 1.2rem; }
   .boundary-decision__current { width: min(82%, 15rem); }

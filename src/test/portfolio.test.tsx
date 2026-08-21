@@ -141,6 +141,7 @@ describe('v7 detail visuals', () => {
 
     expect(container.querySelector('.solution-boundary')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Rozpoznawanie granic rozwiązania' })).toBeInTheDocument();
+    expect(container.querySelector('.solution-boundary .page-eyebrow')).toHaveTextContent('Umiejętności · 03');
     expect(container.querySelectorAll('.solution-boundary__layer')).toHaveLength(5);
     expect(container.querySelectorAll('.solution-boundary__principle')).toHaveLength(4);
 
