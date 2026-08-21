@@ -2,7 +2,6 @@ import { MDXProvider } from '@mdx-js/react';
 import type { MDXComponents } from 'mdx/types.js';
 import { useRef, type ComponentProps, type ReactNode } from 'react';
 
-import './MdxContent.css';
 import { ImageGallery } from './ImageGallery';
 import { ContentAlert } from './ContentAlert';
 import { contentAlertTypes, type ContentAlertType } from './contentAlertTypes';

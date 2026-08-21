@@ -8,14 +8,6 @@
   line-height: 1.2;
 }
 
-/* MDX applies a more specific base rule to list items; keep document tags
-   visually identical to the chips used by the blog index and project facts. */
-.mdx-content .tag-chip {
-  color: var(--muted);
-  font-size: 0.72rem;
-  line-height: 1.2;
-}
-
 .tag-chip--interactive {
   background: transparent;
   cursor: pointer;

@@ -1,0 +1,41 @@
+@layer theme, base, components, components.primitives, components.ui, components.layout, components.content, components.pages, utilities;
+
+@import "tailwindcss";
+@import "@fontsource/anton";
+@import "@fontsource/bebas-neue";
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/600.css";
+@import "@fontsource/dm-sans/700.css";
+@import "@fontsource/montserrat/800.css";
+@import "@fontsource/roboto-condensed/400.css";
+@import "./theme.css";
+@import "./tokens.css" layer(theme);
+@import "./base.css" layer(base);
+
+@import "../components/ui/ClosingSections.css" layer(components.primitives);
+@import "../components/ui/SectionHeading.css" layer(components.primitives);
+@import "../features/theme/ThemeToggle.css" layer(components.primitives);
+@import "../components/layout/LanguageSwitcher.css" layer(components.primitives);
+
+@import "../components/ui/ContentLink.css" layer(components.ui);
+@import "../components/ui/ProjectModal.css" layer(components.ui);
+@import "../components/ui/TechTag.css" layer(components.ui);
+@import "../components/ui/InlineCopy.css" layer(components.ui);
+@import "../components/ui/ProjectBadge.css" layer(components.ui);
+@import "../components/ui/TagChip.css" layer(components.ui);
+
+@import "../components/layout/DetailPageLayout.css" layer(components.layout);
+@import "../components/layout/SiteNav.css" layer(components.layout);
+
+@import "../components/content/ContentDocumentView.css" layer(components.content);
+@import "../components/content/ImageGallery.css" layer(components.content);
+@import "../components/content/MdxContent.css" layer(components.content);
+@import "../components/content/MdxTableOfContents.css" layer(components.content);
+@import "../components/content/ContentAlert.css" layer(components.content);
+
+@import "../pages/home/HomePage.css" layer(components.pages);
+@import "../pages/projects/ProjectsPage.css" layer(components.pages);
+@import "../pages/blog/BlogPage.css" layer(components.pages);
+@import "../pages/skills/SkillsPage.css" layer(components.pages);
+@import "../pages/about/AboutPage.css" layer(components.pages);

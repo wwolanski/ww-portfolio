@@ -1,3 +1,27 @@
+.skills-tools {
+  display: grid;
+  gap: 1rem
+}
+
+.skills-tools__group {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line)
+}
+
+.skills-tools__group:last-child {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line)
+}
+
+.skills-tools__group > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem
+}
+
 .detail-page--skills .detail-content > main.detail-main--document {
   width: min(100% - clamp(3rem, 8vw, 8rem), 980px);
   margin-inline: auto;
@@ -152,6 +176,7 @@
 .boundary-branch::before { border-top: 1px dashed currentColor; }
 .boundary-branch::after {
   top: .65rem;
+  left: 50%;
   width: 1px;
   height: 2.12rem;
   background: repeating-linear-gradient(to bottom, currentColor 0 4px, transparent 4px 8px);
@@ -159,20 +184,20 @@
 }
 .boundary-branch--yes::before { right: 0; left: calc(50% + .65rem); }
 .boundary-branch--no::before { right: calc(50% + .65rem); left: 0; }
-.boundary-branch::after { left: 50%; }
 .boundary-branch__label {
   position: absolute;
   top: -1.55rem;
+  left: 50%;
   font-size: .65rem;
   font-weight: 900;
   line-height: 1;
+  transform: translateX(-50%);
   text-transform: uppercase;
 }
-
-.boundary-branch__label { left: 50%; transform: translateX(-50%); }
 .boundary-branch__status {
   position: absolute;
   top: 0;
+  left: 50%;
   z-index: 1;
   width: 1.3rem;
   height: 1.3rem;
@@ -180,8 +205,8 @@
   border: 1px solid color-mix(in srgb, currentColor 78%, transparent);
   border-radius: 50%;
   background: var(--surface);
+  transform: translate(-50%, -50%);
 }
-.boundary-branch__status { left: 50%; transform: translate(-50%, -50%); }
 .boundary-branch__arrow { position: absolute; top: 2.48rem; left: 50%; width: .8rem; height: .8rem; padding: 0; color: currentColor; background: transparent; transform: translateX(-50%); }
 
 .boundary-mobile-connectors { display: none; }
@@ -210,6 +235,7 @@
 .boundary-path small { display: block; margin-top: 1.1rem; padding-top: .9rem; color: var(--muted); border-top: 1px solid var(--line); font-size: .65rem; line-height: 1.4; }
 
 .boundary-decision__core {
+  position: relative;
   display: grid;
   width: 5.8rem;
   height: 8.4rem;
@@ -220,10 +246,9 @@
   border: 1px dashed color-mix(in srgb, var(--page-accent) 72%, transparent);
   border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--page-accent) 8%, transparent), transparent 68%);
+  margin-bottom: .2rem;
   text-align: center;
 }
-
-.boundary-decision__core { position: relative; margin-bottom: .2rem; }
 .boundary-decision__core-icon { width: 1.55rem; height: 1.55rem; margin-bottom: .65rem; stroke-width: 1.5; }
 .boundary-decision__core-arrow { position: absolute; top: 50%; width: 1.25rem; height: 1rem; color: var(--muted); background: var(--surface); stroke-width: 1.3; transform: translateY(-50%); }
 .boundary-decision__core-arrow--left { right: 100%; }
@@ -307,6 +332,10 @@
 }
 
 @media (max-width: 760px) {
+  .skills-tools__group {
+    grid-template-columns: 1fr;
+  }
+
   .detail-page--skills .detail-content > main.detail-main--document { width: min(100% - 2rem, 600px); }
   .solution-boundary { padding-block: 4rem; }
   .solution-boundary__intro h1 { font-size: clamp(3.7rem, 17vw, 5.8rem); }

@@ -1,0 +1,128 @@
+.site-mark {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.site-nav .site-mark {
+  flex: 0 0 auto;
+}
+
+.site-mark span {
+  color: var(--page-accent, #08c8e8);
+}
+
+.site-links {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.site-links__link {
+  position: relative;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.site-links__link::after {
+  position: absolute;
+  right: 0;
+  bottom: -0.55rem;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: var(--page-accent, #08c8e8);
+  transform: scaleX(0);
+  transition: transform 180ms ease;
+}
+
+.site-links__link:hover,
+.site-links__link--active {
+  color: var(--ink);
+}
+
+.site-links__link--active::after {
+  transform: scaleX(1);
+}
+
+.site-actions,
+.availability {
+  display: flex;
+  align-items: center;
+}
+
+.site-actions {
+  gap: 1rem;
+}
+
+.availability {
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.availability svg {
+  width: 15px;
+}
+
+.site-nav {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  width: 100%;
+  min-height: 86px;
+  margin: 0;
+  padding-inline: clamp(1.5rem, 4vw, 4rem);
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(18px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-inline: auto;
+}
+
+.site-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: min(100%, 980px);
+  min-height: 86px;
+  margin-inline: auto;
+  gap: 1.1rem;
+}
+
+@media (max-width: 1050px) {
+  .site-links {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .site-nav,
+  .site-nav__inner {
+    min-height: 72px;
+  }
+
+  .site-nav__inner {
+    width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .site-nav {
+    width: min(100% - 2rem, 600px);
+    min-height: 72px;
+    padding-inline: 15px;
+  }
+
+  .site-nav__inner {
+    flex-wrap: wrap;
+    padding-block: 12px;
+  }
+
+  .site-actions {
+    margin-left: auto;
+  }
+}

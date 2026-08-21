@@ -1,5 +1,3 @@
-import './ProjectBadge.css';
-
 import { PROJECT_TAG_DEFINITIONS, type ProjectTag } from '../../content/projectTags';
 import { PROJECT_BADGE_CONFIG } from './ProjectBadgeConfig';
 

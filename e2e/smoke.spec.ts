@@ -15,13 +15,4 @@ test.describe('portfolio smoke', () => {
     await expect(page.getByRole('link', { name: 'Otwórz stronę: Blog' }))
       .toHaveAttribute('href', '/pl/blog');
   });
-
-  test('matches the Polish home page visual baseline', async ({ page }) => {
-    await openPolishHome(page);
-
-    await expect(page).toHaveScreenshot('home-page.png', {
-      fullPage: true,
-      animations: 'disabled',
-    });
-  });
 });

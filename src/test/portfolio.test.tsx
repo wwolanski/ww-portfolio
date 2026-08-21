@@ -80,15 +80,14 @@ describe('v7 detail visuals', () => {
     const { container } = renderPage(<AboutPage site={polishSite} />);
 
     expect(container.querySelector('.visual-panel[data-page="about"]')).toBeInTheDocument();
-    expect(container.querySelector('.ai-workflow')).toBeInTheDocument();
-    expect(container.querySelectorAll('.ai-orb img')).toHaveLength(5);
-    expect(container.querySelector('.prototype-hero-meta')).toBeNull();
+    expect(container.querySelector('.about-workflow__steps')).toBeInTheDocument();
+    expect(container.querySelectorAll('.about-workflow__orb img')).toHaveLength(5);
     expect(Array.from(container.querySelectorAll('.about-page > .about-section .section-heading h2')).map((heading) => heading.textContent?.trim())).toEqual([
       'Droga do software',
       'Workflow w praktyce',
     ]);
-    expect(container.querySelector('.process-visual img')).toBeInTheDocument();
-    expect(container.querySelectorAll('.timeline-thumb img')).toHaveLength(4);
+    expect(container.querySelector('.about-process__visual img')).toBeInTheDocument();
+    expect(container.querySelectorAll('.about-timeline__thumb img')).toHaveLength(4);
   });
 
   it('renders inline Markdown in prose content outside the hero lead', () => {
@@ -121,8 +120,8 @@ describe('v7 detail visuals', () => {
   it('reveals the complete example process on demand', async () => {
     const user = userEvent.setup();
     const { container } = renderPage(<AboutPage site={polishSite} />);
-    const reveal = container.querySelector('.prototype-process-grid-reveal');
-    const viewport = container.querySelector('.prototype-process-grid-viewport');
+    const reveal = container.querySelector('.about-process__grid-reveal');
+    const viewport = container.querySelector('.about-process__grid-viewport');
     const toggle = screen.getByRole('button', { name: 'Pokaż pełny proces' });
 
     expect(reveal).not.toHaveClass('is-expanded');
@@ -148,7 +147,7 @@ describe('v7 detail visuals', () => {
     unmount();
     const blog = renderPage(<BlogPage site={polishSite} />);
     expect(blog.container.querySelector('.visual-panel[data-page="blog"]')).toBeInTheDocument();
-    expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .pv-card')).toHaveLength(3);
+    expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .blog-visual-card')).toHaveLength(3);
   });
 
   it('renders the technologies section directly after the solution boundary', () => {
@@ -157,11 +156,11 @@ describe('v7 detail visuals', () => {
     const stackTools = stack.bands.flatMap((band) => band.tools);
     const sections = Array.from(container.querySelectorAll('main > section'));
     const boundaryIndex = sections.findIndex((section) => section.classList.contains('solution-boundary'));
-    const technologyIndex = sections.findIndex((section) => section.querySelector('.prototype-tool-bands'));
+    const technologyIndex = sections.findIndex((section) => section.querySelector('.skills-tools'));
 
     expect(screen.getByRole('heading', { name: 'Technologie, z którymi pracuję' })).toBeInTheDocument();
     expect(technologyIndex).toBe(boundaryIndex + 1);
-    expect(container.querySelectorAll('.prototype-tool-band')).toHaveLength(stack.bands.length);
+    expect(container.querySelectorAll('.skills-tools__group')).toHaveLength(stack.bands.length);
     expect(container.querySelectorAll('.tech-tag--badge')).toHaveLength(stackTools.length);
   });
 

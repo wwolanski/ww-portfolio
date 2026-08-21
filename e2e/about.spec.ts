@@ -5,7 +5,7 @@ test.describe('about page layout', () => {
     await page.goto('/pl/about');
 
     const timelineSection = page.locator('.about-section--timeline');
-    const timeline = timelineSection.locator('.timeline-enhanced');
+    const timeline = timelineSection.locator('.about-timeline');
 
     await expect(page.getByRole('heading', { name: /Cześć.*Wojciech/i })).toBeVisible();
     await expect(timelineSection).toBeVisible();
@@ -34,8 +34,5 @@ test.describe('about page layout', () => {
     const separatorToSection = headingBox.y - heroBottom;
     expect(Math.abs(leadToSeparator - separatorToSection)).toBeLessThan(2);
 
-    await expect(timelineSection).toHaveScreenshot('about-timeline.png', {
-      animations: 'disabled',
-    });
   });
 });

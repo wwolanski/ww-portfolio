@@ -2,7 +2,6 @@ import { X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { useEffect, useRef, type RefObject } from 'react';
 
-import './ProjectModal.css';
 import type { Messages } from '../../content/messages';
 import type { Project } from '../../content/types';
 import type { Locale } from '../../routing/locale';

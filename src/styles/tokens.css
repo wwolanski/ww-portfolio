@@ -1,0 +1,9 @@
+@theme {
+  --font-display: "Anton", sans-serif;
+  --font-name: "Montserrat", sans-serif;
+  --font-condensed: "Bebas Neue", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-narrow: "Roboto Condensed", sans-serif;
+  --color-cyan-accent: #08c8e8;
+  --color-amber-accent: #ffb11b;
+}

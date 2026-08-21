@@ -1,7 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
-import './ImageGallery.css';
 import type { ContentAssetScope } from '../../content/mdx/loader';
 import { getContentImages } from '../../content/mdx/imageAssets';
 

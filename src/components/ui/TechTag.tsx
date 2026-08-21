@@ -2,8 +2,6 @@ import { Icon } from '@iconify/react';
 
 import { getTechTagIcon, type TechTagIcon } from '../../content/techTags';
 
-import './TechTag.css';
-
 export type TechTagVariant = 'badge' | 'icon';
 
 type TechTagProps = {

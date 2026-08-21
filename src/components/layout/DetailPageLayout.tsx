@@ -7,8 +7,6 @@ import type { SiteContent } from '../../content/siteContent';
 import { InlineCopy } from '../ui/InlineCopy';
 import { SiteNav } from './SiteNav';
 
-import './DetailPageLayout.css';
-
 import aboutImage from '../../../img/detail-about.webp';
 import projectsImage from '../../../img/detail-projects.webp';
 import skillsImage from '../../../img/detail-skills.webp';
@@ -96,24 +94,24 @@ function getVisualMeta(page: PageSlug, locale: SiteContent['locale']): VisualMet
 function BlogVisual() {
   return (
     <div className="visual-panel__blog-shapes">
-      <div className="project-visual-stack">
-        <div className="pv-card">
-          <div className="pv-head">ARCHITECTURE</div>
-          <div className="pv-status">new note</div>
-          <div className="pv-lines"><i /><i /><i /></div>
-          <div className="pv-metric">08 MIN</div>
+      <div className="blog-visual-card-stack">
+        <div className="blog-visual-card">
+          <div className="blog-visual-card__heading">ARCHITECTURE</div>
+          <div className="blog-visual-card__status">new note</div>
+          <div className="blog-visual-card__lines"><i /><i /><i /></div>
+          <div className="blog-visual-card__metric">08 MIN</div>
         </div>
-        <div className="pv-card">
-          <div className="pv-head">AI WORKFLOW</div>
-          <div className="pv-status">field note</div>
-          <div className="pv-lines"><i /><i /><i /></div>
-          <div className="pv-metric">09 MIN</div>
+        <div className="blog-visual-card">
+          <div className="blog-visual-card__heading">AI WORKFLOW</div>
+          <div className="blog-visual-card__status">field note</div>
+          <div className="blog-visual-card__lines"><i /><i /><i /></div>
+          <div className="blog-visual-card__metric">09 MIN</div>
         </div>
-        <div className="pv-card">
-          <div className="pv-head">SYSTEMS</div>
-          <div className="pv-status">in progress</div>
-          <div className="pv-lines"><i /><i /><i /></div>
-          <div className="pv-metric">06 MIN</div>
+        <div className="blog-visual-card">
+          <div className="blog-visual-card__heading">SYSTEMS</div>
+          <div className="blog-visual-card__status">in progress</div>
+          <div className="blog-visual-card__lines"><i /><i /><i /></div>
+          <div className="blog-visual-card__metric">06 MIN</div>
         </div>
       </div>
     </div>

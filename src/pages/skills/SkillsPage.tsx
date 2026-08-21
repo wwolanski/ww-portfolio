@@ -11,8 +11,6 @@ import { TechTag } from '../../components/ui/TechTag';
 import type { SiteContent } from '../../content/siteContent';
 import type { SolutionBoundaryContent } from '../../content/types';
 
-import './SkillsPage.css';
-
 type SkillsPageProps = { readonly site: SiteContent };
 
 const layerIcons = [Wrench, Check, Network, Database, Box] as const;
@@ -74,11 +72,11 @@ export function SkillsPage({ site }: SkillsPageProps) {
 
       </section>
 
-      <section className="content-section prototype-section">
+      <section className="content-section">
         <SectionHeading index="01" title={stack.heading} text={stack.intro} />
-        <div className="prototype-tool-bands">
+        <div className="skills-tools">
           {stack.bands.map((band) => (
-            <div className="prototype-tool-band" key={band.title}>
+            <div className="skills-tools__group" key={band.title}>
               <strong>{band.title}</strong>
               <div>{band.tools.map((tool) => <TechTag key={tool} name={tool} variant="badge" />)}</div>
             </div>

@@ -23,7 +23,11 @@ export function SiteNav({ site, compact = false }: SiteNavProps) {
 
         <nav className="site-links" aria-label={messages.common.primaryNavigation}>
           {navigation.map((item) => (
-            <NavLink key={item.slug} to={getLocalizedPath(locale, item.href)}>
+            <NavLink
+              key={item.slug}
+              to={getLocalizedPath(locale, item.href)}
+              className={({ isActive }) => isActive ? 'site-links__link site-links__link--active' : 'site-links__link'}
+            >
               {item.label}
             </NavLink>
           ))}

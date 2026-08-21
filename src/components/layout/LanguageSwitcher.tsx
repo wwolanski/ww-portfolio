@@ -26,7 +26,7 @@ export function LanguageSwitcher({ locale, messages }: LanguageSwitcherProps) {
         return (
           <Link
             key={option.locale}
-            className={isCurrent ? 'language-switcher__option is-current' : 'language-switcher__option'}
+            className={isCurrent ? 'language-switcher__option language-switcher__option--current' : 'language-switcher__option'}
             to={`${getLocalizedPath(option.locale, location.pathname)}${location.search}${location.hash}`}
             aria-label={isCurrent ? `${label} — ${messages.language.label}` : messages.language.switchTo(label)}
             aria-current={isCurrent ? 'page' : undefined}

@@ -2,7 +2,6 @@ import { useCallback, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router';
 
-import '../../components/ui/TagChip.css';
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
@@ -52,7 +51,7 @@ export function ProjectsPage({ site }: ProjectsPageProps) {
       title={<PageTitle lines={content.hero.title} />}
       intro={<InlineCopy copy={content.hero.lead} />}
     >
-      <section className="content-section prototype-section">
+      <section className="content-section">
         <div className="project-list">
           {content.selected.projects.map((project) => <ProjectRow key={project.slug} project={project} site={site} onOpen={openProject} />)}
         </div>
@@ -86,7 +85,7 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
   const logo = getProjectLogo(project.slug);
 
   return (
-    <article className="project-row prototype-project-row" data-project-slug={project.slug}>
+    <article className="project-row" data-project-slug={project.slug}>
       <div className="project-meta">
         <span>{project.index}</span>
         <span>{project.category}</span>
@@ -111,7 +110,7 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
         <p><InlineCopy copy={project.description} /></p>
         <ul>{project.facts.map((fact) => <li key={fact} className="tag-chip"><InlineCopy copy={fact} /></li>)}</ul>
         <strong><InlineCopy copy={project.outcome} /></strong>
-        <div className="prototype-project-details" id={project.anchor}>
+        <div className="project-details" id={project.anchor}>
           {project.details.map((detail) => <div key={detail.label}><b><InlineCopy copy={detail.label} /></b><span><InlineCopy copy={detail.text} /></span></div>)}
         </div>
       </div>

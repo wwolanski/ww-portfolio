@@ -1,8 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import type { ComponentProps } from 'react';
 
-import './ContentLink.css';
-
 export function ContentLink({ children, target, rel, ...props }: ComponentProps<'a'>) {
   const safeRel = target === '_blank' ? rel ?? 'noreferrer' : rel;
 

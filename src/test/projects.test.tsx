@@ -56,7 +56,6 @@ describe('project content system', () => {
     expect(container.querySelectorAll('.project-logo')).toHaveLength(6);
     expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-meta .project-logo img')).toBeInTheDocument();
     expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-body .project-logo')).not.toBeInTheDocument();
-    expect(container.querySelector('.prototype-failure-box')).not.toBeInTheDocument();
     expect(screen.getAllByRole('button', { name: /otwórz case-study:/i })).toHaveLength(6);
     expect(container.querySelectorAll('.project-title-row .project-content-button')).toHaveLength(6);
     expect(container.querySelectorAll('.project-body > .project-content-button')).toHaveLength(0);

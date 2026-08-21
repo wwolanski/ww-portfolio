@@ -1,5 +1,3 @@
-import './InlineCopy.css';
-
 import { renderInlineMarkdown } from './inlineMarkdown';
 
 type InlineCopyProps = {

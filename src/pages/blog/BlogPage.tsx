@@ -2,14 +2,11 @@ import { ArrowLeft, ArrowUpRight, Clock3 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
-import '../../components/ui/TagChip.css';
 import { ContentDocumentView } from '../../components/content/ContentDocumentView';
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { getBlogArticles, type BlogArticle } from '../../content/mdx/blogIndex';
 import type { SiteContent } from '../../content/siteContent';
-
-import './BlogPage.css';
 
 type BlogPageProps = { readonly site: SiteContent };
 

@@ -6,8 +6,6 @@ import type { ContentAssetScope, ContentDocument, ContentRequest } from '../../c
 import { loadContent } from '../../content/mdx/loader';
 import { MdxContent, type MdxContentVariant } from './MdxContent';
 
-import './ContentDocumentView.css';
-
 type ContentDocumentViewProps = {
   readonly request: ContentRequest;
   readonly messages: Messages;

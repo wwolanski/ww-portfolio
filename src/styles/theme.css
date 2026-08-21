@@ -1,0 +1,32 @@
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  font-family: var(--font-body);
+  color: #171714;
+  background: #eee9dc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --surface: #eee9dc;
+  --surface-elevated: #f8f3e7;
+  --ink: #171714;
+  --muted: #6b685f;
+  --line: rgba(23, 23, 20, 0.17);
+  --home-overlay: rgba(238, 233, 220, 0.76);
+  --scrollbar-track: #ded8ca;
+  --scrollbar-thumb: #817d73;
+  --scrollbar-thumb-hover: #5f5c54
+}
+
+:root.dark {
+  color: #f7f5ef;
+  background: #080808;
+  --surface: #080808;
+  --surface-elevated: #11110f;
+  --ink: #f7f5ef;
+  --muted: #aaa8a1;
+  --line: rgba(255, 255, 255, 0.17);
+  --home-overlay: rgba(0, 0, 0, 0.08);
+  --scrollbar-track: #11110f;
+  --scrollbar-thumb: #55534e;
+  --scrollbar-thumb-hover: #77746d
+}
