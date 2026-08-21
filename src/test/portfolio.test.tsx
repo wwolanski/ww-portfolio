@@ -150,6 +150,27 @@ describe('v7 detail visuals', () => {
     expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .pv-card')).toHaveLength(3);
   });
 
+  it('renders the technologies section directly after the solution boundary', () => {
+    const { container } = renderPage(<SkillsPage site={polishSite} />);
+    const stack = polishSite.portfolio.skills.stack;
+    const stackTools = stack.bands.flatMap((band) => band.tools);
+    const sections = Array.from(container.querySelectorAll('main > section'));
+    const boundaryIndex = sections.findIndex((section) => section.classList.contains('solution-boundary'));
+    const technologyIndex = sections.findIndex((section) => section.querySelector('.prototype-tool-bands'));
+
+    expect(screen.getByRole('heading', { name: 'Technologie, z którymi pracuję' })).toBeInTheDocument();
+    expect(technologyIndex).toBe(boundaryIndex + 1);
+    expect(container.querySelectorAll('.prototype-tool-band')).toHaveLength(stack.bands.length);
+    expect(container.querySelectorAll('.tech-tag--badge')).toHaveLength(stackTools.length);
+  });
+
+  it('renders the skills closing statement and CTA', () => {
+    renderPage(<SkillsPage site={polishSite} />);
+
+    expect(screen.getByRole('heading', { name: 'Mój workflow łączy research, architekturę, coding agents i mechaniczne sprawdzanie wyniku.' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Projekty ↗' })).toHaveAttribute('href', '/pl/projects');
+  });
+
   it('registers every technology in the retained technologies content', () => {
     const stack = polishSite.portfolio.skills.stack;
     const stackTools = stack.bands.flatMap((band) => band.tools);

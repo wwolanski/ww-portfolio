@@ -5,6 +5,9 @@ import {
 import { Link } from 'react-router';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
+import { FooterCta, Statement } from '../../components/ui/ClosingSections';
+import { SectionHeading } from '../../components/ui/SectionHeading';
+import { TechTag } from '../../components/ui/TechTag';
 import type { SiteContent } from '../../content/siteContent';
 import type { SolutionBoundaryContent } from '../../content/types';
 
@@ -17,6 +20,7 @@ const principleIcons = [Puzzle, Layers3, Flag, TrendingUp] as const;
 
 export function SkillsPage({ site }: SkillsPageProps) {
   const content = site.portfolio.skills.boundary;
+  const stack = site.portfolio.skills.stack;
 
   return (
     <DetailPageLayout site={site} page="skills" eyebrow="" title={null} intro={null} showHero={false}>
@@ -70,6 +74,21 @@ export function SkillsPage({ site }: SkillsPageProps) {
 
         <BoundaryQuote content={content} />
       </section>
+
+      <section className="content-section prototype-section">
+        <SectionHeading index="01" title={stack.heading} text={stack.intro} />
+        <div className="prototype-tool-bands">
+          {stack.bands.map((band) => (
+            <div className="prototype-tool-band" key={band.title}>
+              <strong>{band.title}</strong>
+              <div>{band.tools.map((tool) => <TechTag key={tool} name={tool} variant="badge" />)}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <Statement content={site.portfolio.skills.statement} />
+      <FooterCta site={site} content={site.portfolio.skills.cta} />
     </DetailPageLayout>
   );
 }
