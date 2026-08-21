@@ -44,6 +44,100 @@
   background: color-mix(in srgb, var(--page-accent) 58%, transparent);
 }
 
+.about-page .prototype-process-grid-reveal {
+  --process-grid-height: 420px;
+  position: relative;
+}
+
+.about-page .prototype-process-grid-viewport {
+  position: relative;
+  max-height: calc(var(--process-grid-height) / 2);
+  overflow: hidden;
+  transition: max-height 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.about-page .prototype-process-grid-reveal.is-expanded .prototype-process-grid-viewport {
+  max-height: var(--process-grid-height);
+}
+
+.about-page .prototype-process-grid-viewport::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--surface-elevated) 10%, transparent) 0%,
+    color-mix(in srgb, var(--surface-elevated) 26%, transparent) 54%,
+    var(--surface-elevated) 100%
+  );
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease;
+}
+
+.about-page .prototype-process-grid-reveal:not(.is-expanded) .prototype-process-grid-viewport::after {
+  opacity: 1;
+}
+
+.about-page .prototype-process-toggle {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--page-accent) 72%, var(--line));
+  border-radius: 50%;
+  color: var(--page-accent);
+  background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--surface-elevated) 55%, transparent), 0 10px 24px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.about-page .prototype-process-toggle:hover {
+  border-color: var(--page-accent);
+  color: var(--surface-elevated);
+  background: var(--page-accent);
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.about-page .prototype-process-toggle:active {
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+.about-page .prototype-process-toggle svg {
+  width: 22px;
+  height: 22px;
+  transition: transform 260ms ease;
+}
+
+.about-page .prototype-process-grid-reveal.is-expanded .prototype-process-toggle {
+  position: relative;
+  top: auto;
+  left: auto;
+  margin: 1rem auto 0;
+  transform: none;
+}
+
+.about-page .prototype-process-grid-reveal.is-expanded .prototype-process-toggle:hover {
+  transform: scale(1.04);
+}
+
+.about-page .prototype-process-grid-reveal.is-expanded .prototype-process-toggle:active {
+  transform: scale(0.96);
+}
+
+.about-page .prototype-process-grid-reveal.is-expanded .prototype-process-toggle svg {
+  transform: rotate(180deg);
+}
+
 @media (max-width: 760px) {
   .about-page {
     --about-section-padding: 3.75rem;
@@ -55,5 +149,10 @@
 
   .about-page > .about-section--timeline .prototype-timeline.timeline-enhanced {
     width: 100%;
+  }
+
+  .about-page .prototype-process-toggle {
+    width: 44px;
+    height: 44px;
   }
 }

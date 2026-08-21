@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta, Statement } from '../../components/ui/ClosingSections';
@@ -22,7 +23,46 @@ import './AboutPage.css';
 type AboutPageProps = { readonly site: SiteContent };
 
 export function AboutPage({ site }: AboutPageProps) {
+  const { messages } = site;
   const { about } = site.portfolio;
+  const [isProcessExpanded, setIsProcessExpanded] = useState(false);
+  const [processGridHeight, setProcessGridHeight] = useState(0);
+  const processGridRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const processGrid = processGridRef.current;
+
+    if (!processGrid) {
+      return;
+    }
+
+    const updateProcessGridHeight = () => {
+      if (processGrid.scrollHeight > 0) {
+        setProcessGridHeight(processGrid.scrollHeight);
+      }
+    };
+
+    updateProcessGridHeight();
+    window.addEventListener('resize', updateProcessGridHeight);
+
+    const resizeObserver = typeof ResizeObserver === 'undefined'
+      ? null
+      : new ResizeObserver(updateProcessGridHeight);
+
+    resizeObserver?.observe(processGrid);
+
+    return () => {
+      window.removeEventListener('resize', updateProcessGridHeight);
+      resizeObserver?.disconnect();
+    };
+  }, []);
+
+  const processGridStyle = processGridHeight > 0
+    ? { '--process-grid-height': `${processGridHeight}px` } as CSSProperties
+    : undefined;
+  const processToggleLabel = isProcessExpanded
+    ? messages.content.collapseProcess
+    : messages.content.expandProcess;
 
   return (
     <DetailPageLayout
@@ -68,12 +108,32 @@ export function AboutPage({ site }: AboutPageProps) {
               <img src={aboutProcessImage} alt="" loading="lazy" />
               <div className="process-visual-label">Wizualny szkic kierunku portfolio</div>
             </div>
-            <div className="prototype-process-grid">
-              {about.workflow.example.steps.map((step) => (
-                <div className="prototype-process-step" key={step.index}>
-                  <b>{step.index}</b><strong><InlineCopy copy={step.title} /></strong><span><InlineCopy copy={step.text} /></span>
+            <div className={`prototype-process-grid-reveal${isProcessExpanded ? ' is-expanded' : ''}`}>
+              <div
+                ref={processGridRef}
+                id="about-process-steps"
+                className="prototype-process-grid-viewport"
+                aria-hidden={!isProcessExpanded}
+                style={processGridStyle}
+              >
+                <div className="prototype-process-grid">
+                  {about.workflow.example.steps.map((step) => (
+                    <div className="prototype-process-step" key={step.index}>
+                      <b>{step.index}</b><strong><InlineCopy copy={step.title} /></strong><span><InlineCopy copy={step.text} /></span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+              <button
+                type="button"
+                className="prototype-process-toggle"
+                aria-expanded={isProcessExpanded}
+                aria-controls="about-process-steps"
+                aria-label={processToggleLabel}
+                onClick={() => setIsProcessExpanded((expanded) => !expanded)}
+              >
+                <ChevronDown aria-hidden="true" />
+              </button>
             </div>
           </div>
         </section>

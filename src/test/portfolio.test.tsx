@@ -103,6 +103,24 @@ describe('v7 detail visuals', () => {
     expect(workflowIntro.textContent).not.toContain('**');
   });
 
+  it('reveals the complete example process on demand', async () => {
+    const user = userEvent.setup();
+    const { container } = renderPage(<AboutPage site={polishSite} />);
+    const reveal = container.querySelector('.prototype-process-grid-reveal');
+    const viewport = container.querySelector('.prototype-process-grid-viewport');
+    const toggle = screen.getByRole('button', { name: 'Pokaż pełny proces' });
+
+    expect(reveal).not.toHaveClass('is-expanded');
+    expect(viewport).toHaveAttribute('aria-hidden', 'true');
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    await user.click(toggle);
+
+    expect(reveal).toHaveClass('is-expanded');
+    expect(viewport).toHaveAttribute('aria-hidden', 'false');
+    expect(screen.getByRole('button', { name: 'Zwiń etapy procesu' })).toHaveAttribute('aria-expanded', 'true');
+  });
+
   it('renders the new skills showcase and blog card rail', () => {
     const { container, unmount } = renderPage(<SkillsPage site={polishSite} />);
 
