@@ -86,31 +86,47 @@
 .boundary-decision__current small { margin-top: .3rem; font-size: .62rem; line-height: 1.4; }
 
 .boundary-decision__down {
-  display: grid;
-  width: 1px;
+  position: relative;
+  width: 100%;
   height: 2.8rem;
   margin: .35rem auto;
-  place-items: end center;
-  border-left: 1px dashed var(--muted);
 }
 
-.boundary-decision__down svg {
+.boundary-decision__down::before {
+  position: absolute;
+  top: 0;
+  bottom: .72rem;
+  left: 50%;
+  width: 1px;
+  content: "";
+  background: repeating-linear-gradient(to bottom, var(--muted) 0 4px, transparent 4px 8px);
+  transform: translateX(-50%);
+}
+
+.boundary-decision__down .boundary-connector-arrow {
+  position: absolute;
+  bottom: -.05rem;
+  left: 50%;
   width: 1rem;
   height: 1rem;
   color: var(--ink);
-  background: var(--surface);
-  transform: translate(-.5px, .3rem);
+  transform: translateX(-50%);
 }
+
+.boundary-connector-arrow { stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
 .boundary-decision__question-row {
   display: grid;
-  grid-template-columns: 1fr minmax(10rem, 1.15fr) 1fr;
+  grid-template-columns: minmax(0, 1fr) 6.2rem minmax(0, 1fr);
+  gap: clamp(.75rem, 1.6vw, 1.25rem);
   align-items: center;
   margin: .5rem 0 2.9rem;
 }
 
 .boundary-decision__question {
   display: grid;
+  z-index: 1;
+  width: 10.5rem;
   min-height: 4rem;
   padding: .7rem 1.4rem;
   place-items: center;
@@ -122,6 +138,7 @@
   line-height: 1.3;
   text-align: center;
   text-transform: uppercase;
+  justify-self: center;
 }
 
 .boundary-branch {
@@ -140,30 +157,41 @@
 }
 
 .boundary-branch::before { border-top: 1px dashed currentColor; }
-.boundary-branch::after { width: 1px; height: 3rem; border-left: 1px dashed currentColor; }
-.boundary-branch--yes::before { right: 0; left: 22%; }
-.boundary-branch--no::before { right: 22%; left: 0; }
-.boundary-branch--yes::after { left: 22%; }
-.boundary-branch--no::after { right: 22%; }
-.boundary-branch span {
+.boundary-branch::after {
+  top: .65rem;
+  width: 1px;
+  height: 2.12rem;
+  background: repeating-linear-gradient(to bottom, currentColor 0 4px, transparent 4px 8px);
+  transform: translateX(-50%);
+}
+.boundary-branch--yes::before { right: 0; left: calc(50% + .65rem); }
+.boundary-branch--no::before { right: calc(50% + .65rem); left: 0; }
+.boundary-branch::after { left: 50%; }
+.boundary-branch__label {
   position: absolute;
-  top: -1.65rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .18rem;
+  top: -1.55rem;
   font-size: .65rem;
   font-weight: 900;
   line-height: 1;
   text-transform: uppercase;
 }
 
-.boundary-branch--yes span { left: 22%; transform: translateX(-50%); }
-.boundary-branch--no span { right: 22%; transform: translateX(50%); }
-.boundary-branch__status { width: 1.15rem; height: 1.15rem; padding: .16rem; border: 1px solid currentColor; border-radius: 50%; background: var(--surface); }
-.boundary-branch__arrow { position: absolute; top: 2.55rem; width: .8rem; height: .8rem; padding: 0; background: var(--surface); stroke-width: 2; }
-.boundary-branch--yes .boundary-branch__arrow { left: 22%; transform: translateX(-50%); }
-.boundary-branch--no .boundary-branch__arrow { right: 22%; transform: translateX(50%); }
+.boundary-branch__label { left: 50%; transform: translateX(-50%); }
+.boundary-branch__status {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  width: 1.3rem;
+  height: 1.3rem;
+  padding: .2rem;
+  border: 1px solid color-mix(in srgb, currentColor 78%, transparent);
+  border-radius: 50%;
+  background: var(--surface);
+}
+.boundary-branch__status { left: 50%; transform: translate(-50%, -50%); }
+.boundary-branch__arrow { position: absolute; top: 2.48rem; left: 50%; width: .8rem; height: .8rem; padding: 0; color: currentColor; background: transparent; transform: translateX(-50%); }
+
+.boundary-mobile-connectors { display: none; }
 
 .boundary-decision__grid {
   display: grid;
@@ -207,6 +235,7 @@
 .boundary-decision__core-arrow { position: absolute; top: 50%; width: 1.25rem; height: 1rem; color: var(--muted); background: var(--surface); stroke-width: 1.3; transform: translateY(-50%); }
 .boundary-decision__core-arrow--left { right: 100%; }
 .boundary-decision__core-arrow--right { left: 100%; }
+.boundary-decision__core-down { display: none; }
 .boundary-decision__core span { color: var(--ink); font-family: var(--font-narrow); font-size: .55rem; font-weight: 700; line-height: 1.35; text-transform: uppercase; }
 
 .solution-boundary__thinking, .solution-boundary__practice { margin-top: clamp(4.5rem, 8vw, 7rem); }
@@ -296,19 +325,64 @@
   .solution-boundary__intro h1 { font-size: clamp(3.7rem, 17vw, 5.8rem); }
   .boundary-decision { padding: 1.2rem; }
   .boundary-decision__current { width: min(82%, 15rem); }
-  .boundary-decision__question-row { grid-template-columns: 1fr 1fr; gap: 0 1rem; margin-bottom: 2rem; }
+  .boundary-decision__question-row { grid-template-columns: 1fr 1fr; gap: 0 1rem; margin-bottom: 0; }
   .boundary-decision__question { grid-column: 1 / -1; grid-row: 1; width: min(100%, 17rem); margin-inline: auto; }
-  .boundary-branch { grid-row: 2; margin-top: 2.8rem; }
-  .boundary-branch--yes::before { left: 50%; }
-  .boundary-branch--no::before { right: 50%; }
-  .boundary-branch::after { display: none; }
-  .boundary-branch--yes span { left: 50%; }
-  .boundary-branch--no span { right: 50%; }
-  .boundary-branch__arrow { display: none; }
-  .boundary-decision__grid { grid-template-columns: 1fr; }
-  .boundary-decision__core { order: 3; margin: 1.2rem auto 0; }
+  .boundary-branch { display: none; }
+  .boundary-mobile-connectors {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0 0 .35rem;
+    aspect-ratio: 100 / 19;
+  }
+  .boundary-mobile-connectors > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .boundary-mobile-connectors__yes-line,
+  .boundary-mobile-connectors__no-line { fill: none; stroke-width: 1; stroke-dasharray: 3 4; vector-effect: non-scaling-stroke; }
+  .boundary-mobile-connectors__yes-line { stroke: var(--boundary-green); }
+  .boundary-mobile-connectors__no-line { stroke: var(--page-accent); }
+  .boundary-mobile-connectors__yes-fill { fill: var(--boundary-green); }
+  .boundary-mobile-connectors__no-fill { fill: var(--page-accent); }
+  .boundary-mobile-connectors__node {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: .2rem;
+    color: var(--branch-color);
+    transform: translate(-50%, -50%);
+  }
+  .boundary-mobile-connectors__node--yes { left: 34.125%; --branch-color: var(--boundary-green); }
+  .boundary-mobile-connectors__node--no { left: 65.875%; --branch-color: var(--page-accent); }
+  .boundary-mobile-connectors__node b { padding-inline: .2rem; background: var(--surface); font-size: .62rem; line-height: 1; text-transform: uppercase; }
+  .boundary-mobile-connectors__node svg { width: 1.3rem; height: 1.3rem; padding: .2rem; border: 1px solid currentColor; border-radius: 50%; background: var(--surface); }
+  .boundary-decision__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3%; align-items: stretch; }
+  .boundary-path { height: 100%; }
+  .boundary-path--yes { grid-column: 1; grid-row: 1; }
+  .boundary-path--no { grid-column: 2; grid-row: 1; }
+  .boundary-decision__core { grid-column: 1 / -1; grid-row: 2; margin: 3.8rem auto 0; }
   .boundary-decision__core-arrow { display: none; }
-  .boundary-path article { min-height: auto; }
+  .boundary-decision__core::before {
+    position: absolute;
+    bottom: calc(100% + .72rem);
+    left: 50%;
+    width: 1px;
+    height: 2.15rem;
+    content: "";
+    background: repeating-linear-gradient(to bottom, var(--muted) 0 4px, transparent 4px 8px);
+    transform: translateX(-50%);
+  }
+  .boundary-decision__core-down {
+    position: absolute;
+    bottom: calc(100% + .12rem);
+    left: 50%;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    color: var(--muted);
+    transform: translateX(-50%);
+  }
+  .boundary-path article { height: 100%; min-height: auto; padding: 1rem; }
   .boundary-path p { min-height: auto; }
   .solution-boundary__layers { grid-template-columns: 1fr; }
   .solution-boundary__layer { grid-template-columns: 2rem 1.6rem 1fr; min-height: 4.2rem; }

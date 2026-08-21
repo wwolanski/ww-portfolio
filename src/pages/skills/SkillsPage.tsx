@@ -1,5 +1,5 @@
 import {
-  ArrowDown, ArrowLeft, ArrowRight, Box, Check, Code2, Compass, Database, Flag, GitBranch,
+  ArrowLeft, ArrowRight, Box, Check, Code2, Compass, Database, Flag, GitBranch,
   Layers3, Navigation, Network, Puzzle, TrendingUp, Wrench, X, type LucideIcon,
 } from 'lucide-react';
 import { Link } from 'react-router';
@@ -81,15 +81,17 @@ function DecisionDiagram({ content }: { readonly content: SolutionBoundaryConten
         <Box aria-hidden="true" />
         <span><strong>{content.currentTitle}</strong><small>{content.currentText}</small></span>
       </header>
-      <div className="boundary-decision__down" aria-hidden="true"><ArrowDown /></div>
+      <div className="boundary-decision__down" aria-hidden="true"><ConnectorArrow /></div>
       <div className="boundary-decision__question-row">
         <BranchLabel tone="yes" label={content.yes} />
         <strong className="boundary-decision__question">{content.question}</strong>
         <BranchLabel tone="no" label={content.no} />
       </div>
+      <MobileBranchConnectors yes={content.yes} no={content.no} />
       <div className="boundary-decision__grid">
         <DecisionPath tone="yes" icon={Wrench} {...content.stay} />
         <div className="boundary-decision__core">
+          <ConnectorArrow className="boundary-decision__core-down" />
           <ArrowRight className="boundary-decision__core-arrow boundary-decision__core-arrow--left" aria-hidden="true" />
           <Navigation className="boundary-decision__core-icon" aria-hidden="true" />
           <span>{content.center}</span>
@@ -101,12 +103,38 @@ function DecisionDiagram({ content }: { readonly content: SolutionBoundaryConten
   );
 }
 
+function MobileBranchConnectors({ yes, no }: { readonly yes: string; readonly no: string }) {
+  return (
+    <div className="boundary-mobile-connectors" aria-hidden="true">
+      <svg viewBox="0 0 100 19" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <marker id="mobile-arrow-yes" viewBox="0 0 4 4" refX="3.4" refY="2" markerWidth="4" markerHeight="4" orient="auto">
+            <path d="M0 0 4 2 0 4Z" className="boundary-mobile-connectors__yes-fill" />
+          </marker>
+          <marker id="mobile-arrow-no" viewBox="0 0 4 4" refX="3.4" refY="2" markerWidth="4" markerHeight="4" orient="auto">
+            <path d="M0 0 4 2 0 4Z" className="boundary-mobile-connectors__no-fill" />
+          </marker>
+        </defs>
+        <path className="boundary-mobile-connectors__yes-line" d="M44 0 24.25 18" markerEnd="url(#mobile-arrow-yes)" />
+        <path className="boundary-mobile-connectors__no-line" d="M56 0 75.75 18" markerEnd="url(#mobile-arrow-no)" />
+      </svg>
+      <span className="boundary-mobile-connectors__node boundary-mobile-connectors__node--yes">
+        <b>{yes}</b><Check />
+      </span>
+      <span className="boundary-mobile-connectors__node boundary-mobile-connectors__node--no">
+        <b>{no}</b><X />
+      </span>
+    </div>
+  );
+}
+
 function BranchLabel({ tone, label }: { readonly tone: 'yes' | 'no'; readonly label: string }) {
   const StatusIcon = tone === 'yes' ? Check : X;
   return (
     <div className={`boundary-branch boundary-branch--${tone}`}>
-      <span>{label}<StatusIcon className="boundary-branch__status" aria-hidden="true" /></span>
-      <ArrowDown className="boundary-branch__arrow" aria-hidden="true" />
+      <span className="boundary-branch__label">{label}</span>
+      <StatusIcon className="boundary-branch__status" aria-hidden="true" />
+      <ConnectorArrow className="boundary-branch__arrow" />
     </div>
   );
 }
@@ -157,6 +185,14 @@ function MusicGlyph() {
       <path d="M9 18V5l10-2v13" />
       <circle cx="6" cy="18" r="3" />
       <circle cx="16" cy="16" r="3" />
+    </svg>
+  );
+}
+
+function ConnectorArrow({ className = '' }: { readonly className?: string }) {
+  return (
+    <svg className={`boundary-connector-arrow ${className}`} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 0v13M2.5 7.5 8 13l5.5-5.5" />
     </svg>
   );
 }
