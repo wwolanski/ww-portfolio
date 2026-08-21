@@ -1,122 +1,173 @@
-import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
-import { FooterCta, Statement } from '../../components/ui/ClosingSections';
-import { InlineCopy } from '../../components/ui/InlineCopy';
-import { SectionHeading } from '../../components/ui/SectionHeading';
-import { TechTag } from '../../components/ui/TechTag';
-import type { SiteContent } from '../../content/siteContent';
+import {
+  ArrowDown, ArrowLeft, ArrowRight, Box, Check, Code2, Compass, Database, Flag, GitBranch,
+  Layers3, Navigation, Network, Puzzle, TrendingUp, Wrench, X, type LucideIcon,
+} from 'lucide-react';
+import { Link } from 'react-router';
 
-import architectureImage from '../../../img/architecture-repo.webp';
-import skillsDeliveryIcon from '../../../img/icons/skills-delivery.svg';
-import skillsDesignIcon from '../../../img/icons/skills-design.svg';
-import softCommunicationIcon from '../../../img/icons/soft-communication.svg';
-import softIndependenceIcon from '../../../img/icons/soft-independence.svg';
-import softLearningIcon from '../../../img/icons/soft-learning.svg';
-import softResponsibilityIcon from '../../../img/icons/soft-responsibility.svg';
-import softTeamworkIcon from '../../../img/icons/soft-teamwork.svg';
-import workflowImplementationIcon from '../../../img/icons/workflow-implementation.svg';
-import workflowProblemIcon from '../../../img/icons/workflow-problem.svg';
+import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
+import type { SiteContent } from '../../content/siteContent';
+import type { SolutionBoundaryContent } from '../../content/types';
+
+import './SkillsPage.css';
 
 type SkillsPageProps = { readonly site: SiteContent };
 
+const layerIcons = [Wrench, Check, Network, Database, Box] as const;
+const principleIcons = [Puzzle, Layers3, Flag, TrendingUp] as const;
+
 export function SkillsPage({ site }: SkillsPageProps) {
-  const { skills: content } = site.portfolio;
+  const content = site.portfolio.skills.boundary;
 
   return (
-    <DetailPageLayout
-      site={site}
-      page="skills"
-      eyebrow={content.hero.eyebrow}
-      title={<PageTitle lines={content.hero.title} />}
-      intro={<InlineCopy copy={content.hero.lead} />}
-    >
-      <section className="content-section prototype-section">
-        <SectionHeading index="01" title={content.stack.heading} text={content.stack.intro} />
-        <div className="prototype-tool-bands">
-          {content.stack.bands.map((band) => <div className="prototype-tool-band" key={band.title}><strong><InlineCopy copy={band.title} /></strong><div>{band.tools.map((tool) => <TechTag key={tool} name={tool} variant="badge" />)}</div></div>)}
+    <DetailPageLayout site={site} page="skills" eyebrow="" title={null} intro={null} showHero={false}>
+      <section className="solution-boundary" aria-labelledby="solution-boundary-title">
+        <div className="solution-boundary__hero">
+          <header className="solution-boundary__intro">
+            <p className="solution-boundary__eyebrow">{content.eyebrow}</p>
+            <h1 id="solution-boundary-title" aria-label={content.title.join(' ')}>
+              {content.title.map((line) => <span key={line}>{line}{' '}</span>)}
+            </h1>
+            <span className="solution-boundary__accent" aria-hidden="true" />
+            <p>{content.lead}</p>
+          </header>
+          <DecisionDiagram content={content.decision} />
         </div>
-      </section>
 
-      <section className="content-section skills-showcase-section">
-        <div className="skills-showcase">
-          <p className="topline"><InlineCopy copy={content.showcase.eyebrow} /></p>
-          <h2 className="headline">{content.showcase.title.map((line, index) => <span key={line}><InlineCopy copy={line} />{index < content.showcase.title.length - 1 && <br />}</span>)}<span className="accent-dot">.</span></h2>
-          <p className="intro"><InlineCopy copy={content.showcase.intro} /></p>
-          <div className="skills-panel">
-            <div className="skills-columns">
-              {content.showcase.columns.map((column, index) => (
-                <article className={`skill-column ${skillColumnColors[index] ?? 'green'}`} key={column.title}>
-                  <div className="skill-orb"><img src={getIndexedAsset(showcaseIcons, index)} alt="" /></div>
-                  <h3><InlineCopy copy={column.title} /></h3>
-                  <ul className="skill-list">{column.skills.map((skill) => <li key={skill}><InlineCopy copy={skill} /></li>)}</ul>
-                </article>
+        <section className="solution-boundary__thinking" aria-labelledby="layers-heading">
+          <MiniHeading id="layers-heading">{content.layersHeading}</MiniHeading>
+          <div className="solution-boundary__thinking-grid">
+            <div className="solution-boundary__layers">
+              {content.layers.map((layer, index) => (
+                <Layer key={layer.title} index={index} icon={layerIcons[index] ?? Box} {...layer} />
               ))}
             </div>
-            <div className="soft-skills">
-              <h3 className="soft-title"><InlineCopy copy={content.showcase.softTitle} /></h3>
-              <div className="soft-grid">
-                {content.showcase.softSkills.map((skill, index) => (
-                  <div className="soft-item" key={skill}>
-                    <span className="soft-icon"><img src={getIndexedAsset(softSkillIcons, index)} alt="" /></span>
-                    <span><InlineCopy copy={skill} /></span>
-                  </div>
-                ))}
-              </div>
+            <div className="solution-boundary__principles">
+              {content.principles.map((principle, index) => (
+                <Principle key={principle.title} index={index} icon={principleIcons[index] ?? Compass} {...principle} />
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="content-section prototype-section">
-        <SectionHeading index="02" title={content.competencies.heading} text={content.competencies.intro} />
-        <div className="skills-grid prototype-skills-grid">
-          {content.competencies.items.map((competency) => (
-            <article key={competency.title}>
-              <header><span>{competency.index}</span><h3><InlineCopy copy={competency.title} /></h3></header>
-              <ul>{competency.skills.map((skill) => <li key={skill}><InlineCopy copy={skill} /></li>)}</ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="content-section prototype-section">
-        <SectionHeading index="03" title={content.architecture.heading} text={content.architecture.intro} />
-        <div className="engineering-card prototype-engineering-card with-media">
-          <div className="wide-media" aria-hidden="true"><img src={architectureImage} alt="" loading="lazy" /></div>
-          <div>
-            <h3><InlineCopy copy={content.architecture.title} /></h3>
-            {content.architecture.paragraphs.map((paragraph, index) => <p key={`${paragraph}-${index}`}><InlineCopy copy={paragraph} /></p>)}
-            <div className="prototype-mini-row">{content.architecture.points.map((point, index) => <span key={point}><b>0{index + 1}</b>{point}</span>)}</div>
+        <section className="solution-boundary__practice" aria-labelledby="practice-heading">
+          <MiniHeading id="practice-heading">{content.practiceHeading}</MiniHeading>
+          <div className="solution-boundary__practice-grid">
+            {content.examples.map((example, index) => (
+              <Link aria-label={example.title} className="solution-boundary__example" to={`/${site.locale}/projects${index === 1 ? '?caseStudy=repoatlas' : ''}`} key={example.title}>
+                <span className="solution-boundary__example-icon" aria-hidden="true">
+                  {index === 0 ? <Code2 /> : <GitBranch />}
+                </span>
+                <span><strong>{example.title}</strong><small>{example.label}</small></span>
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ))}
+            <aside className="solution-boundary__music-note">
+              <span aria-hidden="true"><MusicGlyph /></span>
+              <p>{content.musicNote}</p>
+            </aside>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="content-section prototype-section">
-        <SectionHeading index="04" title={content.verification.heading} text={content.verification.intro} />
-        <div className="prototype-fit-grid">
-          {content.verification.cards.map((card) => <div className={card.highlighted ? 'prototype-fit-card is-good' : 'prototype-fit-card'} key={card.title}><h3><InlineCopy copy={card.title} /></h3><p><InlineCopy copy={card.text} /></p></div>)}
-        </div>
+        <BoundaryQuote content={content} />
       </section>
-
-      <Statement content={content.statement} />
-      <FooterCta site={site} content={content.cta} />
     </DetailPageLayout>
   );
 }
 
-function PageTitle({ lines }: { readonly lines: readonly string[] }) {
-  return <>{lines.map((line, index) => <span key={`${line}-${index}`}><InlineCopy copy={line} />{index < lines.length - 1 && <br />}</span>)}</>;
+function DecisionDiagram({ content }: { readonly content: SolutionBoundaryContent['decision'] }) {
+  return (
+    <div className="boundary-decision" aria-label={content.question}>
+      <header className="boundary-decision__current">
+        <Box aria-hidden="true" />
+        <span><strong>{content.currentTitle}</strong><small>{content.currentText}</small></span>
+      </header>
+      <div className="boundary-decision__down" aria-hidden="true"><ArrowDown /></div>
+      <div className="boundary-decision__question-row">
+        <BranchLabel tone="yes" label={content.yes} />
+        <strong className="boundary-decision__question">{content.question}</strong>
+        <BranchLabel tone="no" label={content.no} />
+      </div>
+      <div className="boundary-decision__grid">
+        <DecisionPath tone="yes" icon={Wrench} {...content.stay} />
+        <div className="boundary-decision__core">
+          <ArrowRight className="boundary-decision__core-arrow boundary-decision__core-arrow--left" aria-hidden="true" />
+          <Navigation className="boundary-decision__core-icon" aria-hidden="true" />
+          <span>{content.center}</span>
+          <ArrowLeft className="boundary-decision__core-arrow boundary-decision__core-arrow--right" aria-hidden="true" />
+        </div>
+        <DecisionPath tone="no" icon={Layers3} {...content.rise} />
+      </div>
+    </div>
+  );
 }
 
-const showcaseIcons = [workflowProblemIcon, skillsDesignIcon, workflowImplementationIcon, skillsDeliveryIcon] as const;
-const skillColumnColors = ['green', 'cyan', 'orange', 'purple'] as const;
-const softSkillIcons = [
-  softCommunicationIcon,
-  softTeamworkIcon,
-  softIndependenceIcon,
-  softResponsibilityIcon,
-  softLearningIcon,
-] as const;
+function BranchLabel({ tone, label }: { readonly tone: 'yes' | 'no'; readonly label: string }) {
+  const StatusIcon = tone === 'yes' ? Check : X;
+  return (
+    <div className={`boundary-branch boundary-branch--${tone}`}>
+      <span>{label}<StatusIcon className="boundary-branch__status" aria-hidden="true" /></span>
+      <ArrowDown className="boundary-branch__arrow" aria-hidden="true" />
+    </div>
+  );
+}
 
-function getIndexedAsset(assets: readonly string[], index: number): string {
-  return assets[index] ?? assets[0] ?? '';
+type DecisionPathProps = SolutionBoundaryContent['decision']['stay'] & {
+  readonly icon: LucideIcon;
+  readonly tone: 'yes' | 'no';
+};
+
+function DecisionPath({ title, text, meta, icon: Icon, tone }: DecisionPathProps) {
+  return (
+    <div className={`boundary-path boundary-path--${tone}`}>
+      <article>
+        <h2><Icon aria-hidden="true" />{title}</h2>
+        <p>{text}</p><small>{meta}</small>
+      </article>
+    </div>
+  );
+}
+
+function MiniHeading({ id, children }: { readonly id: string; readonly children: string }) {
+  return <h2 className="solution-boundary__mini-heading" id={id}>{children}<ArrowRight aria-hidden="true" /></h2>;
+}
+
+function Layer({ index, title, text, icon: Icon }: { readonly index: number; readonly title: string; readonly text: string; readonly icon: LucideIcon }) {
+  return (
+    <article className={`solution-boundary__layer solution-boundary__layer--${index + 1}`}>
+      <span className="solution-boundary__layer-icon"><Icon aria-hidden="true" /></span>
+      <b>{String(index + 1).padStart(2, '0')}</b>
+      <span><strong>{title}</strong><small>{text}</small></span>
+    </article>
+  );
+}
+
+function Principle({ index, title, text, icon: Icon }: { readonly index: number; readonly title: string; readonly text: string; readonly icon: LucideIcon }) {
+  return (
+    <article className={`solution-boundary__principle solution-boundary__principle--${index + 1}`}>
+      <b>{String(index + 1).padStart(2, '0')}</b>
+      <span className="solution-boundary__principle-icon"><Icon aria-hidden="true" /></span>
+      <h3>{title}</h3><p>{text}</p>
+    </article>
+  );
+}
+
+function MusicGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+      <path d="M9 18V5l10-2v13" />
+      <circle cx="6" cy="18" r="3" />
+      <circle cx="16" cy="16" r="3" />
+    </svg>
+  );
+}
+
+function BoundaryQuote({ content }: { readonly content: SolutionBoundaryContent }) {
+  const [before, after] = content.quote.split(content.quoteAccent);
+  return (
+    <blockquote className="solution-boundary__quote">
+      <span aria-hidden="true">“</span>
+      <p>{before}<strong>{content.quoteAccent}</strong>{after}</p>
+      <i aria-hidden="true" />
+    </blockquote>
+  );
 }

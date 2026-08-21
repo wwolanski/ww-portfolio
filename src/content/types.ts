@@ -134,8 +134,33 @@ export type VerificationCard = {
   readonly highlighted?: boolean;
 };
 
+export type SolutionBoundaryContent = {
+  readonly eyebrow: string;
+  readonly title: readonly string[];
+  readonly lead: string;
+  readonly decision: {
+    readonly currentTitle: string;
+    readonly currentText: string;
+    readonly question: string;
+    readonly yes: string;
+    readonly no: string;
+    readonly stay: { readonly title: string; readonly text: string; readonly meta: string };
+    readonly rise: { readonly title: string; readonly text: string; readonly meta: string };
+    readonly center: string;
+  };
+  readonly layersHeading: string;
+  readonly layers: readonly { readonly title: string; readonly text: string }[];
+  readonly principles: readonly { readonly title: string; readonly text: string }[];
+  readonly practiceHeading: string;
+  readonly examples: readonly { readonly title: string; readonly label: string }[];
+  readonly musicNote: string;
+  readonly quote: string;
+  readonly quoteAccent: string;
+};
+
 export type SkillsContent = {
   readonly hero: HeroContent;
+  readonly boundary: SolutionBoundaryContent;
   readonly showcase: SkillsShowcase;
   readonly competencies: {
     readonly heading: string;

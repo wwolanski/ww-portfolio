@@ -103,7 +103,7 @@ describe('v7 detail visuals', () => {
     expect(workflowIntro.textContent).not.toContain('**');
   });
 
-  it('renders RepoAtlas links from JSON content with one decorative arrow', () => {
+  it('renders localized RepoAtlas links to the case study', () => {
     const about = renderPage(<AboutPage site={polishSite} />);
     const aboutLink = screen.getByRole('link', { name: 'RepoAtlas' });
 
@@ -115,7 +115,7 @@ describe('v7 detail visuals', () => {
     const skillsLink = screen.getByRole('link', { name: 'RepoAtlas' });
 
     expect(skillsLink).toHaveAttribute('href', '/pl/projects?caseStudy=repoatlas');
-    expect(skillsLink.querySelectorAll('.content-link__icon')).toHaveLength(1);
+    expect(skillsLink.querySelectorAll('svg')).toHaveLength(2);
   });
 
   it('reveals the complete example process on demand', async () => {
@@ -136,12 +136,13 @@ describe('v7 detail visuals', () => {
     expect(screen.getByRole('button', { name: 'Zwiń etapy procesu' })).toHaveAttribute('aria-expanded', 'true');
   });
 
-  it('renders the new skills showcase and blog card rail', () => {
+  it('renders the custom skills boundary section and blog card rail', () => {
     const { container, unmount } = renderPage(<SkillsPage site={polishSite} />);
 
-    expect(container.querySelector('.skills-showcase')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Umiejętności miękkie' })).toBeInTheDocument();
-    expect(container.querySelector('.wide-media img')).toBeInTheDocument();
+    expect(container.querySelector('.solution-boundary')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Rozpoznawanie granic rozwiązania' })).toBeInTheDocument();
+    expect(container.querySelectorAll('.solution-boundary__layer')).toHaveLength(5);
+    expect(container.querySelectorAll('.solution-boundary__principle')).toHaveLength(4);
 
     unmount();
     const blog = renderPage(<BlogPage site={polishSite} />);
@@ -149,13 +150,9 @@ describe('v7 detail visuals', () => {
     expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .pv-card')).toHaveLength(3);
   });
 
-  it('registers and renders every technology in the technologies list', () => {
+  it('registers every technology in the retained technologies content', () => {
     const stack = polishSite.portfolio.skills.stack;
     const stackTools = stack.bands.flatMap((band) => band.tools);
-    const { container } = renderPage(<SkillsPage site={polishSite} />);
-
-    expect(screen.getByRole('heading', { name: 'Technologie, z którymi pracuję' })).toBeInTheDocument();
-    expect(container.querySelector('.content-section .section-heading h2')).toHaveTextContent('Technologie, z którymi pracuję');
     expect(stack.bands.map((band) => band.title)).toEqual([
       'Frontend',
       'UI Systems',
@@ -187,14 +184,6 @@ describe('v7 detail visuals', () => {
       'Impeccable',
     ]);
     expect(stackTools.every((tool) => getTechTagDefinition(tool))).toBe(true);
-    expect(container.querySelectorAll('.tech-tag--badge')).toHaveLength(stackTools.length);
-    expect(container.querySelectorAll('[data-tech-tag="CodeGraph (local)"]')).toHaveLength(1);
-    expect(container.querySelectorAll('[data-tech-tag="RTK"]')).toHaveLength(1);
-    expect(container.querySelectorAll('[data-tech-tag="CI/CD"]')).toHaveLength(1);
-    expect(container.querySelectorAll('[data-tech-tag="Git"]')).toHaveLength(1);
-    expect(container.querySelectorAll('[data-tech-tag="GitHub"]')).toHaveLength(1);
-    expect(container.querySelectorAll('[data-tech-tag="Claude"]')).toHaveLength(0);
-    expect(container.querySelectorAll('[data-tech-tag="Zustand"]')).toHaveLength(0);
     expect(getTechTagDefinition('Git')?.icon).toEqual({ kind: 'iconify', name: 'skill-icons:git' });
     expect(getTechTagDefinition('GitHub')?.icon).toEqual({ kind: 'iconify', name: 'simple-icons:github' });
     expect(getTechTagDefinition('Mermaid')?.icon).toEqual({
