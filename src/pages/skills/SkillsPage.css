@@ -45,6 +45,18 @@
 
 .solution-boundary__intro { padding-top: 0; }
 
+.solution-boundary__diagram {
+  position: relative;
+  align-self: stretch;
+  min-width: 0;
+}
+
+.solution-boundary__diagram > .boundary-decision {
+  position: absolute;
+  inset: 50% 0 auto;
+  transform: translateY(-50%);
+}
+
 .solution-boundary__intro h1 {
   margin: 1.5rem 0 0;
   font-family: var(--font-condensed);
@@ -318,6 +330,11 @@
 @media (max-width: 1250px) {
   .solution-boundary__hero { grid-template-columns: 1fr; }
   .solution-boundary__intro { max-width: 42rem; }
+  .solution-boundary__diagram { align-self: auto; }
+  .solution-boundary__diagram > .boundary-decision {
+    position: static;
+    transform: none;
+  }
   .solution-boundary__intro h1 { font-size: clamp(4.6rem, 9vw, 7.2rem); }
   .solution-boundary__thinking-grid { grid-template-columns: 1fr; }
   .solution-boundary__layers { display: grid; grid-template-columns: repeat(5, 1fr); }

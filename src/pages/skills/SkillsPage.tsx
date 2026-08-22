@@ -32,7 +32,9 @@ export function SkillsPage({ site }: SkillsPageProps) {
             <span className="solution-boundary__accent" aria-hidden="true" />
             <p>{content.lead}</p>
           </header>
-          <DecisionDiagram content={content.decision} />
+          <div className="solution-boundary__diagram">
+            <DecisionDiagram content={content.decision} />
+          </div>
         </div>
 
         <section className="solution-boundary__thinking" aria-labelledby="layers-heading">
