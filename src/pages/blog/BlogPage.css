@@ -31,7 +31,8 @@
   height: 16px;
 }
 
-.detail-page--blog .page-hero {
+.detail-page--blog .page-hero,
+.detail-main__route-layer[data-page="blog"] .page-hero {
   border-bottom: 0;
 }
 

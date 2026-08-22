@@ -92,6 +92,16 @@ button {
   to { opacity: 1; }
 }
 
+@keyframes route-layer-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes route-layer-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 @media (forced-colors: active) {
   * {
     scrollbar-color: auto;

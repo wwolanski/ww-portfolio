@@ -57,6 +57,22 @@
   width: 42px;
   height: 42px; }
 
+:root:not(.dark) .about-workflow__orb {
+  border-color: color-mix(in srgb, var(--page-accent) 52%, var(--line));
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.72), transparent 30%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--page-accent) 24%, var(--surface)), color-mix(in srgb, var(--page-accent) 10%, var(--surface)) 58%, var(--surface) 78%);
+  box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px color-mix(in srgb, var(--page-accent) 32%, transparent), 0 16px 26px rgba(0, 0, 0, 0.14), inset 0 0 18px color-mix(in srgb, var(--page-accent) 12%, transparent); }
+
+:root:not(.dark) .about-workflow__orb::after {
+  border-color: color-mix(in srgb, var(--page-accent) 25%, transparent);
+}
+
+:root:not(.dark) .about-workflow__orb img {
+  filter: brightness(0) saturate(100%);
+  opacity: 0.72;
+}
+
 .about-workflow__step > b {
   display: block;
   margin-bottom: 12px;
@@ -271,7 +287,8 @@
   --about-hero-gap: clamp(4rem, 8vw, 7rem);
 }
 
-.detail-page--about .page-hero {
+.detail-page--about .page-hero,
+.detail-main__route-layer[data-page="about"] .page-hero {
   padding-bottom: var(--about-hero-gap);
 }
 

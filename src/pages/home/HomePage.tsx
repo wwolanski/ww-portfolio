@@ -1,5 +1,5 @@
 import { ArrowDownRight } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 import { LanguageSwitcher } from '../../components/layout/LanguageSwitcher';
 import { InlineCopy } from '../../components/ui/InlineCopy';
@@ -11,9 +11,10 @@ type HomePageProps = { readonly site: SiteContent };
 
 export function HomePage({ site }: HomePageProps) {
   const { locale, messages, home, navigation } = site;
+  const location = useLocation();
 
   return (
-    <main id="main-content" className="home-page">
+    <main key={location.pathname} id="main-content" className="home-page route-enter">
       <div className="home-shell">
         <div className="home-intro">
           <header className="home-header">

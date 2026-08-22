@@ -21,6 +21,22 @@ import workflowSystemIcon from '../../../img/icons/workflow-system.svg';
 type AboutPageProps = { readonly site: SiteContent };
 
 export function AboutPage({ site }: AboutPageProps) {
+  const { about } = site.portfolio;
+
+  return (
+    <DetailPageLayout
+      site={site}
+      page="about"
+      eyebrow={about.hero.eyebrow}
+      title={<PageTitle lines={about.hero.title} />}
+      intro={<InlineCopy copy={about.hero.lead} />}
+    >
+      <AboutPageContent site={site} />
+    </DetailPageLayout>
+  );
+}
+
+export function AboutPageContent({ site }: AboutPageProps) {
   const { messages } = site;
   const { about } = site.portfolio;
   const [isProcessExpanded, setIsProcessExpanded] = useState(false);
@@ -63,14 +79,7 @@ export function AboutPage({ site }: AboutPageProps) {
     : messages.content.expandProcess;
 
   return (
-    <DetailPageLayout
-      site={site}
-      page="about"
-      eyebrow={about.hero.eyebrow}
-      title={<PageTitle lines={about.hero.title} />}
-      intro={<InlineCopy copy={about.hero.lead} />}
-    >
-      <div className="about-page">
+    <div className="about-page">
         <section className="content-section about-section about-section--timeline">
           <SectionHeading index="01" title={about.timeline.heading} text={about.timeline.intro} />
           <div className="about-timeline">
@@ -138,8 +147,7 @@ export function AboutPage({ site }: AboutPageProps) {
 
         <Statement content={about.statement} />
         <FooterCta site={site} content={about.cta} />
-      </div>
-    </DetailPageLayout>
+    </div>
   );
 }
 

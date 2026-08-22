@@ -1,4 +1,5 @@
-.detail-page--projects .project-list .project-row:first-child {
+.detail-page--projects .project-list .project-row:first-child,
+.detail-main__route-layer[data-page="projects"] .project-list .project-row:first-child {
   padding-top: 0;
 }
 

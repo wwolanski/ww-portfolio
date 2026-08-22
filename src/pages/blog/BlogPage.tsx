@@ -17,6 +17,24 @@ type TagFilter = {
 
 export function BlogPage({ site }: BlogPageProps) {
   const { blog: content } = site.portfolio;
+  const [searchParams] = useSearchParams();
+  const [titleLineOne, titleLineTwo] = content.title;
+
+  return (
+    <DetailPageLayout
+      site={site}
+      page="blog"
+      eyebrow={content.eyebrow}
+      title={<><InlineCopy copy={titleLineOne ?? ''} /><br /><InlineCopy copy={titleLineTwo ?? ''} /></>}
+      intro={<InlineCopy copy={content.intro} />}
+      showHero={!searchParams.get('article')}
+    >
+      <BlogPageContent site={site} />
+    </DetailPageLayout>
+  );
+}
+
+export function BlogPageContent({ site }: BlogPageProps) {
   const [articles, setArticles] = useState<readonly BlogArticle[] | null>(null);
   const [articleIndexError, setArticleIndexError] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,8 +66,6 @@ export function BlogPage({ site }: BlogPageProps) {
   const visibleArticles = articles && activeTag
     ? articles.filter((article) => article.tags.includes(activeTag))
     : articles ?? [];
-  const [titleLineOne, titleLineTwo] = content.title;
-
   function openArticle(article: BlogArticle) {
     setSearchParams((current) => {
       const next = new URLSearchParams(current);
@@ -68,14 +84,7 @@ export function BlogPage({ site }: BlogPageProps) {
   }
 
   return (
-    <DetailPageLayout
-      site={site}
-      page="blog"
-      eyebrow={content.eyebrow}
-      title={<><InlineCopy copy={titleLineOne ?? ''} /><br /><InlineCopy copy={titleLineTwo ?? ''} /></>}
-      intro={<InlineCopy copy={content.intro} />}
-      showHero={!activeArticle}
-    >
+    <>
       {articles === null ? (
         <BlogIndexState message={articleIndexError ? site.messages.blog.errorIndex : site.messages.blog.loadingIndex} isError={articleIndexError} />
       ) : activeArticle ? (
@@ -90,7 +99,7 @@ export function BlogPage({ site }: BlogPageProps) {
           onOpenArticle={openArticle}
         />
       )}
-    </DetailPageLayout>
+    </>
   );
 }
 

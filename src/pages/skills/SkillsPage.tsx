@@ -17,11 +17,19 @@ const layerIcons = [Wrench, Check, Network, Database, Box] as const;
 const principleIcons = [Puzzle, Layers3, Flag, TrendingUp] as const;
 
 export function SkillsPage({ site }: SkillsPageProps) {
+  return (
+    <DetailPageLayout site={site} page="skills" eyebrow="" title={null} intro={null} showHero={false}>
+      <SkillsPageContent site={site} />
+    </DetailPageLayout>
+  );
+}
+
+export function SkillsPageContent({ site }: SkillsPageProps) {
   const content = site.portfolio.skills.boundary;
   const stack = site.portfolio.skills.stack;
 
   return (
-    <DetailPageLayout site={site} page="skills" eyebrow="" title={null} intro={null} showHero={false}>
+    <>
       <section className="solution-boundary" aria-labelledby="solution-boundary-title">
         <div className="solution-boundary__hero">
           <header className="solution-boundary__intro">
@@ -88,7 +96,7 @@ export function SkillsPage({ site }: SkillsPageProps) {
 
       <Statement content={site.portfolio.skills.statement} />
       <FooterCta site={site} content={site.portfolio.skills.cta} />
-    </DetailPageLayout>
+    </>
   );
 }
 

@@ -22,14 +22,14 @@
   justify-content: space-between;
   gap: 18px;
   padding-top: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  border-top: 1px solid var(--visual-line);
   pointer-events: none;
 }
 
 .visual-panel__caption small {
   display: block;
   margin-bottom: 5px;
-  color: rgba(255, 255, 255, 0.48);
+  color: var(--visual-muted);
   font-size: 0.5rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -37,7 +37,7 @@
 
 .visual-panel__caption strong {
   display: block;
-  color: #f2f0ea;
+  color: var(--visual-ink);
   font-family: var(--font-condensed);
   font-size: 1.4rem;
   font-weight: 400;
@@ -71,8 +71,8 @@
   height: 210px;
   padding: 18px;
   border: 1px solid rgba(var(--visual-rgb), 0.38);
-  background: #0b171b;
-  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.35);
+  background: var(--visual-card-bg);
+  box-shadow: 0 24px 55px var(--visual-card-shadow);
 }
 
 .visual-panel__blog-shapes .blog-visual-card:nth-child(1) {
@@ -94,7 +94,7 @@
 }
 
 .visual-panel__blog-shapes .blog-visual-card__heading {
-  color: #f2f0ea;
+  color: var(--visual-card-ink);
   font-family: var(--font-condensed);
   font-size: 1.7rem;
   line-height: 1;
@@ -118,7 +118,7 @@
 .visual-panel__blog-shapes .blog-visual-card__lines i {
   display: block;
   height: 5px;
-  background: rgba(255, 255, 255, 0.13);
+  background: var(--visual-card-line);
 }
 
 .visual-panel__blog-shapes .blog-visual-card__lines i:nth-child(2) { width: 73%;
@@ -136,9 +136,9 @@
   font-weight: 900;
 }
 
-.visual-panel[data-page="blog"] .blog-visual-card {
-  border-color: rgba(19, 182, 208, 0.45);
-  background: #0b1920;
+.visual-panel[data-page="blog"] .blog-visual-card,
+.visual-panel__route-layer[data-page="blog"] .blog-visual-card {
+  border-color: rgba(var(--visual-rgb), 0.45);
 }
 
 .detail-page {
@@ -147,28 +147,74 @@
   background: var(--surface);
 }
 
-.visual-panel[data-page="about"] {
+.visual-panel[data-page="about"],
+.visual-panel__route-layer[data-page="about"] {
   --visual-bg: #112321;
   --visual-rgb: 32, 181, 168;
   --visual-position: 50% 50%;
 }
 
-.visual-panel[data-page="projects"] {
+.visual-panel[data-page="projects"],
+.visual-panel__route-layer[data-page="projects"] {
   --visual-bg: #261a05;
   --visual-rgb: 246, 179, 27;
   --visual-position: 50% 50%;
 }
 
-.visual-panel[data-page="skills"] {
+.visual-panel[data-page="skills"],
+.visual-panel__route-layer[data-page="skills"] {
   --visual-bg: #2a1008;
   --visual-rgb: 255, 92, 42;
   --visual-position: 50% 50%;
 }
 
-.visual-panel[data-page="blog"] {
+.visual-panel[data-page="blog"],
+.visual-panel__route-layer[data-page="blog"] {
   --visual-bg: #071e2a;
   --visual-rgb: 19, 182, 208;
   --visual-position: 50% 50%;
+  --visual-card-bg: #0b1920;
+}
+
+:root:not(.dark) .visual-panel {
+  --visual-ink: #171714;
+  --visual-muted: rgba(23, 23, 20, 0.62);
+  --visual-line: rgba(23, 23, 20, 0.19);
+  --visual-control-bg: rgba(255, 255, 255, 0.48);
+  --visual-control-border: rgba(23, 23, 20, 0.32);
+  --visual-glow: rgba(var(--visual-rgb), 0.34);
+  --visual-highlight: rgba(var(--visual-rgb), 0.18);
+  --visual-highlight-strong: rgba(var(--visual-rgb), 0.1);
+  --visual-shadow: rgba(23, 23, 20, 0.04);
+  --visual-image-shadow: rgba(23, 23, 20, 0.25);
+  --visual-card-bg: rgba(255, 255, 255, 0.52);
+  --visual-card-ink: #171714;
+  --visual-card-line: rgba(23, 23, 20, 0.13);
+  --visual-card-shadow: rgba(23, 23, 20, 0.2);
+}
+
+:root:not(.dark) .visual-panel[data-page="about"],
+:root:not(.dark) .visual-panel__route-layer[data-page="about"] {
+  --visual-bg: #dcefe9;
+  --visual-rgb: 10, 126, 118;
+}
+
+:root:not(.dark) .visual-panel[data-page="projects"],
+:root:not(.dark) .visual-panel__route-layer[data-page="projects"] {
+  --visual-bg: #fff0d2;
+  --visual-rgb: 190, 119, 0;
+}
+
+:root:not(.dark) .visual-panel[data-page="skills"],
+:root:not(.dark) .visual-panel__route-layer[data-page="skills"] {
+  --visual-bg: #ffe5dc;
+  --visual-rgb: 205, 64, 25;
+}
+
+:root:not(.dark) .visual-panel[data-page="blog"],
+:root:not(.dark) .visual-panel__route-layer[data-page="blog"] {
+  --visual-bg: #dff3f7;
+  --visual-rgb: 12, 130, 154;
 }
 
 .visual-panel img {
@@ -183,7 +229,7 @@
   position: absolute;
   z-index: 2;
   left: 1.5rem;
-  color: #fff;
+  color: var(--visual-ink);
 }
 
 .back-link svg {
@@ -243,9 +289,24 @@
 }
 
 .visual-panel {
+  --visual-ink: #f2f0ea;
+  --visual-muted: rgba(255, 255, 255, 0.48);
+  --visual-line: rgba(255, 255, 255, 0.16);
+  --visual-control-bg: rgba(0, 0, 0, 0.36);
+  --visual-control-border: rgba(255, 255, 255, 0.38);
+  --visual-glow: rgba(var(--visual-rgb), 0.2);
+  --visual-highlight: rgba(255, 255, 255, 0.07);
+  --visual-highlight-strong: rgba(255, 255, 255, 0.04);
+  --visual-shadow: rgba(0, 0, 0, 0.18);
+  --visual-shadow-heavy: color-mix(in srgb, var(--surface) 72%, transparent);
+  --visual-image-shadow: rgba(0, 0, 0, 0.48);
+  --visual-card-bg: #0b171b;
+  --visual-card-ink: #f2f0ea;
+  --visual-card-line: rgba(255, 255, 255, 0.13);
+  --visual-card-shadow: rgba(0, 0, 0, 0.35);
   width: clamp(310px, 29vw, 520px);
   border-right: 1px solid var(--line);
-  background: var(--visual-bg, #112321);
+  background: var(--surface);
   position: fixed;
   z-index: 10;
   inset: 0 auto auto 0;
@@ -253,20 +314,37 @@
   overflow: hidden;
 }
 
-.visual-panel::after {
+.visual-panel__route-layer {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
+  background: var(--visual-bg, #112321);
+}
+
+.visual-panel__route-layer--outgoing {
+  animation: route-layer-out 360ms ease both;
+  pointer-events: none;
+}
+
+.visual-panel__route-layer--incoming {
+  animation: route-layer-in 360ms ease both;
+}
+
+.visual-panel__route-layer::after {
   z-index: 5;
   background:
-    radial-gradient(circle at 22% 17%, rgba(var(--visual-rgb), 0.2), transparent 28%),
-    radial-gradient(circle at 75% 55%, rgba(255, 255, 255, 0.07), transparent 27%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.04), transparent 40%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.18), transparent 22%, transparent 72%, rgba(0, 0, 0, 0.72));
+    radial-gradient(circle at 22% 17%, var(--visual-glow), transparent 28%),
+    radial-gradient(circle at 75% 55%, var(--visual-highlight), transparent 27%),
+    linear-gradient(160deg, var(--visual-highlight-strong), transparent 40%),
+    linear-gradient(180deg, var(--visual-shadow), transparent 22%, transparent 72%, var(--visual-shadow-heavy));
   position: absolute;
   inset: 0;
   content: "";
   pointer-events: none;
 }
 
-.visual-panel > img {
+.visual-panel__route-layer > img {
   position: absolute;
   z-index: 2;
   top: 8%;
@@ -276,7 +354,7 @@
   max-height: 72%;
   object-fit: contain;
   transform: translateX(-50%) translateY(4vh);
-  filter: drop-shadow(0 30px 55px rgba(0, 0, 0, 0.48));
+  filter: drop-shadow(0 30px 55px var(--visual-image-shadow));
 }
 
 .back-link {
@@ -284,14 +362,14 @@
   top: 20px;
   left: 20px;
   padding: 10px 12px;
-  background: rgba(0, 0, 0, 0.36);
+  background: var(--visual-control-bg);
   font-size: 0.64rem;
   letter-spacing: 0.08em;
   backdrop-filter: blur(10px);
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.38);
+  border: 1px solid var(--visual-control-border);
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -301,7 +379,6 @@
   right: auto;
   bottom: 25px;
   left: 22px;
-  color: #f2f0ea;
   font-family: var(--font-condensed);
   font-size: 1.75rem;
   letter-spacing: 0.02em;
@@ -311,6 +388,24 @@
 .detail-content {
   width: calc(100% - clamp(310px, 29vw, 520px));
   margin-left: clamp(310px, 29vw, 520px);
+}
+
+.detail-main__route-stack {
+  display: grid;
+}
+
+.detail-main__route-layer {
+  min-width: 0;
+  grid-area: 1 / 1;
+}
+
+.detail-main__route-layer--outgoing {
+  animation: route-layer-out 360ms ease both;
+  pointer-events: none;
+}
+
+.detail-main__route-layer--incoming {
+  animation: route-layer-in 360ms ease both;
 }
 
 @media (max-width: 1180px) {
@@ -333,7 +428,7 @@
     border-bottom: 1px solid var(--line);
   }
 
-  .visual-panel > img {
+  .visual-panel__route-layer > img {
     top: 4%;
     width: min(58%, 360px);
     max-height: 78%;
@@ -356,7 +451,7 @@
     object-position: var(--visual-position, 50% 18%);
   }
 
-  .visual-panel > img {
+  .visual-panel__route-layer > img {
     top: 2%;
     width: min(54%, 250px);
   }

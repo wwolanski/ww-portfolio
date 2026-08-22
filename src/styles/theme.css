@@ -1,13 +1,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  --surface: color-mix(in srgb, white 95%, black 5%);
   font-family: var(--font-body);
   color: #171714;
-  background: #eee9dc;
+  background: var(--surface);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --surface: #eee9dc;
-  --surface-elevated: #f8f3e7;
+  --surface-elevated: color-mix(in srgb, var(--surface) 75%, white 25%);
   --ink: #171714;
   --muted: #6b685f;
   --line: rgba(23, 23, 20, 0.17);

@@ -1,12 +1,13 @@
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router';
+import { Navigate, Route, Routes, useParams } from 'react-router';
 
+import { DetailPageRoute } from '../components/layout/DetailPageLayout';
 import { ScrollToTop } from '../components/layout/ScrollToTop';
 import { getSiteContent } from '../content/siteContent';
-import { AboutPage } from '../pages/about/AboutPage';
-import { BlogPage } from '../pages/blog/BlogPage';
+import { AboutPageContent } from '../pages/about/AboutPage';
+import { BlogPageContent } from '../pages/blog/BlogPage';
 import { HomePage } from '../pages/home/HomePage';
-import { ProjectsPage } from '../pages/projects/ProjectsPage';
-import { SkillsPage } from '../pages/skills/SkillsPage';
+import { ProjectsPageContent } from '../pages/projects/ProjectsPage';
+import { SkillsPageContent } from '../pages/skills/SkillsPage';
 import { defaultLocale, isLocale } from '../routing/locale';
 
 function LocalizedRoutes() {
@@ -25,10 +26,12 @@ function LocalizedRoutes() {
       </a>
       <Routes>
         <Route index element={<HomePage site={site} />} />
-        <Route path="about" element={<AboutPage site={site} />} />
-        <Route path="projects" element={<ProjectsPage site={site} />} />
-        <Route path="skills" element={<SkillsPage site={site} />} />
-        <Route path="blog" element={<BlogPage site={site} />} />
+        <Route element={<DetailPageRoute site={site} />}>
+          <Route path="about" element={<AboutPageContent site={site} />} />
+          <Route path="projects" element={<ProjectsPageContent site={site} />} />
+          <Route path="skills" element={<SkillsPageContent site={site} />} />
+          <Route path="blog" element={<BlogPageContent site={site} />} />
+        </Route>
         <Route path="*" element={<Navigate to={`/${localeParam}`} replace />} />
       </Routes>
     </>
@@ -36,18 +39,14 @@ function LocalizedRoutes() {
 }
 
 export function App() {
-  const location = useLocation();
-
   return (
     <>
       <ScrollToTop />
-      <div key={location.pathname} className="route-enter">
-        <Routes>
-          <Route path="/" element={<Navigate to={`/${defaultLocale}`} replace />} />
-          <Route path="/:locale/*" element={<LocalizedRoutes />} />
-          <Route path="*" element={<Navigate to={`/${defaultLocale}`} replace />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Navigate to={`/${defaultLocale}`} replace />} />
+        <Route path="/:locale/*" element={<LocalizedRoutes />} />
+        <Route path="*" element={<Navigate to={`/${defaultLocale}`} replace />} />
+      </Routes>
     </>
   );
 }

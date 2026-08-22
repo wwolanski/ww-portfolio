@@ -16,6 +16,22 @@ type ProjectsPageProps = { readonly site: SiteContent };
 
 export function ProjectsPage({ site }: ProjectsPageProps) {
   const { projects: content } = site.portfolio;
+
+  return (
+    <DetailPageLayout
+      site={site}
+      page="projects"
+      eyebrow={content.hero.eyebrow}
+      title={<PageTitle lines={content.hero.title} />}
+      intro={<InlineCopy copy={content.hero.lead} />}
+    >
+      <ProjectsPageContent site={site} />
+    </DetailPageLayout>
+  );
+}
+
+export function ProjectsPageContent({ site }: ProjectsPageProps) {
+  const { projects: content } = site.portfolio;
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -44,13 +60,7 @@ export function ProjectsPage({ site }: ProjectsPageProps) {
   }, [navigate]);
 
   return (
-    <DetailPageLayout
-      site={site}
-      page="projects"
-      eyebrow={content.hero.eyebrow}
-      title={<PageTitle lines={content.hero.title} />}
-      intro={<InlineCopy copy={content.hero.lead} />}
-    >
+    <>
       <section className="content-section">
         <div className="project-list">
           {content.selected.projects.map((project) => <ProjectRow key={project.slug} project={project} site={site} onOpen={openProject} />)}
@@ -69,7 +79,7 @@ export function ProjectsPage({ site }: ProjectsPageProps) {
           onViewPolish={() => viewPolishVersion(activeProject.caseStudySlug ?? activeProject.slug)}
         />
       )}
-    </DetailPageLayout>
+    </>
   );
 }
 

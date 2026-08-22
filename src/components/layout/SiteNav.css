@@ -10,6 +10,7 @@
 
 .site-mark span {
   color: var(--page-accent, #08c8e8);
+  transition: color 280ms ease;
 }
 
 .site-links {
@@ -34,7 +35,7 @@
   content: "";
   background: var(--page-accent, #08c8e8);
   transform: scaleX(0);
-  transition: transform 180ms ease;
+  transition: transform 180ms ease, background-color 280ms ease;
 }
 
 .site-links__link:hover,
