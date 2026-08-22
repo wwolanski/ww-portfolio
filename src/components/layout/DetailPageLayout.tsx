@@ -116,7 +116,7 @@ export function DetailPageLayout({
   }, []);
 
   return (
-    <div className={`detail-page detail-page--${page}`} style={{ '--page-accent': item.accent } as CSSProperties}>
+    <div className={`detail-page detail-page--${page} route-enter`} style={{ '--page-accent': item.accent } as CSSProperties}>
       <aside className="visual-panel" data-page={page} aria-label={site.messages.common.artwork(item.label)}>
         {outgoingSnapshot ? (
           <VisualPanelLayer key={`outgoing-${outgoingSnapshot.routeKey}`} snapshot={outgoingSnapshot} variant="outgoing" />

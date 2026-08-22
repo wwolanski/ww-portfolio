@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { useEffect, useRef, type RefObject } from 'react';
+import { useLayoutEffect, useRef, type RefObject } from 'react';
 
 import type { Messages } from '../../content/messages';
 import type { Project } from '../../content/types';
@@ -41,7 +41,7 @@ export function ProjectModal({
   const panelRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const previousActiveElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const openerElement = triggerRef.current;
     const rootElement = document.documentElement;

@@ -270,7 +270,15 @@ export function MdxTableOfContents({
   }, [articleRef, contentKey]);
 
   if (items.length === 0) {
-    return null;
+    return (
+      <nav
+        ref={navigationRef}
+        id={navigationId}
+        className="mdx-toc mdx-toc--pending scrollbar-hidden"
+        aria-hidden="true"
+        aria-busy="true"
+      />
+    );
   }
 
   function handleItemClick(event: MouseEvent<HTMLAnchorElement>, id: string) {

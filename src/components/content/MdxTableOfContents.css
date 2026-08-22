@@ -37,6 +37,11 @@
   overscroll-behavior: contain;
 }
 
+.mdx-toc--pending {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .mdx-toc__toggle,
 .mdx-toc__scrim {
   display: none;
