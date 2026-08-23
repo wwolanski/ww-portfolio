@@ -8,6 +8,7 @@ import { contentAlertTypes, type ContentAlertType } from './contentAlertTypes';
 import { MdxTableOfContents } from './MdxTableOfContents';
 import { ContentLink } from '../ui/ContentLink';
 import type { ContentAssetScope, ContentDocument } from '../../content/mdx/loader';
+import { getContentImage } from '../../content/mdx/imageAssets';
 import type { Messages } from '../../content/messages';
 
 type MdxContentProps = {
@@ -23,6 +24,11 @@ export type MdxContentVariant = 'modal' | 'page';
 
 type AlertBlockquoteProps = ComponentProps<'blockquote'> & {
   readonly 'data-alert-type'?: string;
+};
+
+type ArticleImageProps = {
+  readonly filename: string;
+  readonly alt?: string;
 };
 
 function isContentAlertType(value: string | undefined): value is ContentAlertType {
@@ -83,8 +89,17 @@ export function MdxContent({
             key={`${scope.type}:${scope.locale}:${scope.slug}`}
             scope={scope}
             copy={messages.content.imageGallery}
-          />
-        )
+        />
+      )
+      : () => null,
+    ArticleImage: scope
+      ? ({ filename, alt }: ArticleImageProps) => {
+          const image = getContentImage(scope, filename);
+
+          return image ? (
+            <img src={image.src} alt={alt ?? image.alt} loading="lazy" decoding="async" />
+          ) : null;
+        }
       : () => null,
   } satisfies MDXComponents;
 

@@ -54,3 +54,10 @@ export function getContentImages(scope: ContentAssetScope): readonly ContentImag
       };
     });
 }
+
+export function getContentImage(
+  scope: ContentAssetScope,
+  filename: string,
+): ContentImage | undefined {
+  return getContentImages(scope).find((image) => image.filename === filename);
+}
