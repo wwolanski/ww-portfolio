@@ -215,13 +215,13 @@ describe('project content system', () => {
     });
   });
 
-  it('shows a centered placeholder for projects without an MDX document', async () => {
+  it('opens the Bank Statement Converter case study from its MDX document', async () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
     await user.click(screen.getByRole('button', { name: /otwórz case-study: bank statement converter/i }));
 
-    expect(await screen.findByText('Case-study jest w przygotowaniu.')).toBeInTheDocument();
+    expect(await screen.findByText(/Bank Statement Converter powstał dla firmy księgowej/i)).toBeInTheDocument();
     expect(screen.getByRole('dialog', { name: 'Bank Statement Converter' })).toBeInTheDocument();
   });
 
@@ -317,7 +317,7 @@ describe('project content system', () => {
     expect(externalLink.querySelector('.content-link__icon')).toHaveAttribute('aria-hidden', 'true');
     expect(screen.getByAltText('Podgląd testowego obrazu Kukla2D')).toHaveAttribute('src', '/img/main.png');
 
-    for (const alertType of ['Note', 'Tip', 'Important', 'Warning', 'Caution']) {
+    for (const alertType of ['Note', 'Tip', 'Important', 'Warning', 'Caution', 'Solution']) {
       expect(screen.getByRole('complementary', { name: alertType })).toBeInTheDocument();
     }
   });

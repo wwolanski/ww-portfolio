@@ -1,7 +1,7 @@
 import { visit } from 'unist-util-visit';
 import type { Root } from 'mdast';
 
-const alertTypes = ['NOTE', 'TIP', 'IMPORTANT', 'WARNING', 'CAUTION'] as const;
+const alertTypes = ['NOTE', 'TIP', 'IMPORTANT', 'WARNING', 'CAUTION', 'SOLUTION'] as const;
 
 type AlertType = (typeof alertTypes)[number];
 
@@ -25,11 +25,11 @@ export function remarkGithubAlerts() {
         return;
       }
 
-      const match = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:[ \t]*\r?\n|[ \t]*$)/.exec(firstInline.value);
+      const match = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|SOLUTION)\](?:[ \t]*\r?\n|[ \t]*$)/.exec(firstInline.value);
 
       const alertType = match?.[1];
 
-      if (!alertType || !isAlertType(alertType)) {
+      if (!match || !alertType || !isAlertType(alertType)) {
         return;
       }
 

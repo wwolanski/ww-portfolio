@@ -1,4 +1,4 @@
-import { CircleAlert, Info, Lightbulb, OctagonAlert, TriangleAlert } from 'lucide-react';
+import { BadgeCheck, CircleAlert, Info, Lightbulb, OctagonAlert, TriangleAlert } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import type { ContentAlertType } from './contentAlertTypes';
@@ -14,6 +14,7 @@ const alertLabels: Record<ContentAlertType, string> = {
   important: 'Important',
   warning: 'Warning',
   caution: 'Caution',
+  solution: 'Solution',
 };
 
 const alertIcons = {
@@ -22,6 +23,7 @@ const alertIcons = {
   important: OctagonAlert,
   warning: TriangleAlert,
   caution: CircleAlert,
+  solution: BadgeCheck,
 } as const;
 
 export function ContentAlert({ type, children }: ContentAlertProps) {

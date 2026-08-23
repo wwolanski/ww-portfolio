@@ -28,6 +28,10 @@
   --mdx-alert-accent: #cf222e;
 }
 
+.mdx-alert--solution {
+  --mdx-alert-accent: #b7791f;
+}
+
 :root.dark .mdx-alert--note {
   --mdx-alert-accent: #4493f8;
 }
@@ -46,6 +50,10 @@
 
 :root.dark .mdx-alert--caution {
   --mdx-alert-accent: #f85149;
+}
+
+:root.dark .mdx-alert--solution {
+  --mdx-alert-accent: #f4c95d;
 }
 
 .mdx-alert__title {
