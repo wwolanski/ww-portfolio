@@ -44,6 +44,8 @@ type RawMessages = {
       readonly next: string;
       readonly image: string;
       readonly empty: string;
+      readonly expand: string;
+      readonly close: string;
     };
   };
   readonly actions: {
@@ -111,6 +113,8 @@ export type Messages = {
       readonly next: string;
       readonly image: (index: number) => string;
       readonly empty: string;
+      readonly expand: string;
+      readonly close: string;
     };
   };
   readonly actions: {
@@ -185,6 +189,8 @@ function createMessages(copy: RawMessages): Messages {
         next: copy.content.imageGallery.next,
         image: (index) => interpolate(copy.content.imageGallery.image, { index: String(index) }),
         empty: copy.content.imageGallery.empty,
+        expand: copy.content.imageGallery.expand,
+        close: copy.content.imageGallery.close,
       },
     },
     actions: {

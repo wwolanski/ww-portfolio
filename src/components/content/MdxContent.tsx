@@ -2,7 +2,7 @@ import { MDXProvider } from '@mdx-js/react';
 import type { MDXComponents } from 'mdx/types.js';
 import { useRef, type ComponentProps, type ReactNode } from 'react';
 
-import { ImageGallery } from './ImageGallery';
+import { ImageGallery, ImagePreview } from './ImageGallery';
 import { ContentAlert } from './ContentAlert';
 import { contentAlertTypes, type ContentAlertType } from './contentAlertTypes';
 import { MdxTableOfContents } from './MdxTableOfContents';
@@ -97,7 +97,10 @@ export function MdxContent({
           const image = getContentImage(scope, filename);
 
           return image ? (
-            <img src={image.src} alt={alt ?? image.alt} loading="lazy" decoding="async" />
+            <ImagePreview
+              image={{ ...image, alt: alt ?? image.alt }}
+              copy={messages.content.imageGallery}
+            />
           ) : null;
         }
       : () => null,

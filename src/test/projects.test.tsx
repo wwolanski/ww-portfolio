@@ -145,7 +145,7 @@ describe('project content system', () => {
     expect(spriteImages.length).toBeGreaterThan(0);
     const gallery = await screen.findByRole('region', { name: 'Galeria obrazów' });
     expect(gallery).toBeInTheDocument();
-    expect(gallery.querySelector('.mdx-image-gallery__frame button')).not.toBeInTheDocument();
+    expect(gallery.querySelector('.mdx-image-gallery__expand')).toBeInTheDocument();
     expect(screen.getByText(`1/${spriteImages.length}`)).toBeInTheDocument();
     const previousImageButton = screen.queryByRole('button', { name: 'Poprzedni obraz' });
     const nextImageButton = screen.queryByRole('button', { name: 'Następny obraz' });
@@ -171,6 +171,99 @@ describe('project content system', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(document.documentElement).not.toHaveClass('is-scroll-locked');
     expect(trigger).toHaveFocus();
+  });
+
+  it('opens the image lightbox from the case study gallery, navigates it, and restores focus on close', async () => {
+    const user = userEvent.setup();
+    renderPage(<ProjectsPage site={polishSite} />);
+
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: sprite stabilization pipeline/i }));
+    const gallery = await screen.findByRole('region', { name: 'Galeria obrazów' });
+    const expandButton = gallery.querySelector<HTMLButtonElement>('.mdx-image-gallery__expand');
+
+    if (!expandButton) {
+      throw new Error('Gallery expand button is missing.');
+    }
+
+    await user.click(expandButton);
+
+    const lightbox = await screen.findByRole('dialog', { name: 'Galeria obrazów' });
+    const overlay = lightbox.closest('.image-lightbox');
+
+    if (!(overlay instanceof HTMLElement)) {
+      throw new Error('Image lightbox overlay is missing.');
+    }
+
+    expect(within(lightbox).getByRole('img', { name: 'cd33e673 befe 4247 8355 9f487ea1480d' })).toBeInTheDocument();
+    expect(within(overlay).getByRole('button', { name: 'Zamknij podgląd obrazu' })).toHaveFocus();
+    expect(document.documentElement).toHaveClass('is-scroll-locked');
+
+    if (spriteImages.length > 1) {
+      await user.click(within(overlay).getByRole('button', { name: 'Następny obraz' }));
+      expect(within(lightbox).getByRole('img', { name: 'gpt img 2 processor' })).toBeInTheDocument();
+      expect(within(lightbox).getByText(`2/${spriteImages.length}`)).toBeInTheDocument();
+
+      await user.keyboard('{ArrowLeft}');
+      expect(within(lightbox).getByText(`1/${spriteImages.length}`)).toBeInTheDocument();
+
+      await user.keyboard('{ArrowRight}');
+      expect(within(lightbox).getByText(`2/${spriteImages.length}`)).toBeInTheDocument();
+    }
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Galeria obrazów' })).not.toBeInTheDocument());
+    expect(expandButton).toHaveFocus();
+    expect(document.documentElement).toHaveClass('is-scroll-locked');
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Sprite Stabilization Pipeline' })).not.toBeInTheDocument());
+    expect(document.documentElement).not.toHaveClass('is-scroll-locked');
+  });
+
+  it('opens a single OrderHub article image in the shared lightbox preview', async () => {
+    const user = userEvent.setup();
+    const imageAlt = 'Edytor mapy sklepu z wizualizacją wygenerowanej trasy pickingu';
+    const { container } = renderPage(
+      <MdxContent
+        document={{ Component: OrderHubFixture, frontmatter: { title: 'OrderHub' } }}
+        messages={polishSite.messages}
+        scope={{ type: 'project', slug: 'orderhub-pos-wms', locale: 'pl' }}
+      />,
+    );
+
+    const image = screen.getByAltText(imageAlt);
+    const trigger = image.closest('button');
+
+    if (!trigger) {
+      throw new Error('Single image preview trigger is missing.');
+    }
+
+    expect(trigger).toHaveClass('mdx-image-preview');
+    expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
+
+    await user.click(trigger);
+
+    const lightbox = await screen.findByRole('dialog', { name: 'Galeria obrazów' });
+    const overlay = lightbox.closest('.image-lightbox');
+
+    if (!(overlay instanceof HTMLElement)) {
+      throw new Error('Image lightbox overlay is missing.');
+    }
+
+    expect(within(lightbox).getByRole('img', { name: imageAlt })).toBeInTheDocument();
+    expect(within(overlay).queryByRole('button', { name: 'Poprzedni obraz' })).not.toBeInTheDocument();
+    expect(within(overlay).queryByRole('button', { name: 'Następny obraz' })).not.toBeInTheDocument();
+    expect(within(overlay).getByRole('button', { name: 'Zamknij podgląd obrazu' })).toHaveFocus();
+    expect(document.documentElement).toHaveClass('is-scroll-locked');
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Galeria obrazów' })).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
+    expect(document.documentElement).not.toHaveClass('is-scroll-locked');
+    expect(container.querySelector('.mdx-image-preview')).toBeInTheDocument();
   });
 
   it('gives the mobile table-of-contents drawer its own scroll state and restores focus on close', async () => {
