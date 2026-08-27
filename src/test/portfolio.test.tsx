@@ -10,6 +10,7 @@ import { TechTag } from '../components/ui/TechTag';
 import { AboutPage } from '../pages/about/AboutPage';
 import { BlogPage } from '../pages/blog/BlogPage';
 import { HomePage } from '../pages/home/HomePage';
+import { ProjectsPage } from '../pages/projects/ProjectsPage';
 import { SkillsPage } from '../pages/skills/SkillsPage';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
 
@@ -164,11 +165,18 @@ describe('v7 detail visuals', () => {
     expect(container.querySelectorAll('.tech-tag--badge')).toHaveLength(stackTools.length);
   });
 
-  it('renders the skills closing statement and CTA', () => {
-    renderPage(<SkillsPage site={polishSite} />);
+  it('keeps the statement only on about and ends other detail pages with their CTA', () => {
+    const about = renderPage(<AboutPage site={polishSite} />);
+    expect(about.container.querySelector('.statement')).toBeInTheDocument();
+    about.unmount();
 
-    expect(screen.getByRole('heading', { name: 'Mój workflow łączy research, architekturę, coding agents i mechaniczne sprawdzanie wyniku.' })).toBeInTheDocument();
+    const skills = renderPage(<SkillsPage site={polishSite} />);
+    expect(skills.container.querySelector('.statement')).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Projekty ↗' })).toHaveAttribute('href', '/pl/projects');
+    skills.unmount();
+
+    const projects = renderPage(<ProjectsPage site={polishSite} />);
+    expect(projects.container.querySelector('.statement')).not.toBeInTheDocument();
   });
 
   it('registers every technology in the retained technologies content', () => {

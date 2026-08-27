@@ -179,15 +179,6 @@ function BlogIndex({
         </div>
       </section>
 
-      <aside className="blog-newsletter">
-        <span>{site.messages.blog.newsletterEyebrow}</span>
-        <h2>{site.messages.blog.newsletterTitle}</h2>
-        <form onSubmit={(event) => event.preventDefault()}>
-          <label htmlFor="newsletter-email">{site.messages.blog.workEmail}</label>
-          <input id="newsletter-email" type="email" placeholder={site.messages.blog.emailPlaceholder} required />
-          <button type="submit">{site.messages.blog.subscribe} <ArrowUpRight aria-hidden="true" /></button>
-        </form>
-      </aside>
     </>
   );
 }

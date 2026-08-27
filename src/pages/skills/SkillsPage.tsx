@@ -5,7 +5,7 @@ import {
 import { Link } from 'react-router';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
-import { FooterCta, Statement } from '../../components/ui/ClosingSections';
+import { FooterCta } from '../../components/ui/ClosingSections';
 import { SectionHeading } from '../../components/ui/SectionHeading';
 import { TechTag } from '../../components/ui/TechTag';
 import type { SiteContent } from '../../content/siteContent';
@@ -94,7 +94,6 @@ export function SkillsPageContent({ site }: SkillsPageProps) {
         </div>
       </section>
 
-      <Statement content={site.portfolio.skills.statement} />
       <FooterCta site={site} content={site.portfolio.skills.cta} />
     </>
   );

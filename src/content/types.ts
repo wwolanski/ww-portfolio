@@ -101,7 +101,6 @@ export type ProjectsContent = {
     readonly intro: string;
     readonly projects: readonly Project[];
   };
-  readonly statement: StatementContent;
   readonly cta: CallToAction;
 };
 
@@ -182,7 +181,6 @@ export type SkillsContent = {
     readonly intro: string;
     readonly cards: readonly VerificationCard[];
   };
-  readonly statement: StatementContent;
   readonly cta: CallToAction;
 };
 

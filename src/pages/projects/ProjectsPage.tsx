@@ -3,7 +3,7 @@ import { ArrowUpRight } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
-import { FooterCta, Statement } from '../../components/ui/ClosingSections';
+import { FooterCta } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { ProjectModal } from '../../components/ui/ProjectModal';
 import { ProjectBadge } from '../../components/ui/ProjectBadge';
@@ -67,7 +67,6 @@ export function ProjectsPageContent({ site }: ProjectsPageProps) {
         </div>
       </section>
 
-      <Statement content={content.statement} />
       <FooterCta site={site} content={content.cta} />
       {activeProject && (
         <ProjectModal

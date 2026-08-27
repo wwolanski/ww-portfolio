@@ -7,6 +7,10 @@
   border-bottom: 0;
 }
 
+.detail-page--projects .content-section + .footer-cta {
+  border-top: 0;
+}
+
 .project-meta {
   display: flex;
   flex-direction: column;

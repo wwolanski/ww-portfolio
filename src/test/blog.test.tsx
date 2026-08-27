@@ -62,7 +62,6 @@ describe('MDX blog', () => {
     expect(await screen.findByRole('button', { name: `Wszystkie (${articles.length})` })).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Najnowsze teksty' })).not.toBeInTheDocument();
-
     await user.click(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` }));
 
     for (const article of matchingArticles) {

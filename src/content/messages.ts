@@ -63,11 +63,6 @@ type RawMessages = {
     readonly loadingArticle: string;
     readonly missingArticle: string;
     readonly errorArticle: string;
-    readonly newsletterEyebrow: string;
-    readonly newsletterTitle: string;
-    readonly workEmail: string;
-    readonly emailPlaceholder: string;
-    readonly subscribe: string;
     readonly readTime: string;
   };
 };
@@ -132,11 +127,6 @@ export type Messages = {
     readonly loadingArticle: string;
     readonly missingArticle: string;
     readonly errorArticle: string;
-    readonly newsletterEyebrow: string;
-    readonly newsletterTitle: string;
-    readonly workEmail: string;
-    readonly emailPlaceholder: string;
-    readonly subscribe: string;
     readonly readTime: (time: string) => string;
   };
 };
@@ -208,11 +198,6 @@ function createMessages(copy: RawMessages): Messages {
       loadingArticle: copy.blog.loadingArticle,
       missingArticle: copy.blog.missingArticle,
       errorArticle: copy.blog.errorArticle,
-      newsletterEyebrow: copy.blog.newsletterEyebrow,
-      newsletterTitle: copy.blog.newsletterTitle,
-      workEmail: copy.blog.workEmail,
-      emailPlaceholder: copy.blog.emailPlaceholder,
-      subscribe: copy.blog.subscribe,
       readTime: (time) => interpolate(copy.blog.readTime, { time }),
     },
   };

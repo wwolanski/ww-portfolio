@@ -27,6 +27,10 @@
   margin-inline: auto;
 }
 
+.detail-page--skills .content-section + .footer-cta {
+  border-top: 0;
+}
+
 .solution-boundary {
   --boundary-green: #7ed957;
   --boundary-amber: var(--color-amber-accent);
