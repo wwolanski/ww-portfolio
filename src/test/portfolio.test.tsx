@@ -140,15 +140,50 @@ describe('v7 detail visuals', () => {
     const { container, unmount } = renderPage(<SkillsPage site={polishSite} />);
 
     expect(container.querySelector('.solution-boundary')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Rozpoznawanie granic rozwiązania' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: polishSite.portfolio.skills.boundary.title.join(' ') })).toBeInTheDocument();
     expect(container.querySelector('.solution-boundary .page-eyebrow')).toHaveTextContent('Umiejętności · 03');
-    expect(container.querySelectorAll('.solution-boundary__layer')).toHaveLength(5);
+    expect(container.querySelectorAll('.solution-boundary__layer')).toHaveLength(4);
     expect(container.querySelectorAll('.solution-boundary__principle')).toHaveLength(4);
 
     unmount();
     const blog = renderPage(<BlogPage site={polishSite} />);
     expect(blog.container.querySelector('.visual-panel[data-page="blog"]')).toBeInTheDocument();
     expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .blog-visual-card')).toHaveLength(3);
+  });
+
+  it('synchronizes hover highlighting between boundary layers and principles', async () => {
+    const user = userEvent.setup();
+    const { container } = renderPage(<SkillsPage site={polishSite} />);
+    const layers = container.querySelectorAll<HTMLElement>('.solution-boundary__layer');
+    const principles = container.querySelectorAll<HTMLElement>('.solution-boundary__principle');
+    const secondPrinciple = principles[1];
+    const thirdLayer = layers[2];
+
+    if (!secondPrinciple || !thirdLayer) {
+      throw new Error('Expected four boundary pairs.');
+    }
+
+    await user.hover(secondPrinciple);
+
+    layers.forEach((layer, index) => {
+      expect(layer).toHaveClass(index === 1 ? 'is-active' : 'is-muted');
+    });
+    principles.forEach((principle, index) => {
+      expect(principle).toHaveClass(index === 1 ? 'is-active' : 'is-muted');
+    });
+
+    await user.hover(thirdLayer);
+
+    expect(layers[2]).toHaveClass('is-active');
+    expect(principles[2]).toHaveClass('is-active');
+    expect(layers[1]).toHaveClass('is-muted');
+    expect(principles[1]).toHaveClass('is-muted');
+
+    await user.click(thirdLayer);
+    await user.unhover(thirdLayer);
+
+    expect(container.querySelectorAll('.solution-boundary__layer.is-active')).toHaveLength(0);
+    expect(container.querySelectorAll('.solution-boundary__principle.is-muted')).toHaveLength(0);
   });
 
   it('renders the technologies section directly after the solution boundary', () => {

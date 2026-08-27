@@ -289,14 +289,20 @@
   border: 1px solid var(--line);
   background: linear-gradient(90deg, color-mix(in srgb, var(--ink) 4%, transparent), transparent);
   clip-path: polygon(0 0, 92% 0, 100% 18%, 100% 82%, 92% 100%, 0 100%);
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: filter 220ms ease, opacity 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
 }
 
 .solution-boundary__layer--1 { --layer-color: var(--boundary-green); }
 .solution-boundary__layer--2 { --layer-color: var(--boundary-amber); }
 .solution-boundary__layer--3 { --layer-color: var(--boundary-purple); }
 .solution-boundary__layer--4 { --layer-color: var(--boundary-blue); }
-.solution-boundary__layer--5 { --layer-color: var(--page-accent); }
 .solution-boundary__layer:last-child { border-color: color-mix(in srgb, var(--layer-color) 58%, var(--line)); box-shadow: inset 0 -2px var(--layer-color), 0 10px 24px color-mix(in srgb, var(--layer-color) 10%, transparent); }
+.solution-boundary__layer.is-active { border-color: color-mix(in srgb, var(--layer-color) 72%, var(--line)); box-shadow: inset 0 -2px var(--layer-color), 0 10px 24px color-mix(in srgb, var(--layer-color) 10%, transparent); transform: translateX(2px); }
 .solution-boundary__layer-icon { display: grid; width: 2rem; height: 2rem; place-items: center; color: var(--layer-color); border: 1px solid color-mix(in srgb, var(--layer-color) 42%, var(--line)); border-radius: 50%; background: color-mix(in srgb, var(--layer-color) 5%, transparent); }
 .solution-boundary__layer-icon svg { width: 1rem; }
 .solution-boundary__layer b { color: var(--layer-color); font-size: .64rem; }
@@ -305,11 +311,15 @@
 .solution-boundary__layer small { margin-top: .2rem; color: var(--muted); font-size: .56rem; }
 
 .solution-boundary__principles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem; }
-.solution-boundary__principle { --principle-color: var(--page-accent); min-width: 0; min-height: 19rem; padding: 1.2rem 1rem; border: 1px solid var(--line); border-radius: 6px; background: linear-gradient(180deg, color-mix(in srgb, var(--principle-color) 3%, transparent), transparent 50%); }
+.solution-boundary__principle { --principle-color: var(--page-accent); min-width: 0; min-height: 19rem; padding: 1.2rem 1rem; border: 1px solid var(--line); border-radius: 6px; background: linear-gradient(180deg, color-mix(in srgb, var(--principle-color) 3%, transparent), transparent 50%); cursor: pointer; transition: filter 220ms ease, opacity 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease; }
 .solution-boundary__principle--1 { --principle-color: var(--boundary-green); }
-.solution-boundary__principle--2 { --principle-color: var(--page-accent); }
+.solution-boundary__principle--2 { --principle-color: var(--boundary-amber); }
 .solution-boundary__principle--3 { --principle-color: var(--boundary-purple); }
 .solution-boundary__principle--4 { --principle-color: var(--boundary-blue); }
+.solution-boundary__layer.is-muted, .solution-boundary__principle.is-muted { filter: grayscale(1); opacity: .42; }
+.solution-boundary__layer.is-active, .solution-boundary__principle.is-active { filter: none; opacity: 1; }
+.solution-boundary__principle.is-active { border-color: color-mix(in srgb, var(--principle-color) 68%, var(--line)); box-shadow: 0 12px 28px color-mix(in srgb, var(--principle-color) 12%, transparent); transform: translateY(-2px); }
+.solution-boundary__layer:focus-visible, .solution-boundary__principle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 .solution-boundary__principle > b { display: block; color: var(--principle-color); font-size: .72rem; }
 .solution-boundary__principle-icon { display: grid; width: clamp(4.2rem, 6vw, 5.4rem); height: clamp(4.2rem, 6vw, 5.4rem); margin: 1.6rem auto 1.7rem; place-items: center; color: var(--principle-color); border: 1px dashed currentColor; border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--principle-color) 7%, transparent), transparent 68%); }
 .solution-boundary__principle-icon svg { width: 2rem; height: 2rem; stroke-width: 1.4; }
@@ -341,7 +351,7 @@
   }
   .solution-boundary__intro h1 { font-size: clamp(4.6rem, 9vw, 7.2rem); }
   .solution-boundary__thinking-grid { grid-template-columns: 1fr; }
-  .solution-boundary__layers { display: grid; grid-template-columns: repeat(5, 1fr); }
+  .solution-boundary__layers { display: grid; grid-template-columns: repeat(4, 1fr); }
   .solution-boundary__layer { grid-template-columns: 1fr; align-content: start; min-height: 8.2rem; clip-path: none; }
 }
 

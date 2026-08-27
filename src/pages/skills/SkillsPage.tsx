@@ -1,7 +1,8 @@
 import {
-  ArrowLeft, ArrowRight, Box, Check, Code2, Compass, Database, Flag, GitBranch,
-  Layers3, Navigation, Network, Puzzle, TrendingUp, Wrench, X, type LucideIcon,
+  ArrowLeft, ArrowRight, Blocks, Box, Check, Code2, Compass, Copy, Database, GitBranch,
+  GitBranchPlus, Layers3, Link2, ListTree, Maximize2, Navigation, Network, Wrench, type LucideIcon, X,
 } from 'lucide-react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
@@ -13,8 +14,8 @@ import type { SolutionBoundaryContent } from '../../content/types';
 
 type SkillsPageProps = { readonly site: SiteContent };
 
-const layerIcons = [Wrench, Check, Network, Database, Box] as const;
-const principleIcons = [Puzzle, Layers3, Flag, TrendingUp] as const;
+const layerIcons = [ListTree, Blocks, Network, Database] as const;
+const principleIcons = [GitBranchPlus, Maximize2, Link2, Copy] as const;
 
 export function SkillsPage({ site }: SkillsPageProps) {
   return (
@@ -27,6 +28,8 @@ export function SkillsPage({ site }: SkillsPageProps) {
 export function SkillsPageContent({ site }: SkillsPageProps) {
   const content = site.portfolio.skills.boundary;
   const stack = site.portfolio.skills.stack;
+  const [activePairIndex, setActivePairIndex] = useState<number | null>(null);
+  const pairCount = Math.min(content.layers.length, content.principles.length);
 
   return (
     <>
@@ -47,15 +50,41 @@ export function SkillsPageContent({ site }: SkillsPageProps) {
 
         <section className="solution-boundary__thinking" aria-labelledby="layers-heading">
           <MiniHeading id="layers-heading">{content.layersHeading}</MiniHeading>
-          <div className="solution-boundary__thinking-grid">
+          <div
+            className="solution-boundary__thinking-grid"
+            onMouseLeave={() => setActivePairIndex(null)}
+            onBlur={(event) => {
+              const nextTarget = event.relatedTarget;
+
+              if (!(nextTarget instanceof Node) || !event.currentTarget.contains(nextTarget)) {
+                setActivePairIndex(null);
+              }
+            }}
+          >
             <div className="solution-boundary__layers">
-              {content.layers.map((layer, index) => (
-                <Layer key={layer.title} index={index} icon={layerIcons[index] ?? Box} {...layer} />
+              {content.layers.slice(0, pairCount).map((layer, index) => (
+                <Layer
+                  key={layer.title}
+                  index={index}
+                  icon={layerIcons[index] ?? Box}
+                  isActive={activePairIndex === index}
+                  isMuted={activePairIndex !== null && activePairIndex !== index}
+                  onActivate={() => setActivePairIndex(index)}
+                  {...layer}
+                />
               ))}
             </div>
             <div className="solution-boundary__principles">
-              {content.principles.map((principle, index) => (
-                <Principle key={principle.title} index={index} icon={principleIcons[index] ?? Compass} {...principle} />
+              {content.principles.slice(0, pairCount).map((principle, index) => (
+                <Principle
+                  key={principle.title}
+                  index={index}
+                  icon={principleIcons[index] ?? Compass}
+                  isActive={activePairIndex === index}
+                  isMuted={activePairIndex !== null && activePairIndex !== index}
+                  onActivate={() => setActivePairIndex(index)}
+                  {...principle}
+                />
               ))}
             </div>
           </div>
@@ -184,19 +213,49 @@ function MiniHeading({ id, children }: { readonly id: string; readonly children:
   return <h2 className="solution-boundary__mini-heading" id={id}>{children}<ArrowRight aria-hidden="true" /></h2>;
 }
 
-function Layer({ index, title, text, icon: Icon }: { readonly index: number; readonly title: string; readonly text: string; readonly icon: LucideIcon }) {
+type PairHighlightProps = {
+  readonly isActive: boolean;
+  readonly isMuted: boolean;
+  readonly onActivate: () => void;
+};
+
+type LayerProps = PairHighlightProps & {
+  readonly index: number;
+  readonly title: string;
+  readonly text: string;
+  readonly icon: LucideIcon;
+};
+
+function Layer({ index, title, text, icon: Icon, isActive, isMuted, onActivate }: LayerProps) {
   return (
-    <article className={`solution-boundary__layer solution-boundary__layer--${index + 1}`}>
+    <button
+      type="button"
+      className={`solution-boundary__layer solution-boundary__layer--${index + 1}${isActive ? ' is-active' : ''}${isMuted ? ' is-muted' : ''}`}
+      onMouseEnter={onActivate}
+      onFocus={onActivate}
+    >
       <span className="solution-boundary__layer-icon"><Icon aria-hidden="true" /></span>
       <b>{String(index + 1).padStart(2, '0')}</b>
       <span><strong>{title}</strong><small>{text}</small></span>
-    </article>
+    </button>
   );
 }
 
-function Principle({ index, title, text, icon: Icon }: { readonly index: number; readonly title: string; readonly text: string; readonly icon: LucideIcon }) {
+type PrincipleProps = PairHighlightProps & {
+  readonly index: number;
+  readonly title: string;
+  readonly text: string;
+  readonly icon: LucideIcon;
+};
+
+function Principle({ index, title, text, icon: Icon, isActive, isMuted, onActivate }: PrincipleProps) {
   return (
-    <article className={`solution-boundary__principle solution-boundary__principle--${index + 1}`}>
+    <article
+      className={`solution-boundary__principle solution-boundary__principle--${index + 1}${isActive ? ' is-active' : ''}${isMuted ? ' is-muted' : ''}`}
+      onMouseEnter={onActivate}
+      onFocus={onActivate}
+      tabIndex={0}
+    >
       <b>{String(index + 1).padStart(2, '0')}</b>
       <span className="solution-boundary__principle-icon"><Icon aria-hidden="true" /></span>
       <h3>{title}</h3><p>{text}</p>
