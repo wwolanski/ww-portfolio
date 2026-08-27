@@ -17,6 +17,9 @@ type RawMessages = {
   readonly common: {
     readonly skipToContent: string;
     readonly primaryNavigation: string;
+    readonly openNavigation: string;
+    readonly closeNavigation: string;
+    readonly navigationDescription: string;
     readonly home: string;
     readonly backHome: string;
     readonly artwork: string;
@@ -81,6 +84,9 @@ export type Messages = {
   readonly common: {
     readonly skipToContent: string;
     readonly primaryNavigation: string;
+    readonly openNavigation: string;
+    readonly closeNavigation: string;
+    readonly navigationDescription: string;
     readonly home: string;
     readonly backHome: string;
     readonly artwork: (label: string) => string;
@@ -152,6 +158,9 @@ function createMessages(copy: RawMessages): Messages {
     common: {
       skipToContent: copy.common.skipToContent,
       primaryNavigation: copy.common.primaryNavigation,
+      openNavigation: copy.common.openNavigation,
+      closeNavigation: copy.common.closeNavigation,
+      navigationDescription: copy.common.navigationDescription,
       home: copy.common.home,
       backHome: copy.common.backHome,
       artwork: (label) => interpolate(copy.common.artwork, { label }),
