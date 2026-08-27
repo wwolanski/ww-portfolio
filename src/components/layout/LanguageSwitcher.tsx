@@ -31,7 +31,9 @@ export function LanguageSwitcher({ locale, messages }: LanguageSwitcherProps) {
             aria-label={isCurrent ? `${label} — ${messages.language.label}` : messages.language.switchTo(label)}
             aria-current={isCurrent ? 'page' : undefined}
           >
-            <Icon icon={option.icon} width="22" height="22" aria-hidden="true" />
+            <span className="language-switcher__icon" aria-hidden="true">
+              <Icon icon={option.icon} width="22" height="22" />
+            </span>
             <span>{option.locale.toUpperCase()}</span>
           </Link>
         );

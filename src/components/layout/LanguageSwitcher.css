@@ -33,6 +33,16 @@
   transform: translateY(-1px)
 }
 
-.language-switcher__option svg {
-  flex: 0 0 auto
+.language-switcher__icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+}
+
+.language-switcher__icon > span,
+.language-switcher__icon > svg {
+  display: block;
+  width: 22px;
+  height: 22px;
 }
