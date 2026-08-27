@@ -8,7 +8,11 @@ export function isLocale(value: string | undefined): value is Locale {
   return value === 'pl' || value === 'en';
 }
 
+export function getPathWithoutLocale(pathname: string): string {
+  return pathname.replace(/^\/(?:pl|en)(?=\/|$)/, '') || '/';
+}
+
 export function getLocalizedPath(locale: Locale, pathname: string): string {
-  const withoutLocale = pathname.replace(/^\/(?:pl|en)(?=\/|$)/, '') || '/';
+  const withoutLocale = getPathWithoutLocale(pathname);
   return withoutLocale === '/' ? `/${locale}` : `/${locale}${withoutLocale}`;
 }

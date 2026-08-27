@@ -30,6 +30,7 @@
     "@iconify/react": "^6.0.2",
     "@mdx-js/react": "^3.1.1",
     "lucide-react": "latest",
+    "motion": "^13.1.1",
     "radix-ui": "^1.6.7",
     "react": "latest",
     "react-dom": "latest",

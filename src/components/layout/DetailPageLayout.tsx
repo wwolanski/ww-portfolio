@@ -1,15 +1,23 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { AnimatePresence, motion, useIsPresent, type MotionStyle } from 'motion/react';
 import { Link, useLocation, useOutlet } from 'react-router';
 
 import { getNavigationItem, type PageSlug } from '../../content/navigation';
+import { getPathWithoutLocale } from '../../routing/locale';
 import type { SiteContent } from '../../content/siteContent';
 import { InlineCopy } from '../ui/InlineCopy';
 import { SiteNav } from './SiteNav';
+import { scrollToTop } from './scrollToTop';
 
 import aboutImage from '../../../img/detail-about.webp';
 import projectsImage from '../../../img/detail-projects.webp';
 import skillsImage from '../../../img/detail-skills.webp';
+
+const routeTransition = {
+  duration: 0.25,
+  ease: [0.2, 0.8, 0.2, 1] as const,
+};
 
 type DetailPageLayoutProps = {
   readonly site: SiteContent;
@@ -22,30 +30,11 @@ type DetailPageLayoutProps = {
   readonly children: ReactNode;
 };
 
-type DetailSnapshot = {
-  readonly routeKey: string;
+type DetailPageRouteProps = {
   readonly site: SiteContent;
-  readonly page: PageSlug;
-  readonly eyebrow: string;
-  readonly title: ReactNode;
-  readonly intro: ReactNode;
-  readonly showHero: boolean;
-  readonly children: ReactNode;
 };
 
-type DetailMainLayerProps = {
-  readonly snapshot: DetailSnapshot;
-  readonly variant: 'incoming' | 'outgoing' | 'static';
-};
-
-type VisualPanelLayerProps = {
-  readonly snapshot: DetailSnapshot;
-  readonly variant: 'incoming' | 'outgoing' | 'static';
-};
-
-const ROUTE_CROSSFADE_MS = 360;
-
-export function DetailPageRoute({ site }: { readonly site: SiteContent }) {
+export function DetailPageRoute({ site }: DetailPageRouteProps) {
   const location = useLocation();
   const outlet = useOutlet();
   const page = getDetailPage(location.pathname);
@@ -59,7 +48,7 @@ export function DetailPageRoute({ site }: { readonly site: SiteContent }) {
       title={meta.title}
       intro={meta.intro}
       showHero={meta.showHero}
-      routeKey={`${site.locale}:${location.pathname}`}
+      routeKey={getPathWithoutLocale(location.pathname)}
       children={outlet}
     />
   );
@@ -72,118 +61,102 @@ export function DetailPageLayout({
   title,
   intro,
   showHero = true,
-  routeKey = `${site.locale}:${page}`,
+  routeKey = page,
   children,
 }: DetailPageLayoutProps) {
   const item = getNavigationItem(site.navigation, page);
-  const snapshot = useMemo<DetailSnapshot>(() => ({
-    routeKey,
-    site,
-    page,
-    eyebrow,
-    title,
-    intro,
-    showHero,
-    children,
-  }), [children, eyebrow, intro, page, routeKey, showHero, site, title]);
-  const previousSnapshotRef = useRef<DetailSnapshot | null>(null);
-  const transitionTimerRef = useRef<number | null>(null);
-  const [outgoingSnapshot, setOutgoingSnapshot] = useState<DetailSnapshot | null>(null);
-
-  useLayoutEffect(() => {
-    const previousSnapshot = previousSnapshotRef.current;
-
-    if (previousSnapshot && previousSnapshot.routeKey !== snapshot.routeKey) {
-      setOutgoingSnapshot(previousSnapshot);
-
-      if (transitionTimerRef.current !== null) {
-        window.clearTimeout(transitionTimerRef.current);
-      }
-
-      transitionTimerRef.current = window.setTimeout(() => {
-        setOutgoingSnapshot(null);
-        transitionTimerRef.current = null;
-      }, ROUTE_CROSSFADE_MS);
-    }
-
-    previousSnapshotRef.current = snapshot;
-  }, [snapshot]);
-
-  useEffect(() => () => {
-    if (transitionTimerRef.current !== null) {
-      window.clearTimeout(transitionTimerRef.current);
-    }
-  }, []);
 
   return (
-    <div className={`detail-page detail-page--${page} route-enter`} style={{ '--page-accent': item.accent } as CSSProperties}>
+    <div className={`detail-page detail-page--${page}`} style={{ '--page-accent': item.accent } as CSSProperties}>
       <aside className="visual-panel" data-page={page} aria-label={site.messages.common.artwork(item.label)}>
-        {outgoingSnapshot ? (
-          <VisualPanelLayer key={`outgoing-${outgoingSnapshot.routeKey}`} snapshot={outgoingSnapshot} variant="outgoing" />
-        ) : null}
-        <VisualPanelLayer
-          key={`incoming-${snapshot.routeKey}`}
-          snapshot={snapshot}
-          variant={outgoingSnapshot ? 'incoming' : 'static'}
-        />
+        <AnimatePresence mode="wait">
+          <VisualPanelLayer key={routeKey} site={site} page={page} />
+        </AnimatePresence>
       </aside>
 
       <div className="detail-content">
         <SiteNav site={site} compact />
         <main id="main-content" className={showHero ? undefined : 'detail-main--document'}>
-          <div className="detail-main__route-stack">
-            {outgoingSnapshot ? (
-              <DetailMainLayer key={`outgoing-${outgoingSnapshot.routeKey}`} snapshot={outgoingSnapshot} variant="outgoing" />
-            ) : null}
+          <AnimatePresence mode="wait" onExitComplete={scrollToTop}>
             <DetailMainLayer
-              key={`incoming-${snapshot.routeKey}`}
-              snapshot={snapshot}
-              variant={outgoingSnapshot ? 'incoming' : 'static'}
+              key={routeKey}
+              site={site}
+              page={page}
+              eyebrow={eyebrow}
+              title={title}
+              intro={intro}
+              showHero={showHero}
+              children={children}
             />
-          </div>
+          </AnimatePresence>
         </main>
       </div>
     </div>
   );
 }
 
-function DetailMainLayer({ snapshot, variant }: DetailMainLayerProps) {
-  const item = getNavigationItem(snapshot.site.navigation, snapshot.page);
+type DetailMainLayerProps = {
+  readonly site: SiteContent;
+  readonly page: PageSlug;
+  readonly eyebrow: string;
+  readonly title: ReactNode;
+  readonly intro: ReactNode;
+  readonly showHero: boolean;
+  readonly children: ReactNode;
+};
+
+function DetailMainLayer({ site, page, eyebrow, title, intro, showHero, children }: DetailMainLayerProps) {
+  const isPresent = useIsPresent();
+  const item = getNavigationItem(site.navigation, page);
 
   return (
-    <div
-      className={`detail-main__route-layer detail-main__route-layer--${variant} detail-page--${snapshot.page}${snapshot.showHero ? '' : ' detail-main--document'}`}
-      data-page={snapshot.page}
-      style={{ '--page-accent': item.accent } as CSSProperties}
-      aria-hidden={variant === 'outgoing' ? true : undefined}
+    <motion.div
+      className={`detail-main__route-layer detail-page--${page}${showHero ? '' : ' detail-main--document'}`}
+      data-page={page}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={routeTransition}
+      style={{ '--page-accent': item.accent, pointerEvents: isPresent ? 'auto' : 'none' } as MotionStyle}
+      aria-hidden={isPresent ? undefined : true}
     >
-      {snapshot.showHero ? (
+      {showHero ? (
         <header className="page-hero">
-          <p className="page-eyebrow"><InlineCopy copy={snapshot.eyebrow} /></p>
-          <h1>{snapshot.title}</h1>
-          <p className="page-intro">{snapshot.intro}</p>
+          <p className="page-eyebrow"><InlineCopy copy={eyebrow} /></p>
+          <h1>{title}</h1>
+          <p className="page-intro">{intro}</p>
         </header>
       ) : null}
-      {snapshot.children}
-    </div>
+      {children}
+    </motion.div>
   );
 }
 
-function VisualPanelLayer({ snapshot, variant }: VisualPanelLayerProps) {
-  const item = getNavigationItem(snapshot.site.navigation, snapshot.page);
-  const visual = getVisualMeta(snapshot.page, snapshot.site.locale);
+type VisualPanelLayerProps = {
+  readonly site: SiteContent;
+  readonly page: PageSlug;
+};
+
+function VisualPanelLayer({ site, page }: VisualPanelLayerProps) {
+  const isPresent = useIsPresent();
+  const item = getNavigationItem(site.navigation, page);
+  const visual = getVisualMeta(page, site.locale);
 
   return (
-    <div
-      className={`visual-panel__route-layer visual-panel__route-layer--${variant}`}
-      data-page={snapshot.page}
-      style={{ '--page-accent': item.accent } as CSSProperties}
-      aria-hidden={variant === 'outgoing' ? true : undefined}
+    <motion.div
+      className="visual-panel__route-layer"
+      data-page={page}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={routeTransition}
+      style={{ '--page-accent': item.accent, pointerEvents: isPresent ? 'auto' : 'none' } as MotionStyle}
+      aria-hidden={isPresent ? undefined : true}
     >
       <div className="visual-panel__grid" aria-hidden="true" />
       {visual.image ? <img src={visual.image} alt="" width="768" height="768" /> : <BlogVisual />}
-      <Link to={`/${snapshot.site.locale}`} className="back-link" tabIndex={variant === 'outgoing' ? -1 : undefined}>
-        <ArrowLeft aria-hidden="true" /> {snapshot.site.messages.common.backHome}
+      <Link to={`/${site.locale}`} className="back-link" tabIndex={isPresent ? undefined : -1}>
+        <ArrowLeft aria-hidden="true" /> {site.messages.common.backHome}
       </Link>
       <div className="visual-panel__caption" aria-hidden="true">
         <div>
@@ -193,7 +166,7 @@ function VisualPanelLayer({ snapshot, variant }: VisualPanelLayerProps) {
         <b>{visual.index}</b>
       </div>
       <span className="panel-index">/{item.slug}</span>
-    </div>
+    </motion.div>
   );
 }
 

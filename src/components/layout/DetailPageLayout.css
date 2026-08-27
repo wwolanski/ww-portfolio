@@ -322,15 +322,6 @@
   background: var(--visual-bg, #112321);
 }
 
-.visual-panel__route-layer--outgoing {
-  animation: route-layer-out 360ms ease both;
-  pointer-events: none;
-}
-
-.visual-panel__route-layer--incoming {
-  animation: route-layer-in 360ms ease both;
-}
-
 .visual-panel__route-layer::after {
   z-index: 5;
   background:
@@ -390,22 +381,8 @@
   margin-left: clamp(310px, 29vw, 520px);
 }
 
-.detail-main__route-stack {
-  display: grid;
-}
-
 .detail-main__route-layer {
   min-width: 0;
-  grid-area: 1 / 1;
-}
-
-.detail-main__route-layer--outgoing {
-  animation: route-layer-out 360ms ease both;
-  pointer-events: none;
-}
-
-.detail-main__route-layer--incoming {
-  animation: route-layer-in 360ms ease both;
 }
 
 @media (max-width: 1180px) {

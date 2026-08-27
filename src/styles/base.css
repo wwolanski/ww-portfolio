@@ -83,25 +83,6 @@ button {
   @apply fixed left-4 top-4 z-[100] -translate-y-24 rounded-sm bg-cyan-400 px-4 py-3 font-bold text-black transition-transform focus:translate-y-0;
 }
 
-.route-enter {
-  animation: route-in 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-@keyframes route-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes route-layer-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes route-layer-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
 @media (forced-colors: active) {
   * {
     scrollbar-color: auto;
