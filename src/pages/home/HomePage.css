@@ -3,8 +3,13 @@
   height: 100svh;
   min-height: 100svh;
   overflow: hidden;
-  background: #050505 url("../../../img/vectorized/bg.svg") center top / 780px auto repeat;
+  background: var(--surface);
   color: var(--ink);
+}
+
+:root.dark .home-page {
+  background: #050505 url("../../../img/vectorized/bg.svg") center top / 780px auto repeat;
+  background-blend-mode: normal;
 }
 
 .home-page::before {
@@ -13,6 +18,13 @@
   content: "";
   pointer-events: none;
   background: var(--home-overlay);
+}
+
+:root:not(.dark) .home-page::before {
+  background: url("../../../img/vectorized/bg.svg") center top / 780px auto repeat;
+  filter: invert(1);
+  opacity: 0.24;
+  mix-blend-mode: multiply;
 }
 
 .home-shell {
@@ -61,23 +73,23 @@
   text-transform: uppercase;
 }
 
-.home-page .theme-toggle {
+:root.dark .home-page .theme-toggle {
   border-color: rgba(255, 255, 255, 0.25);
   background: rgba(0, 0, 0, 0.55);
 }
 
-.home-page .language-switcher {
+:root.dark .home-page .language-switcher {
   border-color: rgba(255, 255, 255, 0.25);
   background: rgba(0, 0, 0, 0.55);
 }
 
-.home-page .language-switcher__option {
+:root.dark .home-page .language-switcher__option {
   color: rgba(255, 255, 255, 0.7);
 }
 
-.home-page .language-switcher__option:hover,
-.home-page .language-switcher__option:focus-visible,
-.home-page .language-switcher__option--current {
+:root.dark .home-page .language-switcher__option:hover,
+:root.dark .home-page .language-switcher__option:focus-visible,
+:root.dark .home-page .language-switcher__option--current {
   color: #fff;
   background: rgba(255, 255, 255, 0.14);
 }
@@ -96,6 +108,9 @@
   letter-spacing: -0.04em;
   line-height: 0.8;
   text-transform: uppercase;
+}
+
+:root.dark .home-title {
   text-shadow: 0 3px 0 rgba(0, 0, 0, 0.28);
 }
 
@@ -166,7 +181,7 @@
 
 .home-card[data-card="blog"] {
   --card-title-color: #fff5df;
-  --card-image-position: 50% 110%;
+  --card-image-position: 50% 100%;
   --card-title-size: clamp(2rem, 30cqw, 5.2rem);
   --card-title-compact-size: clamp(1rem, 22cqw, 2rem);
 }
@@ -183,6 +198,11 @@
   height: var(--card-media-height);
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: #111;
+}
+
+:root:not(.dark) .home-card__media {
+  border-color: color-mix(in srgb, var(--ink) 10%, transparent);
+  background: var(--surface-elevated);
 }
 
 .home-card img {
@@ -297,6 +317,10 @@
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+:root:not(.dark) .home-footer {
+  border-color: var(--line);
 }
 
 @media (max-width: 1050px) {
