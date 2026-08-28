@@ -52,7 +52,7 @@ export function HomePage({ site }: HomePageProps) {
                   </span>
                 </span>
               </Link>
-              <p><InlineCopy copy={item.description} /></p>
+              <p className="home-card__description"><InlineCopy copy={item.description} /></p>
             </article>
           ))}
         </section>
