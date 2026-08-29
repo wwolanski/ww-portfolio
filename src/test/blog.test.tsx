@@ -82,7 +82,12 @@ describe('MDX blog', () => {
       return;
     }
 
-    await user.click(await screen.findByRole('button', { name: `Przeczytaj: ${article.title}` }));
+    const articleLink = await screen.findByRole('link', { name: article.title });
+
+    expect(articleLink).toHaveAttribute('href', `/pl/blog?article=${article.slug}`);
+    expect(screen.queryByRole('button', { name: `Przeczytaj: ${article.title}` })).not.toBeInTheDocument();
+
+    await user.click(articleLink);
 
     expect(screen.getByTestId('location')).toHaveTextContent(`/pl/blog?article=${article.slug}`);
     expect(await screen.findByRole('heading', { name: article.title, level: 1 })).toBeInTheDocument();

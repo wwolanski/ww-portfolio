@@ -1,6 +1,6 @@
-import { ArrowLeft, ArrowUpRight, Clock3 } from 'lucide-react';
+import { ArrowLeft, Clock3 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 import { ContentDocumentView } from '../../components/content/ContentDocumentView';
 import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
@@ -66,13 +66,6 @@ export function BlogPageContent({ site }: BlogPageProps) {
   const visibleArticles = articles && activeTag
     ? articles.filter((article) => article.tags.includes(activeTag))
     : articles ?? [];
-  function openArticle(article: BlogArticle) {
-    setSearchParams((current) => {
-      const next = new URLSearchParams(current);
-      next.set('article', article.slug);
-      return next;
-    });
-  }
 
   function closeArticle() {
     setActiveTag(null);
@@ -96,7 +89,6 @@ export function BlogPageContent({ site }: BlogPageProps) {
           activeTag={activeTag}
           visibleArticles={visibleArticles}
           onSelectTag={setActiveTag}
-          onOpenArticle={openArticle}
         />
       )}
     </>
@@ -122,7 +114,6 @@ type BlogIndexProps = {
   readonly activeTag: string | null;
   readonly visibleArticles: readonly BlogArticle[];
   readonly onSelectTag: (tag: string | null) => void;
-  readonly onOpenArticle: (article: BlogArticle) => void;
 };
 
 function BlogIndex({
@@ -131,7 +122,6 @@ function BlogIndex({
   activeTag,
   visibleArticles,
   onSelectTag,
-  onOpenArticle,
 }: BlogIndexProps) {
   return (
     <>
@@ -164,16 +154,13 @@ function BlogIndex({
                   <span>{formatArticleDate(article.date, site.locale)}</span>
                   <span><Clock3 aria-hidden="true" /> {site.messages.blog.readTime(article.readTime)}</span>
                 </div>
-                <h3><InlineCopy copy={article.title} /></h3>
+                <h3>
+                  <Link to={`?article=${encodeURIComponent(article.slug)}`}>
+                    <InlineCopy copy={article.title} />
+                  </Link>
+                </h3>
                 {article.description ? <p><InlineCopy copy={article.description} /></p> : null}
               </div>
-              <button
-                type="button"
-                aria-label={site.messages.blog.readArticle(article.title)}
-                onClick={() => onOpenArticle(article)}
-              >
-                <ArrowUpRight aria-hidden="true" />
-              </button>
             </article>
           ))}
         </div>
