@@ -365,9 +365,11 @@
   }
 
   .home-shell {
-    display: block;
+    display: flex;
+    flex-direction: column;
     width: min(100% - 2rem, 640px);
     height: auto;
+    min-height: 100svh;
     padding-block: 2rem;
   }
 
@@ -398,6 +400,8 @@
   .home-grid {
     grid-area: auto;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-self: stretch;
+    width: 100%;
     gap: 2.5rem 0.75rem;
     margin-top: 2.5rem;
   }
@@ -426,6 +430,7 @@
   }
 
   .home-footer {
+    margin-top: auto;
     gap: 1rem;
   }
 }
@@ -438,18 +443,88 @@
 
   .home-grid {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 1.25rem;
+  }
+
+  .home-card {
+    --card-image-scale: 1.08;
+    --card-image-hover-scale: 1.12;
+  }
+
+  .home-card[data-card="about"] {
+    --card-image-position: 50% 27%;
+  }
+
+  .home-card[data-card="projects"] {
+    --card-image-position: 50% 57%;
+  }
+
+  .home-card[data-card="skills"] {
+    --card-image-position: 50% 53%;
+  }
+
+  .home-card[data-card="blog"] {
+    --card-image-position: 50% 90%;
   }
 
   .home-card__media {
-    aspect-ratio: 0.45;
+    aspect-ratio: 4.25 / 1;
+  }
+
+  .home-card__media::after {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    content: "";
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.2) 68%, rgba(0, 0, 0, 0.56));
+    pointer-events: none;
   }
 
   .home-card__description {
-    max-width: 19rem;
+    position: absolute;
+    top: 0;
+    right: auto;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .home-card__title {
+    top: 50%;
+    right: 5rem;
+    left: 1rem;
+    padding: 0;
+    color: #fff;
+    background: none;
+    font-size: clamp(1.25rem, 6.5vw, 2rem);
+    line-height: 0.9;
+    text-align: left;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    transform: translateY(-50%);
+  }
+
+  .home-card__title-text {
+    transform-origin: left center;
+  }
+
+  .home-card__number {
+    top: 0.55rem;
+    right: auto;
+    left: 0.75rem;
+    opacity: 1;
+  }
+
+  .home-card__open {
+    z-index: 2;
   }
 
   .home-footer {
-    flex-direction: column;
+    align-items: baseline;
+    gap: 0.5rem;
+    font-size: clamp(0.58rem, 2.6vw, 0.68rem);
   }
 }
