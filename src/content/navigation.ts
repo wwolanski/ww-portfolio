@@ -1,7 +1,7 @@
-import aboutImage from '../../img/1.png';
-import projectsImage from '../../img/2.png';
-import skillsImage from '../../img/3.png';
-import blogImage from '../../img/4.png';
+import aboutImage from '../../img/1.webp';
+import projectsImage from '../../img/2.webp';
+import skillsImage from '../../img/3.webp';
+import blogImage from '../../img/4.webp';
 
 import type { HomeContent } from './types';
 

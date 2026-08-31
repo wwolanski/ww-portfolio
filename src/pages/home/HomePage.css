@@ -8,7 +8,7 @@
 }
 
 :root.dark .home-page {
-  background: #050505 url("../../../img/vectorized/bg.svg") center top / 780px auto repeat;
+  background: #050505 url("../../../img/vectorized/bg.webp") center top / 780px auto repeat;
   background-blend-mode: normal;
 }
 
@@ -21,7 +21,7 @@
 }
 
 :root:not(.dark) .home-page::before {
-  background: url("../../../img/vectorized/bg.svg") center top / 780px auto repeat;
+  background: url("../../../img/vectorized/bg.webp") center top / 780px auto repeat;
   filter: invert(1);
   opacity: 0.24;
   mix-blend-mode: multiply;
