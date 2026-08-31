@@ -28,6 +28,8 @@ type RawMessages = {
   readonly projectContent: {
     readonly caseStudy: string;
     readonly openCaseStudy: string;
+    readonly openExternal: string;
+    readonly openGallery: string;
     readonly close: string;
     readonly loading: string;
     readonly preparation: string;
@@ -95,6 +97,8 @@ export type Messages = {
   readonly projectContent: {
     readonly caseStudy: string;
     readonly openCaseStudy: (title: string) => string;
+    readonly openExternal: (provider: string, title: string) => string;
+    readonly openGallery: (title: string) => string;
     readonly close: string;
     readonly loading: string;
     readonly preparation: string;
@@ -169,6 +173,8 @@ function createMessages(copy: RawMessages): Messages {
     projectContent: {
       caseStudy: copy.projectContent.caseStudy,
       openCaseStudy: (title) => interpolate(copy.projectContent.openCaseStudy, { title }),
+      openExternal: (provider, title) => interpolate(copy.projectContent.openExternal, { provider, title }),
+      openGallery: (title) => interpolate(copy.projectContent.openGallery, { title }),
       close: copy.projectContent.close,
       loading: copy.projectContent.loading,
       preparation: copy.projectContent.preparation,

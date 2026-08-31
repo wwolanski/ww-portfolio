@@ -80,9 +80,15 @@ export type ProjectDetail = {
   readonly text: string;
 };
 
+export type ProjectExternalLink = {
+  readonly provider: 'github' | 'vercel';
+  readonly href: string;
+};
+
 export type Project = {
   readonly slug: string;
   readonly caseStudySlug?: string;
+  readonly externalLink?: ProjectExternalLink;
   readonly index: string;
   readonly category: string;
   readonly tags: readonly ProjectTag[];

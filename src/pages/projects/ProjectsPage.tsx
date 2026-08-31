@@ -7,6 +7,7 @@ import { FooterCta } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { ProjectModal } from '../../components/ui/ProjectModal';
 import { ProjectBadge } from '../../components/ui/ProjectBadge';
+import { ProjectResourceAction } from '../../components/ui/ProjectResourceAction';
 import { getProjectLogo } from '../../content/projectLogos';
 import type { Project } from '../../content/types';
 import type { SiteContent } from '../../content/siteContent';
@@ -117,7 +118,10 @@ function ProjectRow({ project, site, onOpen }: ProjectRowProps) {
           </button>
         </div>
         <p><InlineCopy copy={project.description} /></p>
-        <ul>{project.facts.map((fact) => <li key={fact} className="tag-chip"><InlineCopy copy={fact} /></li>)}</ul>
+        <div className="project-facts-row">
+          <ul>{project.facts.map((fact) => <li key={fact} className="tag-chip"><InlineCopy copy={fact} /></li>)}</ul>
+          <ProjectResourceAction project={project} locale={site.locale} messages={site.messages} />
+        </div>
         <strong><InlineCopy copy={project.outcome} /></strong>
         <div className="project-details" id={project.anchor}>
           {project.details.map((detail) => <div key={detail.label}><b><InlineCopy copy={detail.label} /></b><span><InlineCopy copy={detail.text} /></span></div>)}

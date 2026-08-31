@@ -59,6 +59,21 @@ describe('project content system', () => {
     expect(screen.getAllByRole('button', { name: /otwórz case-study:/i })).toHaveLength(6);
     expect(container.querySelectorAll('.project-title-row .project-content-button')).toHaveLength(6);
     expect(container.querySelectorAll('.project-body > .project-content-button')).toHaveLength(0);
+    expect(container.querySelectorAll('.project-resource-action')).toHaveLength(6);
+    expect(container.querySelectorAll('[data-project-action="external"]')).toHaveLength(3);
+    expect(container.querySelectorAll('[data-project-action="gallery"]')).toHaveLength(3);
+    expect(screen.getByRole('link', { name: 'Otwórz GitHub: Kukla2D' })).toHaveAttribute(
+      'href',
+      'https://github.com/wwolanski/kukla2d',
+    );
+    expect(screen.getByRole('link', { name: 'Otwórz GitHub: GPT IMG-2 SPRITESHEET PROCESSOR' })).toHaveAttribute(
+      'href',
+      'https://github.com/wwolanski/kukla2d',
+    );
+    expect(screen.getByRole('link', { name: 'Otwórz Vercel: RepoAtlas' })).toHaveAttribute(
+      'href',
+      'https://vercel.com/',
+    );
   });
 
   it('renders every project tag from the JSON configuration', () => {
@@ -84,6 +99,30 @@ describe('project content system', () => {
     }
 
     expect(container.querySelectorAll('.project-badge')).toHaveLength(9);
+  });
+
+  it('opens a project gallery directly from the list and restores focus on close', async () => {
+    const user = userEvent.setup();
+    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const row = container.querySelector<HTMLElement>('[data-project-slug="bank-statement-converter"]');
+
+    if (!row) {
+      throw new Error('Bank Statement Converter project row is missing.');
+    }
+
+    const trigger = within(row).getByRole('button', { name: 'Otwórz galerię obrazów: Konwenter wyciągów bankowych' });
+    await user.click(trigger);
+
+    const dialog = await screen.findByRole('dialog', { name: 'Galeria obrazów' });
+    expect(within(dialog).getByRole('img')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Zamknij podgląd obrazu' })).toHaveFocus();
+    expect(document.documentElement).toHaveClass('is-scroll-locked');
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Galeria obrazów' })).not.toBeInTheDocument());
+    expect(trigger).toHaveFocus();
+    expect(document.documentElement).not.toHaveClass('is-scroll-locked');
   });
 
   it('opens the Sprite case study, renders MDX content, and restores focus on close', async () => {

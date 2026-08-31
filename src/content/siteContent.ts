@@ -12,7 +12,13 @@ import plBlog from './locales/pl/blog.json';
 import plHome from './locales/pl/home.json';
 import plProjects from './locales/pl/projects.json';
 import plSkills from './locales/pl/skills.json';
-import type { HomeContent, PortfolioContent, Project, ProjectsContent } from './types';
+import type {
+  HomeContent,
+  PortfolioContent,
+  Project,
+  ProjectExternalLink,
+  ProjectsContent,
+} from './types';
 
 export type SiteContent = {
   readonly locale: Locale;
@@ -27,8 +33,12 @@ const homeContent = {
   pl: plHome,
 } satisfies Record<Locale, HomeContent>;
 
-type RawProject = Omit<Project, 'tags'> & {
+type RawProject = Omit<Project, 'externalLink' | 'tags'> & {
   readonly tags: readonly string[];
+  readonly externalLink?: {
+    readonly provider: string;
+    readonly href: string;
+  };
 };
 
 type RawProjectsContent = Omit<ProjectsContent, 'selected'> & {
@@ -37,11 +47,22 @@ type RawProjectsContent = Omit<ProjectsContent, 'selected'> & {
   };
 };
 
+function isProjectExternalProvider(value: string): value is ProjectExternalLink['provider'] {
+  return value === 'github' || value === 'vercel';
+}
+
 function normalizeProjectsContent(content: RawProjectsContent): ProjectsContent {
-  const projects: readonly Project[] = content.selected.projects.map(({ tags, ...project }) => ({
-    ...project,
-    tags: tags.filter(isProjectTag),
-  }));
+  const projects: readonly Project[] = content.selected.projects.map(({ tags, externalLink, ...project }) => {
+    const normalizedExternalLink = externalLink && isProjectExternalProvider(externalLink.provider)
+      ? { provider: externalLink.provider, href: externalLink.href }
+      : undefined;
+
+    return {
+      ...project,
+      tags: tags.filter(isProjectTag),
+      ...(normalizedExternalLink ? { externalLink: normalizedExternalLink } : {}),
+    };
+  });
 
   return {
     ...content,

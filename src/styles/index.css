@@ -20,6 +20,7 @@
 
 @import "../components/ui/ContentLink.css" layer(components.ui);
 @import "../components/ui/ProjectModal.css" layer(components.ui);
+@import "../components/ui/ProjectResourceAction.css" layer(components.ui);
 @import "../components/ui/TechTag.css" layer(components.ui);
 @import "../components/ui/InlineCopy.css" layer(components.ui);
 @import "../components/ui/ProjectBadge.css" layer(components.ui);

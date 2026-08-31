@@ -27,7 +27,7 @@ type GalleryArrowProps = {
   readonly onClick: () => void;
 };
 
-type ImageLightboxProps = {
+export type ImageLightboxProps = {
   readonly images: readonly PreviewImage[];
   readonly imageIndex: number;
   readonly imageAlt: string;
@@ -69,7 +69,7 @@ function GalleryArrow({ direction, label, className, onClick }: GalleryArrowProp
   );
 }
 
-function ImageLightbox({
+export function ImageLightbox({
   images,
   imageIndex,
   imageAlt,

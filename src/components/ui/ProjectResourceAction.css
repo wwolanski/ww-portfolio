@@ -1,0 +1,62 @@
+.project-resource-action {
+  --resource-color: var(--page-accent);
+
+  display: grid;
+  width: clamp(2.75rem, 5vw, 3.5rem);
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--resource-color) 52%, var(--line));
+  border-radius: 50%;
+  color: var(--resource-color);
+  background: radial-gradient(circle, color-mix(in srgb, var(--resource-color) 10%, transparent), transparent 72%);
+  cursor: pointer;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.project-resource-action--github,
+.project-resource-action--vercel {
+  --resource-color: #f0f0f0;
+}
+
+:root:not(.dark) .project-resource-action--github {
+  --resource-color: #24292f;
+}
+
+:root:not(.dark) .project-resource-action--vercel {
+  --resource-color: #111;
+}
+
+.project-resource-action:hover {
+  border-color: var(--resource-color);
+  color: #080808;
+  background: var(--resource-color);
+  transform: translateY(-2px);
+}
+
+.project-resource-action:focus-visible {
+  outline-color: var(--resource-color);
+}
+
+.project-resource-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.project-resource-action:disabled:hover {
+  border-color: color-mix(in srgb, var(--resource-color) 52%, var(--line));
+  color: var(--resource-color);
+  background: radial-gradient(circle, color-mix(in srgb, var(--resource-color) 10%, transparent), transparent 72%);
+  transform: none;
+}
+
+.project-resource-action > svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+@media (max-width: 760px) {
+  .project-resource-action {
+    width: 3rem;
+  }
+}
