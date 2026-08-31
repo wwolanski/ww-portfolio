@@ -118,6 +118,15 @@ describe('v7 detail visuals', () => {
     expect(skillsLink.querySelectorAll('svg')).toHaveLength(2);
   });
 
+  it('links the GPT IMG-2 example to its case study', () => {
+    renderPage(<SkillsPage site={polishSite} />);
+
+    expect(screen.getByRole('link', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' })).toHaveAttribute(
+      'href',
+      '/pl/projects?caseStudy=gpt_img_2-spritesheet-processor',
+    );
+  });
+
   it('reveals the complete example process on demand', async () => {
     const user = userEvent.setup();
     const { container } = renderPage(<AboutPage site={polishSite} />);

@@ -94,7 +94,12 @@ export function SkillsPageContent({ site }: SkillsPageProps) {
           <MiniHeading id="practice-heading">{content.practiceHeading}</MiniHeading>
           <div className="solution-boundary__practice-grid">
             {content.examples.map((example, index) => (
-              <Link aria-label={example.title} className="solution-boundary__example" to={`/${site.locale}/projects${index === 1 ? '?caseStudy=repoatlas' : ''}`} key={example.title}>
+              <Link
+                aria-label={example.title}
+                className="solution-boundary__example"
+                to={`/${site.locale}/projects${index === 0 ? '?caseStudy=gpt_img_2-spritesheet-processor' : '?caseStudy=repoatlas'}`}
+                key={example.title}
+              >
                 <span className="solution-boundary__example-icon" aria-hidden="true">
                   {index === 0 ? <Code2 /> : <GitBranch />}
                 </span>

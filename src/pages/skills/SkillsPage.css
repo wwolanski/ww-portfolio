@@ -231,13 +231,14 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 6.2rem minmax(0, 1fr);
   gap: clamp(.75rem, 1.6vw, 1.25rem);
-  align-items: end;
+  align-items: stretch;
 }
 
-.boundary-path { min-width: 0; }
+.boundary-path { display: flex; min-width: 0; }
 .boundary-path--yes { --path-color: var(--boundary-green); }
 .boundary-path--no { --path-color: var(--page-accent); }
 .boundary-path article {
+  flex: 1;
   min-height: 13rem;
   padding: 1.25rem;
   border: 1px solid color-mix(in srgb, var(--path-color) 36%, var(--line));
@@ -263,6 +264,7 @@
   border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--page-accent) 8%, transparent), transparent 68%);
   margin-bottom: .2rem;
+  align-self: end;
   text-align: center;
 }
 .boundary-decision__core-icon { width: 1.55rem; height: 1.55rem; margin-bottom: .65rem; stroke-width: 1.5; }

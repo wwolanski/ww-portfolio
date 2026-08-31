@@ -90,12 +90,12 @@ describe('project content system', () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
-    const trigger = screen.getByRole('button', { name: /otwórz case-study: sprite stabilization pipeline/i });
+    const trigger = screen.getByRole('button', { name: /otwórz case-study: gpt img-2 spritesheet processor/i });
     await user.click(trigger);
 
-    const dialog = await screen.findByRole('dialog', { name: 'Sprite Stabilization Pipeline' });
+    const dialog = await screen.findByRole('dialog', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' });
     expect(dialog).toBeInTheDocument();
-    expect(await within(dialog).findByRole('heading', { name: 'Sprite Stabilization Pipeline', level: 1 })).toBeInTheDocument();
+    expect(await within(dialog).findByRole('heading', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR', level: 1 })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /zamknij okno/i })).toHaveFocus();
     const tableOfContents = await screen.findByRole('navigation', { name: 'Spis treści' });
     const tableOfContentsToggle = screen.getByRole('button', { name: 'Otwórz spis treści' });
@@ -177,7 +177,7 @@ describe('project content system', () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: sprite stabilization pipeline/i }));
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: gpt img-2 spritesheet processor/i }));
     const gallery = await screen.findByRole('region', { name: 'Galeria obrazów' });
     const expandButton = gallery.querySelector<HTMLButtonElement>('.mdx-image-gallery__expand');
 
@@ -218,7 +218,7 @@ describe('project content system', () => {
 
     await user.keyboard('{Escape}');
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Sprite Stabilization Pipeline' })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' })).not.toBeInTheDocument());
     expect(document.documentElement).not.toHaveClass('is-scroll-locked');
   });
 
@@ -281,9 +281,9 @@ describe('project content system', () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: sprite stabilization pipeline/i }));
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: gpt img-2 spritesheet processor/i }));
     const toggle = await screen.findByRole('button', { name: 'Otwórz spis treści' });
-    const article = await screen.findByRole('heading', { name: 'Sprite Stabilization Pipeline', level: 1 })
+    const article = await screen.findByRole('heading', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR', level: 1 })
       .then((heading) => heading.closest('article'));
     const scrollViewport = document.querySelector<HTMLElement>('.project-modal__body');
 
@@ -325,7 +325,7 @@ describe('project content system', () => {
       </MemoryRouter>,
     );
 
-    expect(await screen.findByRole('dialog', { name: 'Sprite Stabilization Pipeline' })).toBeInTheDocument();
+    expect(await screen.findByRole('dialog', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' })).toBeInTheDocument();
   });
 
   it('closes the modal when the backdrop is clicked', async () => {
