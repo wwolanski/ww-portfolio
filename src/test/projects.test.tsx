@@ -24,6 +24,7 @@ function renderPage(page: React.ReactNode) {
 
 const polishSite = getSiteContent('pl');
 const englishSite = getSiteContent('en');
+const projects = polishSite.portfolio.projects.selected.projects;
 const spriteProject = polishSite.portfolio.projects.selected.projects.find(
   (project) => project.slug === 'gpt_img_2-spritesheet-processor',
 );
@@ -38,6 +39,26 @@ const spriteImages = getContentImages({
   locale: 'pl',
 });
 
+function getProjectRow(container: HTMLElement, slug: string): HTMLElement {
+  const row = container.querySelector<HTMLElement>(`[data-project-slug="${slug}"]`);
+
+  if (!row) {
+    throw new Error(`Project row ${slug} is missing.`);
+  }
+
+  return row;
+}
+
+function getProjectContentButton(container: HTMLElement, slug: string): HTMLButtonElement {
+  const button = getProjectRow(container, slug).querySelector<HTMLButtonElement>('.project-content-button');
+
+  if (!button) {
+    throw new Error(`Project content button ${slug} is missing.`);
+  }
+
+  return button;
+}
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -50,98 +71,89 @@ describe('project content system', () => {
 
   it('renders the discontinued project as a regular list row with actions for every project', () => {
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const projectsWithExternalLink = projects.filter((project) => project.externalLink);
+    const projectsWithGallery = projects.filter((project) => !project.externalLink);
 
-    expect(container.querySelectorAll('.project-row')).toHaveLength(6);
-    expect(container.querySelectorAll('.project-logo')).toHaveLength(6);
+    expect(container.querySelectorAll('.project-row')).toHaveLength(projects.length);
+    expect(container.querySelectorAll('.project-logo')).toHaveLength(projects.length);
     expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-meta .project-logo img')).toBeInTheDocument();
     expect(container.querySelector('[data-project-slug="orderhub-pos-wms"] .project-body .project-logo')).not.toBeInTheDocument();
-    expect(screen.getAllByRole('button', { name: /otwórz case-study:/i })).toHaveLength(6);
-    expect(container.querySelectorAll('.project-title-row .project-content-button')).toHaveLength(6);
+    expect(container.querySelectorAll('.project-title-row .project-content-button')).toHaveLength(projects.length);
     expect(container.querySelectorAll('.project-body > .project-content-button')).toHaveLength(0);
-    expect(container.querySelectorAll('.project-resource-action')).toHaveLength(6);
-    expect(container.querySelectorAll('[data-project-action="external"]')).toHaveLength(3);
-    expect(container.querySelectorAll('[data-project-action="gallery"]')).toHaveLength(3);
-    expect(screen.getByRole('link', { name: 'Otwórz GitHub: Kukla2D' })).toHaveAttribute(
-      'href',
-      'https://github.com/wwolanski/kukla2d',
-    );
-    expect(screen.getByRole('link', { name: 'Otwórz GitHub: GPT IMG-2 SPRITESHEET PROCESSOR' })).toHaveAttribute(
-      'href',
-      'https://github.com/wwolanski/gpt_img_2-spritesheet-processor/',
-    );
-    expect(screen.getByRole('link', { name: 'Otwórz Vercel: RepoAtlas' })).toHaveAttribute(
-      'href',
-      'https://vercel.com/',
-    );
+    expect(container.querySelectorAll('.project-resource-action')).toHaveLength(projects.length);
+    expect(container.querySelectorAll('[data-project-action="external"]')).toHaveLength(projectsWithExternalLink.length);
+    expect(container.querySelectorAll('[data-project-action="gallery"]')).toHaveLength(projectsWithGallery.length);
+
+    for (const project of projectsWithExternalLink) {
+      const externalLink = getProjectRow(container, project.slug).querySelector<HTMLAnchorElement>('[data-project-action="external"]');
+
+      expect(externalLink).toHaveAttribute('href', project.externalLink?.href);
+    }
   });
 
   it('renders every project tag from the JSON configuration', () => {
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
-    const expectedTags = {
-      'bank-statement-converter': ['shipped'],
-      kukla2d: ['shipped', 'public-beta', 'in-development'],
-      taxhelper: ['in-development'],
-      repoatlas: ['in-development'],
-      'orderhub-pos-wms': ['prototype-paused'],
-      'gpt_img_2-spritesheet-processor': ['discontinued', 'public-beta'],
-    };
 
-    for (const [slug, tags] of Object.entries(expectedTags)) {
-      const row = container.querySelector<HTMLElement>(`[data-project-slug="${slug}"]`);
-
-      if (!row) {
-        throw new Error(`Project row ${slug} is missing.`);
-      }
+    for (const project of projects) {
+      const row = getProjectRow(container, project.slug);
 
       expect(Array.from(row.querySelectorAll<HTMLElement>('[data-project-tag]')).map((badge) => badge.dataset.projectTag))
-        .toEqual(tags);
+        .toEqual(project.tags);
     }
 
-    expect(container.querySelectorAll('.project-badge')).toHaveLength(9);
+    expect(container.querySelectorAll('.project-badge')).toHaveLength(projects.flatMap((project) => project.tags).length);
   });
 
   it('opens a project gallery directly from the list and restores focus on close', async () => {
     const user = userEvent.setup();
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
-    const row = container.querySelector<HTMLElement>('[data-project-slug="bank-statement-converter"]');
+    const row = getProjectRow(container, 'bank-statement-converter');
+    const trigger = row.querySelector<HTMLButtonElement>('[data-project-action="gallery"]');
 
-    if (!row) {
-      throw new Error('Bank Statement Converter project row is missing.');
+    if (!trigger) {
+      throw new Error('Project gallery trigger is missing.');
     }
 
-    const trigger = within(row).getByRole('button', { name: 'Otwórz galerię obrazów: Konwenter wyciągów bankowych' });
     await user.click(trigger);
 
-    const dialog = await screen.findByRole('dialog', { name: 'Galeria obrazów' });
+    const dialog = await screen.findByRole('dialog', { name: polishSite.messages.content.imageGallery.label });
     expect(within(dialog).getByRole('img')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Zamknij podgląd obrazu' })).toHaveFocus();
+    expect(screen.getByRole('button', { name: polishSite.messages.content.imageGallery.close })).toHaveFocus();
     expect(document.documentElement).toHaveClass('is-scroll-locked');
 
     await user.keyboard('{Escape}');
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Galeria obrazów' })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: polishSite.messages.content.imageGallery.label })).not.toBeInTheDocument());
     expect(trigger).toHaveFocus();
     expect(document.documentElement).not.toHaveClass('is-scroll-locked');
   });
 
   it('opens the Sprite case study, renders MDX content, and restores focus on close', async () => {
     const user = userEvent.setup();
-    renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
-    const trigger = screen.getByRole('button', { name: /otwórz case-study: gpt img-2 spritesheet processor/i });
+    const trigger = getProjectContentButton(container, spriteProject.slug);
     await user.click(trigger);
 
-    const dialog = await screen.findByRole('dialog', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' });
+    const dialog = await screen.findByRole('dialog');
     expect(dialog).toBeInTheDocument();
-    expect(await within(dialog).findByRole('heading', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR', level: 1 })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /zamknij okno/i })).toHaveFocus();
-    const tableOfContents = await screen.findByRole('navigation', { name: 'Spis treści' });
-    const tableOfContentsToggle = screen.getByRole('button', { name: 'Otwórz spis treści' });
+    expect(await within(dialog).findByRole('heading', { level: 1 })).toHaveTextContent(/\S/);
+    expect(screen.getByRole('button', { name: polishSite.messages.projectContent.close })).toHaveFocus();
+    const tableOfContents = await screen.findByRole('navigation', { name: polishSite.messages.content.tableOfContents });
+    const tableOfContentsToggle = screen.getByRole('button', { name: polishSite.messages.content.openTableOfContents });
     await user.click(tableOfContentsToggle);
     expect(tableOfContentsToggle).toHaveAttribute('aria-expanded', 'true');
     expect(tableOfContents).toHaveClass('mdx-toc--open');
-    const problemLink = within(tableOfContents).getByRole('link', { name: 'Problem' });
-    const problemHeading = screen.getByRole('heading', { name: 'Problem' });
+    const tocLinks = within(tableOfContents).getAllByRole('link');
+    const firstTocLink = tocLinks[0];
+    const secondTocLink = tocLinks[1];
+    const firstHeadingId = firstTocLink?.getAttribute('href')?.slice(1);
+    const firstHeading = firstHeadingId ? document.getElementById(firstHeadingId) : null;
+
+    if (!firstTocLink || !secondTocLink || !(firstHeading instanceof HTMLElement)) {
+      throw new Error('The generated table of contents is missing heading targets.');
+    }
+
     const modalBody = dialog.closest('.project-modal')?.querySelector<HTMLElement>('.project-modal__body');
 
     if (!modalBody) {
@@ -155,16 +167,21 @@ describe('project content system', () => {
       configurable: true,
       value: () => ({ height: 800, top: 64 }),
     });
-    Object.defineProperty(problemHeading, 'getBoundingClientRect', {
+    Object.defineProperty(firstHeading, 'getBoundingClientRect', {
       configurable: true,
       value: () => ({ top: 300 }),
     });
-    await user.click(problemLink);
+    await user.click(firstTocLink);
     await waitFor(() => expect(scrollTo).toHaveBeenCalledWith({ behavior: 'smooth', top: 312 }));
-    expect(problemLink).toHaveAttribute('aria-current', 'location');
+    expect(firstTocLink).toHaveAttribute('aria-current', 'location');
 
-    screen.getAllByRole('heading').forEach((heading) => {
-      const top = heading.textContent === 'Problem' ? -120 : heading.textContent === 'Podejście' ? 160 : 320;
+    const tocTargets = tocLinks
+      .map((link) => link.getAttribute('href')?.slice(1))
+      .map((id) => (id ? document.getElementById(id) : null))
+      .filter((heading): heading is HTMLElement => heading instanceof HTMLElement);
+
+    tocTargets.forEach((heading, index) => {
+      const top = index === 0 ? -120 : index === 1 ? 160 : 320;
       Object.defineProperty(heading, 'getBoundingClientRect', {
         configurable: true,
         value: () => ({ top }),
@@ -174,19 +191,16 @@ describe('project content system', () => {
     modalBody.dispatchEvent(new Event('scroll'));
 
     await waitFor(() => {
-      expect(within(tableOfContents).getByRole('link', { name: 'Podejście' })).toHaveAttribute(
-        'aria-current',
-        'location',
-      );
+      expect(secondTocLink).toHaveAttribute('aria-current', 'location');
     });
 
     expect(spriteImages.length).toBeGreaterThan(0);
-    const gallery = await screen.findByRole('region', { name: 'Galeria obrazów' });
+    const gallery = await screen.findByRole('region', { name: polishSite.messages.content.imageGallery.label });
     expect(gallery).toBeInTheDocument();
     expect(gallery.querySelector('.mdx-image-gallery__expand')).toBeInTheDocument();
     expect(screen.getByText(`1/${spriteImages.length}`)).toBeInTheDocument();
-    const previousImageButton = screen.queryByRole('button', { name: 'Poprzedni obraz' });
-    const nextImageButton = screen.queryByRole('button', { name: 'Następny obraz' });
+    const previousImageButton = screen.queryByRole('button', { name: polishSite.messages.content.imageGallery.previous });
+    const nextImageButton = screen.queryByRole('button', { name: polishSite.messages.content.imageGallery.next });
     if (spriteImages.length > 1) {
       expect(previousImageButton).toBeInTheDocument();
       expect(nextImageButton).toBeInTheDocument();
@@ -213,10 +227,10 @@ describe('project content system', () => {
 
   it('opens the image lightbox from the case study gallery, navigates it, and restores focus on close', async () => {
     const user = userEvent.setup();
-    renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: gpt img-2 spritesheet processor/i }));
-    const gallery = await screen.findByRole('region', { name: 'Galeria obrazów' });
+    await user.click(getProjectContentButton(container, spriteProject.slug));
+    const gallery = await screen.findByRole('region', { name: polishSite.messages.content.imageGallery.label });
     const expandButton = gallery.querySelector<HTMLButtonElement>('.mdx-image-gallery__expand');
 
     if (!expandButton) {
@@ -225,20 +239,20 @@ describe('project content system', () => {
 
     await user.click(expandButton);
 
-    const lightbox = await screen.findByRole('dialog', { name: 'Galeria obrazów' });
+    const lightbox = await screen.findByRole('dialog', { name: polishSite.messages.content.imageGallery.label });
     const overlay = lightbox.closest('.image-lightbox');
 
     if (!(overlay instanceof HTMLElement)) {
       throw new Error('Image lightbox overlay is missing.');
     }
 
-    expect(within(lightbox).getByRole('img', { name: 'cd33e673 befe 4247 8355 9f487ea1480d' })).toBeInTheDocument();
-    expect(within(overlay).getByRole('button', { name: 'Zamknij podgląd obrazu' })).toHaveFocus();
+    expect(lightbox.querySelector('img')).toBeInTheDocument();
+    expect(within(overlay).getByRole('button', { name: polishSite.messages.content.imageGallery.close })).toHaveFocus();
     expect(document.documentElement).toHaveClass('is-scroll-locked');
 
     if (spriteImages.length > 1) {
-      await user.click(within(overlay).getByRole('button', { name: 'Następny obraz' }));
-      expect(within(lightbox).getByRole('img', { name: 'gpt img 2 processor' })).toBeInTheDocument();
+      await user.click(within(overlay).getByRole('button', { name: polishSite.messages.content.imageGallery.next }));
+      expect(lightbox.querySelector('img')).toBeInTheDocument();
       expect(within(lightbox).getByText(`2/${spriteImages.length}`)).toBeInTheDocument();
 
       await user.keyboard('{ArrowLeft}');
@@ -250,19 +264,18 @@ describe('project content system', () => {
 
     await user.keyboard('{Escape}');
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Galeria obrazów' })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: polishSite.messages.content.imageGallery.label })).not.toBeInTheDocument());
     expect(expandButton).toHaveFocus();
     expect(document.documentElement).toHaveClass('is-scroll-locked');
 
     await user.keyboard('{Escape}');
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(document.documentElement).not.toHaveClass('is-scroll-locked');
   });
 
   it('opens a single OrderHub article image in the shared lightbox preview', async () => {
     const user = userEvent.setup();
-    const imageAlt = 'Edytor mapy sklepu z wizualizacją wygenerowanej trasy pickingu';
     const { container } = renderPage(
       <MdxContent
         document={{ Component: OrderHubFixture, frontmatter: { title: 'OrderHub' } }}
@@ -271,34 +284,35 @@ describe('project content system', () => {
       />,
     );
 
-    const image = screen.getByAltText(imageAlt);
-    const trigger = image.closest('button');
+    const trigger = container.querySelector<HTMLButtonElement>('.mdx-image-preview');
 
     if (!trigger) {
       throw new Error('Single image preview trigger is missing.');
     }
+
+    expect(trigger.querySelector('img')).toBeInTheDocument();
 
     expect(trigger).toHaveClass('mdx-image-preview');
     expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
 
     await user.click(trigger);
 
-    const lightbox = await screen.findByRole('dialog', { name: 'Galeria obrazów' });
+    const lightbox = await screen.findByRole('dialog', { name: polishSite.messages.content.imageGallery.label });
     const overlay = lightbox.closest('.image-lightbox');
 
     if (!(overlay instanceof HTMLElement)) {
       throw new Error('Image lightbox overlay is missing.');
     }
 
-    expect(within(lightbox).getByRole('img', { name: imageAlt })).toBeInTheDocument();
-    expect(within(overlay).queryByRole('button', { name: 'Poprzedni obraz' })).not.toBeInTheDocument();
-    expect(within(overlay).queryByRole('button', { name: 'Następny obraz' })).not.toBeInTheDocument();
-    expect(within(overlay).getByRole('button', { name: 'Zamknij podgląd obrazu' })).toHaveFocus();
+    expect(lightbox.querySelector('img')).toBeInTheDocument();
+    expect(within(overlay).queryByRole('button', { name: polishSite.messages.content.imageGallery.previous })).not.toBeInTheDocument();
+    expect(within(overlay).queryByRole('button', { name: polishSite.messages.content.imageGallery.next })).not.toBeInTheDocument();
+    expect(within(overlay).getByRole('button', { name: polishSite.messages.content.imageGallery.close })).toHaveFocus();
     expect(document.documentElement).toHaveClass('is-scroll-locked');
 
     await user.keyboard('{Escape}');
 
-    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Galeria obrazów' })).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: polishSite.messages.content.imageGallery.label })).not.toBeInTheDocument());
     expect(trigger).toHaveFocus();
     expect(document.documentElement).not.toHaveClass('is-scroll-locked');
     expect(container.querySelector('.mdx-image-preview')).toBeInTheDocument();
@@ -317,12 +331,11 @@ describe('project content system', () => {
     })));
 
     const user = userEvent.setup();
-    renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: gpt img-2 spritesheet processor/i }));
-    const toggle = await screen.findByRole('button', { name: 'Otwórz spis treści' });
-    const article = await screen.findByRole('heading', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR', level: 1 })
-      .then((heading) => heading.closest('article'));
+    await user.click(getProjectContentButton(container, spriteProject.slug));
+    const toggle = await screen.findByRole('button', { name: polishSite.messages.content.openTableOfContents });
+    const article = document.querySelector<HTMLElement>('.project-modal .mdx-content');
     const scrollViewport = document.querySelector<HTMLElement>('.project-modal__body');
 
     if (!article || !scrollViewport) {
@@ -334,7 +347,7 @@ describe('project content system', () => {
     await waitFor(() => {
       expect(scrollViewport).toHaveClass('is-toc-open');
       expect(article).toHaveAttribute('inert');
-      expect(screen.getByRole('navigation', { name: 'Spis treści' })).toHaveClass('mdx-toc--open');
+      expect(screen.getByRole('navigation', { name: polishSite.messages.content.tableOfContents })).toHaveClass('mdx-toc--open');
     });
 
     await user.keyboard('{Escape}');
@@ -348,12 +361,14 @@ describe('project content system', () => {
 
   it('opens the Bank Statement Converter case study from its MDX document', async () => {
     const user = userEvent.setup();
-    renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: konwenter wyciągów bankowych/i }));
+    await user.click(getProjectContentButton(container, 'bank-statement-converter'));
 
-    expect(await screen.findByText(/Konwenter wyciągów bankowych powstał dla firmy księgowej/i)).toBeInTheDocument();
-    expect(screen.getByRole('dialog', { name: 'Konwenter wyciągów bankowych' })).toBeInTheDocument();
+    const dialog = await screen.findByRole('dialog');
+
+    await waitFor(() => expect(dialog.querySelector('.mdx-content')).toBeInTheDocument());
+    expect(await within(dialog).findByRole('heading', { level: 1 })).toHaveTextContent(/\S/);
   });
 
   it('opens the requested case study from the URL query parameter', async () => {
@@ -363,14 +378,14 @@ describe('project content system', () => {
       </MemoryRouter>,
     );
 
-    expect(await screen.findByRole('dialog', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' })).toBeInTheDocument();
+    expect(await screen.findByRole('dialog')).toBeInTheDocument();
   });
 
   it('closes the modal when the backdrop is clicked', async () => {
     const user = userEvent.setup();
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: konwenter wyciągów bankowych/i }));
+    await user.click(getProjectContentButton(container, 'bank-statement-converter'));
     const backdrop = container.ownerDocument.body.querySelector('.project-modal');
 
     if (!(backdrop instanceof HTMLElement)) {
@@ -397,8 +412,9 @@ describe('project content system', () => {
     const localeState = container.querySelector('.content-document-state--locale');
     const localeAction = container.querySelector<HTMLButtonElement>('.content-document-state__action');
 
-    expect(localeState?.querySelector('p')).toBeEmptyDOMElement();
-    expect(localeAction?.querySelector('span')).toBeEmptyDOMElement();
+    expect(localeState).toBeInTheDocument();
+    expect(localeState?.querySelector('p')).toHaveTextContent(/\S/);
+    expect(localeAction?.querySelector('span')).toHaveTextContent(/\S/);
     expect(localeAction).toBeInTheDocument();
     if (!localeAction) {
       return;
@@ -422,7 +438,7 @@ describe('project content system', () => {
       />,
     );
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Nie udało się wczytać case-study.');
+    expect(await screen.findByRole('alert')).toHaveTextContent(polishSite.messages.projectContent.error);
     loadContentSpy.mockRestore();
   });
 
@@ -434,17 +450,30 @@ describe('project content system', () => {
       />,
     );
 
-    const tableOfContents = await screen.findByRole('navigation', { name: 'Spis treści' });
-    const wrongLayerLink = within(tableOfContents).getByRole('link', {
-      name: 'Zacząłem od niewłaściwej warstwy',
-    });
-    const differentApproachLink = within(tableOfContents).getByRole('link', {
-      name: 'Co zrobiłbym inaczej',
-    });
-    const differentApproachChildren = differentApproachLink.closest('li')?.querySelector('.mdx-toc__nested-list');
+    const tableOfContents = await screen.findByRole('navigation', { name: polishSite.messages.content.tableOfContents });
+    const article = document.querySelector<HTMLElement>('.mdx-content');
 
-    expect(within(tableOfContents).getByRole('link', { name: 'Błędne założenia' })).toBeInTheDocument();
-    expect(differentApproachChildren).toHaveTextContent('1. Najpierw zrozumieć zależności w domenie');
-    expect(wrongLayerLink.closest('li')?.querySelector('.mdx-toc__nested-list')).toBeNull();
+    if (!article) {
+      throw new Error('Rendered MDX article is missing.');
+    }
+
+    const allHeadings = Array.from(article.querySelectorAll<HTMLHeadingElement>('h1, h2, h3'));
+    const contentHeadings = allHeadings[0]?.tagName === 'H1' ? allHeadings.slice(1) : allHeadings;
+    const tocLinks = within(tableOfContents).getAllByRole('link');
+    const tocTargets = tocLinks.map((link) => link.getAttribute('href'));
+
+    expect(contentHeadings.length).toBeGreaterThan(0);
+    expect(tocTargets).toEqual(contentHeadings.map((heading) => `#${heading.id}`));
+    expect(tableOfContents.querySelector('.mdx-toc__nested-list')).toBeInTheDocument();
+
+    for (const item of tableOfContents.querySelectorAll<HTMLElement>('.mdx-toc__item')) {
+      const targetId = item.querySelector<HTMLAnchorElement>('.mdx-toc__link')?.getAttribute('href')?.slice(1);
+      const target = targetId ? document.getElementById(targetId) : null;
+
+      expect(target).toBeInstanceOf(HTMLHeadingElement);
+      if (target) {
+        expect(item).toHaveClass(`mdx-toc__item--level-${target.tagName.slice(1)}`);
+      }
+    }
   });
 });

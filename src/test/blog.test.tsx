@@ -55,11 +55,12 @@ describe('MDX blog', () => {
     const articles = await getBlogArticles();
     const selectedTag = articles[0]?.tags[0];
     const matchingArticles = articles.filter((article) => article.tags.includes(selectedTag ?? ''));
-    renderBlog(getSiteContent('pl'));
+    const site = getSiteContent('pl');
+    const { container } = renderBlog(site);
 
-    expect(await screen.findByRole('button', { name: `Wszystkie (${articles.length})` })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: `${site.messages.blog.all} (${articles.length})` })).toBeInTheDocument();
     expect(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Najnowsze teksty' })).not.toBeInTheDocument();
+    expect(container.querySelector('.blog-article-list')).toBeInTheDocument();
     await user.click(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` }));
 
     for (const article of matchingArticles) {
@@ -73,7 +74,8 @@ describe('MDX blog', () => {
   it('replaces the list with a full-page document and returns without a modal', async () => {
     const user = userEvent.setup();
     const article = (await getBlogArticles())[0];
-    const { container } = renderBlog(getSiteContent('pl'));
+    const site = getSiteContent('pl');
+    const { container } = renderBlog(site);
 
     expect(article).toBeDefined();
     if (!article) {
@@ -93,21 +95,21 @@ describe('MDX blog', () => {
     expect(container.querySelector('.detail-main--document .page-hero')).toBeNull();
     expect(container.querySelector('.mdx-content-layout--page')).toBeInTheDocument();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Najnowsze teksty' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Powrót' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: site.messages.blog.backToBlog })).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Powrót' }));
+    await user.click(screen.getByRole('button', { name: site.messages.blog.backToBlog }));
 
     expect(screen.getByTestId('location')).toHaveTextContent('/pl/blog');
-    expect(await screen.findByRole('button', { name: `Wszystkie (${(await getBlogArticles()).length})` })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Najnowsze teksty' })).not.toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: `${site.messages.blog.all} (${(await getBlogArticles()).length})` })).toBeInTheDocument();
+    expect(container.querySelector('.blog-article-list')).toBeInTheDocument();
   });
 
   it('does not expose Polish source content on the untranslated English route', async () => {
-    const { container } = renderBlog(getSiteContent('en'));
+    const site = getSiteContent('en');
+    const { container } = renderBlog(site);
 
     await waitFor(() => expect(container.querySelector('.blog-article-list')).toBeInTheDocument());
     expect(container.querySelectorAll('.blog-article-list article')).toHaveLength(0);
-    expect(container.querySelector('.blog-filter-row')).toHaveAttribute('aria-label', '');
+    expect(container.querySelector('.blog-filter-row')).toHaveAttribute('aria-label', site.messages.blog.filterArticles);
   });
 });

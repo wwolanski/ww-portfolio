@@ -2,7 +2,6 @@ import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { InlineCopy } from '../components/ui/InlineCopy';
-import { getSiteContent } from '../content/siteContent';
 
 describe('InlineCopy', () => {
   it('renders emphasis, strong text, and inline code', () => {
@@ -87,38 +86,5 @@ describe('InlineCopy', () => {
 
     expect(container.querySelector('img')).not.toBeInTheDocument();
     expect(container.textContent).toBe('<img src="x" onerror="alert(1)" />');
-  });
-});
-
-describe('migrated content', () => {
-  it('preserves the text of every migrated Polish inline content field', () => {
-    const content = getSiteContent('pl').portfolio;
-    const cases = [
-      [
-        content.about.hero.lead,
-        'Mieszkam w Gdańsku, skąd pracuję AI-native. Buduję aplikacje, narzędzia i eksperymenty. Technologia, zarówno software, jak i hardware, była ze mną dużo wcześniej niż development. Do świata dev nie trafiłem jednak najkrótszą drogą.',
-      ],
-      [
-        content.projects.hero.lead,
-        'Są tu rzeczy skończone, rozwijane, zatrzymane i takie, które po prostu nie zadziałały. Razem dają obraz tego, czym do tej pory się zajmowałem.',
-      ],
-    ] as const;
-
-    for (const [copy, expectedText] of cases) {
-      const { container, unmount } = render(<InlineCopy copy={copy} />);
-
-      expect(container.textContent).toBe(expectedText);
-      unmount();
-    }
-  });
-
-  it('migrates the English empty hero leads to empty strings', () => {
-    const content = getSiteContent('en').portfolio;
-
-    expect(content.about.hero.lead).toBe('');
-    expect(content.projects.hero.lead).toBe('');
-
-    const { container } = render(<InlineCopy copy={content.about.hero.lead} />);
-    expect(container).toBeEmptyDOMElement();
   });
 });

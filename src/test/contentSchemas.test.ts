@@ -22,21 +22,13 @@ const localizedContent = {
   pl: { about: plAbout, blog: plBlog, home: plHome, projects: plProjects, skills: plSkills, ui: plUi },
 } as const;
 
-describe.each(Object.entries(localizedContent))('%s locale content', (locale, content) => {
+describe.each(Object.entries(localizedContent))('%s locale content', (_locale, content) => {
   it.each(Object.entries(localeContentSchemas))('matches the exact %s schema', (page, schema) => {
     const errors = validateContent(content[page as keyof typeof content], schema);
 
     expect(errors, errors.join('\n')).toEqual([]);
   });
 
-  if (locale === 'en') {
-    it('contains no translation text while retaining structural route targets', () => {
-      const nonEmptyTranslations = findNonEmptyStrings(content)
-        .filter(([path]) => !path.endsWith('.target'));
-
-      expect(nonEmptyTranslations).toEqual([]);
-    });
-  }
 });
 
 function validateContent(value: unknown, schema: ContentSchema, path = '$'): string[] {
@@ -147,20 +139,4 @@ function isUrl(value: string): boolean {
   } catch {
     return false;
   }
-}
-
-function findNonEmptyStrings(value: unknown, path = '$'): [string, string][] {
-  if (typeof value === 'string') {
-    return value === '' ? [] : [[path, value]];
-  }
-
-  if (Array.isArray(value)) {
-    return value.flatMap((item, index) => findNonEmptyStrings(item, `${path}[${index}]`));
-  }
-
-  if (!isRecord(value)) {
-    return [];
-  }
-
-  return Object.entries(value).flatMap(([key, item]) => findNonEmptyStrings(item, `${path}.${key}`));
 }

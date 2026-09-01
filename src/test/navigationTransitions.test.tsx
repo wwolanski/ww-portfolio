@@ -5,7 +5,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { App } from '../app/App';
 import { ScrollToTop } from '../components/layout/ScrollToTop';
+import { getSiteContent } from '../content/siteContent';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
+
+const polishSite = getSiteContent('pl');
 
 function NavigationFixture() {
   const navigate = useNavigate();
@@ -39,7 +42,9 @@ describe('navigation transitions', () => {
     const siteNav = container.querySelector('.site-nav');
     scrollTo.mockClear();
 
-    await user.click(screen.getByRole('link', { name: 'Zmień język na Angielski' }));
+    await user.click(screen.getByRole('link', {
+      name: polishSite.messages.language.switchTo(polishSite.messages.language.english),
+    }));
 
     expect(container.querySelector('.language-switcher__option[href="/pl/projects"]')).toBeInTheDocument();
     expect(scrollTo).not.toHaveBeenCalled();
@@ -76,7 +81,13 @@ describe('navigation transitions', () => {
       incomingLayerWasMountedAtScroll = Boolean(container.querySelector('.detail-main__route-layer[data-page="projects"]'));
     });
 
-    await user.click(screen.getByRole('link', { name: 'Projekty' }));
+    const projectsLink = container.querySelector<HTMLAnchorElement>('a[href="/pl/projects"]');
+
+    if (!projectsLink) {
+      throw new Error('Projects navigation link is missing.');
+    }
+
+    await user.click(projectsLink);
 
     expect(scrollTo).not.toHaveBeenCalled();
     await waitFor(() => expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'instant' }));

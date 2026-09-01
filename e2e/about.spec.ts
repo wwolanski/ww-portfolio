@@ -7,7 +7,7 @@ test.describe('about page layout', () => {
     const timelineSection = page.locator('.about-section--timeline');
     const timeline = timelineSection.locator('.about-timeline');
 
-    await expect(page.getByRole('heading', { name: /Cześć.*Wojciech/i })).toBeVisible();
+    await expect(page.locator('.page-hero h1')).toBeVisible();
     await expect(timelineSection).toBeVisible();
     await expect(page.locator('.page-intro br')).toHaveCount(0);
 

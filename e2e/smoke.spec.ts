@@ -1,19 +1,17 @@
 import { expect, test, type Page } from '@playwright/test';
 
-const homeHeading = 'Wojciech Wolanski';
-
 async function openPolishHome(page: Page) {
   await page.goto('/pl');
   await expect(page).toHaveURL(/\/pl\/?$/);
-  await expect(page.getByRole('heading', { name: homeHeading })).toBeVisible();
+  await expect(page.locator('.home-title')).toBeVisible();
 }
 
 test.describe('portfolio smoke', () => {
   test('opens the Polish home page and renders the main navigation entry point', async ({ page }) => {
     await openPolishHome(page);
 
-    await expect(page.getByRole('link', { name: 'Otwórz stronę: Blog' }))
-      .toHaveAttribute('href', '/pl/blog');
+    await expect(page.locator('.home-card__link[href="/pl/blog"]'))
+      .toBeVisible();
   });
 
   test('keeps the full navigation until mobile and opens the WW drawer horizontally', async ({ page }) => {
@@ -24,7 +22,7 @@ test.describe('portfolio smoke', () => {
     await expect(page.locator('.site-nav__menu-trigger')).toBeHidden();
 
     await page.setViewportSize({ width: 390, height: 844 });
-    const trigger = page.getByRole('button', { name: 'Otwórz nawigację' });
+    const trigger = page.locator('.site-nav__menu-trigger');
     const wordmark = page.locator('.site-nav__menu-wordmark');
     const menuIcon = trigger.locator('svg');
 

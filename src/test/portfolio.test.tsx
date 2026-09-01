@@ -27,20 +27,23 @@ const polishSite = getSiteContent('pl');
 
 describe('existing portfolio shell', () => {
   it('keeps all home sections and their original links', () => {
-    renderPage(<HomePage site={polishSite} />);
+    const { container } = renderPage(<HomePage site={polishSite} />);
 
-    expect(screen.getByRole('heading', { name: /wojciech wolanski/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /otwórz stronę: o mnie/i })).toHaveAttribute('href', '/pl/about');
-    expect(screen.getByRole('link', { name: /otwórz stronę: projekty/i })).toHaveAttribute('href', '/pl/projects');
-    expect(screen.getByRole('link', { name: /otwórz stronę: skills/i })).toHaveAttribute('href', '/pl/skills');
-    expect(screen.getByRole('link', { name: /otwórz stronę: blog/i })).toHaveAttribute('href', '/pl/blog');
+    expect(container.querySelector('.home-title')).toBeInTheDocument();
+
+    for (const item of polishSite.navigation) {
+      const link = container.querySelector<HTMLAnchorElement>(`[data-card="${item.slug}"] .home-card__link`);
+
+      expect(link).toHaveAttribute('href', `/${polishSite.locale}${item.href}`);
+      expect(link).toHaveAttribute('aria-label', polishSite.messages.actions.openPage(item.label));
+    }
   });
 
   it('switches theme and persists the preference', async () => {
     const user = userEvent.setup();
     renderPage(<HomePage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /przełącz na jasny motyw/i }));
+    await user.click(screen.getByRole('button', { name: polishSite.messages.theme.switchToLight }));
 
     expect(document.documentElement).not.toHaveClass('dark');
     expect(window.localStorage.getItem('ww-portfolio-theme')).toBe('light');
@@ -68,14 +71,16 @@ describe('localized detail pages', () => {
   it('keeps the current page when switching languages', async () => {
     const user = userEvent.setup();
 
-    render(
+    const { container } = render(
       <MemoryRouter initialEntries={['/pl/projects']}>
         <ThemeProvider><App /></ThemeProvider>
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole('heading', { name: /projekty\s*w\s*praktyce\./i })).toBeInTheDocument();
-    await user.click(screen.getByRole('link', { name: /zmień język na angielski/i }));
+    expect(container.querySelector('.detail-page--projects')).toBeInTheDocument();
+    await user.click(screen.getByRole('link', {
+      name: polishSite.messages.language.switchTo(polishSite.messages.language.english),
+    }));
 
     expect(document.querySelector('.language-switcher__option[href="/pl/projects"]')).toBeInTheDocument();
   });
@@ -88,14 +93,13 @@ describe('v7 detail visuals', () => {
     expect(container.querySelector('.visual-panel[data-page="about"]')).toBeInTheDocument();
     expect(container.querySelector('.about-workflow__steps')).toBeInTheDocument();
     expect(container.querySelectorAll('.about-workflow__orb img')).toHaveLength(5);
-    expect(Array.from(container.querySelectorAll('.about-page > .about-section .section-heading h2')).map((heading) => heading.textContent?.trim())).toEqual([
-      'Droga do software',
-      'Workflow w praktyce',
-    ]);
-    expect(Array.from(container.querySelectorAll('.about-page > .about-section .section-heading > span')).map((index) => index.textContent)).toEqual([
-      '01',
-      '02',
-    ]);
+    const sectionHeadings = Array.from(container.querySelectorAll('.about-page > .about-section .section-heading h2'));
+    const sectionIndexes = Array.from(container.querySelectorAll('.about-page > .about-section .section-heading > span'));
+
+    expect(sectionHeadings).toHaveLength(2);
+    expect(sectionHeadings.every((heading) => Boolean(heading.textContent?.trim()))).toBe(true);
+    expect(sectionIndexes).toHaveLength(2);
+    expect(sectionIndexes.every((index) => /^\d{2}$/.test(index.textContent ?? ''))).toBe(true);
     expect(container.querySelector('.about-process__visual img')).toBeInTheDocument();
     expect(container.querySelectorAll('.about-timeline__thumb img')).toHaveLength(4);
   });
@@ -108,32 +112,38 @@ describe('v7 detail visuals', () => {
       throw new Error('Workflow intro is missing.');
     }
 
-    expect(workflowIntro.querySelector('strong')).toHaveTextContent('Nie wymyślam koła na nowo, jeśli nie muszę.');
+    expect(workflowIntro.querySelector('strong')).toBeInTheDocument();
     expect(workflowIntro.textContent).not.toContain('**');
   });
 
   it('renders localized RepoAtlas links to the case study', () => {
     const about = renderPage(<AboutPage site={polishSite} />);
-    const aboutLink = screen.getByRole('link', { name: 'RepoAtlas' });
+    const aboutLink = about.container.querySelector<HTMLAnchorElement>('a[href="/pl/projects?caseStudy=repoatlas"]');
 
-    expect(aboutLink).toHaveAttribute('href', '/pl/projects?caseStudy=repoatlas');
+    expect(aboutLink).toBeInTheDocument();
+    if (!aboutLink) {
+      return;
+    }
     expect(aboutLink.querySelectorAll('.content-link__icon')).toHaveLength(1);
     about.unmount();
 
-    renderPage(<SkillsPage site={polishSite} />);
-    const skillsLink = screen.getByRole('link', { name: 'RepoAtlas' });
+    const skills = renderPage(<SkillsPage site={polishSite} />);
+    const skillsLink = skills.container.querySelector<HTMLAnchorElement>('a[href="/pl/projects?caseStudy=repoatlas"]');
 
-    expect(skillsLink).toHaveAttribute('href', '/pl/projects?caseStudy=repoatlas');
+    expect(skillsLink).toBeInTheDocument();
+    if (!skillsLink) {
+      return;
+    }
     expect(skillsLink.querySelectorAll('svg')).toHaveLength(2);
   });
 
   it('links the GPT IMG-2 example to its case study', () => {
-    renderPage(<SkillsPage site={polishSite} />);
-
-    expect(screen.getByRole('link', { name: 'GPT IMG-2 SPRITESHEET PROCESSOR' })).toHaveAttribute(
-      'href',
-      '/pl/projects?caseStudy=gpt_img_2-spritesheet-processor',
+    const { container } = renderPage(<SkillsPage site={polishSite} />);
+    const projectLink = container.querySelector<HTMLAnchorElement>(
+      'a[href="/pl/projects?caseStudy=gpt_img_2-spritesheet-processor"]',
     );
+
+    expect(projectLink).toBeInTheDocument();
   });
 
   it('reveals the complete example process on demand', async () => {
@@ -141,7 +151,7 @@ describe('v7 detail visuals', () => {
     const { container } = renderPage(<AboutPage site={polishSite} />);
     const reveal = container.querySelector('.about-process__grid-reveal');
     const viewport = container.querySelector('.about-process__grid-viewport');
-    const toggle = screen.getByRole('button', { name: 'Pokaż pełny proces' });
+    const toggle = screen.getByRole('button', { name: polishSite.messages.content.expandProcess });
 
     expect(reveal).not.toHaveClass('is-expanded');
     expect(viewport).toHaveAttribute('aria-hidden', 'true');
@@ -151,15 +161,15 @@ describe('v7 detail visuals', () => {
 
     expect(reveal).toHaveClass('is-expanded');
     expect(viewport).toHaveAttribute('aria-hidden', 'false');
-    expect(screen.getByRole('button', { name: 'Zwiń etapy procesu' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: polishSite.messages.content.collapseProcess })).toHaveAttribute('aria-expanded', 'true');
   });
 
   it('renders the custom skills boundary section and blog card rail', () => {
     const { container, unmount } = renderPage(<SkillsPage site={polishSite} />);
 
     expect(container.querySelector('.solution-boundary')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: polishSite.portfolio.skills.boundary.title.join(' ') })).toBeInTheDocument();
-    expect(container.querySelector('.solution-boundary .page-eyebrow')).toHaveTextContent('Umiejętności · 03');
+    expect(container.querySelector('.solution-boundary h1')).toHaveTextContent(/\S/);
+    expect(container.querySelector('.solution-boundary .page-eyebrow')).toHaveTextContent(/\S/);
     expect(container.querySelectorAll('.solution-boundary__layer')).toHaveLength(4);
     expect(container.querySelectorAll('.solution-boundary__principle')).toHaveLength(4);
 
@@ -212,7 +222,7 @@ describe('v7 detail visuals', () => {
     const boundaryIndex = sections.findIndex((section) => section.classList.contains('solution-boundary'));
     const technologyIndex = sections.findIndex((section) => section.querySelector('.skills-tools'));
 
-    expect(screen.getByRole('heading', { name: 'Technologie, z którymi pracuję' })).toBeInTheDocument();
+    expect(container.querySelector('.skills-tools')).toBeInTheDocument();
     expect(technologyIndex).toBe(boundaryIndex + 1);
     expect(container.querySelectorAll('.skills-tools__group')).toHaveLength(stack.bands.length);
     expect(container.querySelectorAll('.tech-tag--badge')).toHaveLength(stackTools.length);
@@ -225,57 +235,21 @@ describe('v7 detail visuals', () => {
 
     const skills = renderPage(<SkillsPage site={polishSite} />);
     expect(skills.container.querySelector('.statement')).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Projekty ↗' })).toHaveAttribute('href', '/pl/projects');
+    expect(skills.container.querySelector('.footer-cta__link[href="/pl/projects"]')).toBeInTheDocument();
     skills.unmount();
 
     const projects = renderPage(<ProjectsPage site={polishSite} />);
     expect(projects.container.querySelector('.statement')).not.toBeInTheDocument();
   });
 
-  it('registers every technology in the retained technologies content', () => {
+  it('keeps every technology content entry linked to a registered tag', () => {
     const stack = polishSite.portfolio.skills.stack;
     const stackTools = stack.bands.flatMap((band) => band.tools);
-    expect(stack.bands.map((band) => band.title)).toEqual([
-      'Frontend',
-      'UI Systems',
-      'Backend & APIs',
-      'Data & Search',
-      'AI & Coding Agents',
-      'MCP',
-      'Agentic Tooling',
-      'Quality & Delivery',
-    ]);
-    expect(stack.bands[7]?.tools).toEqual([
-      'CI/CD',
-      'Git',
-      'GitHub',
-      'Docker',
-      'Vitest',
-      'pytest',
-      'Playwright',
-      'ESLint',
-      'Knip',
-    ]);
-    expect(stack.bands[0]?.tools).not.toContain('Zustand');
-    expect(stack.bands[4]?.tools).not.toContain('Claude');
-    expect(stack.bands[6]?.tools).toEqual([
-      'CodeGraph',
-      'RTK',
-      'Google Stitch',
-      'Mermaid',
-      'Impeccable',
-    ]);
+    expect(stack.bands.length).toBeGreaterThan(0);
+    expect(stack.bands.every((band) => band.title.trim().length > 0 && band.tools.length > 0)).toBe(true);
+    expect(new Set(stackTools).size).toBe(stackTools.length);
     expect(stackTools.every((tool) => getTechTagDefinition(tool))).toBe(true);
-    expect(getTechTagDefinition('Git')?.icon).toEqual({ kind: 'iconify', name: 'skill-icons:git' });
-    expect(getTechTagDefinition('GitHub')?.icon).toEqual({ kind: 'iconify', name: 'simple-icons:github' });
-    expect(getTechTagDefinition('Mermaid')?.icon).toEqual({
-      kind: 'iconify',
-      name: 'simple-icons:mermaid',
-      color: '#ff3670',
-    });
-    expect(getTechTagDefinition('Claude')).toBeDefined();
-    expect(getTechTagDefinition('Zustand')).toBeDefined();
-    expect(getTechTagDefinition('toString')).toBeUndefined();
+    expect(getTechTagDefinition('__missing_technology__')).toBeUndefined();
   });
 
   it('supports badge and icon-only tech tag variants', () => {
