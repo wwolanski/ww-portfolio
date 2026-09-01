@@ -91,7 +91,7 @@ export const TECH_TAG_REGISTRY = {
   Git: { icon: icon('skill-icons:git') },
   GitHub: { icon: icon('simple-icons:github') },
   Docker: { icon: icon('skill-icons:docker') },
-  Vitest: { icon: icon('simple-icons:vitest', '#00FF74') },
+  Vitest: { icon: icon('simple-icons:vitest', '#6E9F18') },
   pytest: { icon: icon('devicon:pytest') },
   Playwright: { icon: icon('simple-icons:playwright') },
   ESLint: { icon: icon('devicon:eslint') },
