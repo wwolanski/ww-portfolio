@@ -1,7 +1,9 @@
 import codeGraphIcon from '../assets/tech/codegraph.png';
+import comfyUiIcon from '../assets/tech/comfyui.webp';
 import context7Icon from '../assets/tech/context7.svg';
 import googleStitchIcon from '../assets/tech/google-stitch.png';
 import impeccableIcon from '../assets/tech/impeccable.png';
+import reactFlowIcon from '../assets/tech/react-flow.ico';
 import rtkIcon from '../assets/tech/rtk.png';
 import baseUiIcon from '../assets/tech/base-ui.png';
 import radixUiIcon from '../assets/tech/radix-ui.png';
@@ -39,7 +41,7 @@ export const TECH_TAG_REGISTRY = {
   'TanStack Query': { icon: image(tanstackQueryIcon) },
   XState: { icon: icon('simple-icons:xstate') },
   Zustand: { icon: icon('devicon:zustand') },
-  'React Flow': { icon: temporaryIcon },
+  'React Flow': { icon: image(reactFlowIcon) },
   PixiJS: { icon: icon('devicon:pixijs') },
   IndexedDB: { icon: temporaryIcon },
 
@@ -61,7 +63,7 @@ export const TECH_TAG_REGISTRY = {
   PostgreSQL: { icon: icon('skill-icons:postgresql-dark') },
   Redis: { icon: icon('skill-icons:redis-dark') },
   pgvector: { icon: temporaryIcon },
-  Qdrant: { icon: icon('simple-icons:qdrant') },
+  Qdrant: { icon: icon('simple-icons:qdrant', '#DC244C') },
 
   // AI & Coding Agents
   Cursor: { icon: icon('simple-icons:cursor') },
@@ -71,7 +73,7 @@ export const TECH_TAG_REGISTRY = {
   'Gemini API': { icon: icon('simple-icons:googlegemini') },
   OpenRouter: { icon: icon('simple-icons:openrouter') },
   'LM Studio': { icon: icon('simple-icons:lmstudio') },
-  ComfyUI: { icon: temporaryIcon },
+  ComfyUI: { icon: image(comfyUiIcon) },
 
   // MCP
   Context7: { icon: image(context7Icon) },
@@ -89,11 +91,11 @@ export const TECH_TAG_REGISTRY = {
   Git: { icon: icon('skill-icons:git') },
   GitHub: { icon: icon('simple-icons:github') },
   Docker: { icon: icon('skill-icons:docker') },
-  Vitest: { icon: icon('simple-icons:vitest') },
+  Vitest: { icon: icon('simple-icons:vitest', '#00FF74') },
   pytest: { icon: icon('devicon:pytest') },
   Playwright: { icon: icon('simple-icons:playwright') },
   ESLint: { icon: icon('devicon:eslint') },
-  Knip: { icon: icon('simple-icons:knip') },
+  Knip: { icon: icon('simple-icons:knip', '#F56E0F') },
 } satisfies Readonly<Record<string, TechTagDefinition>>;
 
 export type TechTagName = keyof typeof TECH_TAG_REGISTRY;
