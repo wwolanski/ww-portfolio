@@ -6,6 +6,21 @@ export type HeroContent = {
   readonly lead: string;
 };
 
+export type VisualPanelContent = {
+  readonly kicker: string;
+  readonly title: string;
+};
+
+export type VisualPanelCard = {
+  readonly heading: string;
+  readonly status: string;
+  readonly metric: string;
+};
+
+export type BlogVisualPanelContent = VisualPanelContent & {
+  readonly cards: readonly VisualPanelCard[];
+};
+
 export type WorkflowStep = {
   readonly index: string;
   readonly title: string;
@@ -53,6 +68,7 @@ export type HomeContent = {
 
 export type AboutContent = {
   readonly hero: HeroContent;
+  readonly visualPanel: VisualPanelContent;
   readonly workflow: {
     readonly heading: string;
     readonly intro: string;
@@ -100,6 +116,7 @@ export type Project = {
 
 export type ProjectsContent = {
   readonly hero: HeroContent;
+  readonly visualPanel: VisualPanelContent;
   readonly selected: {
     readonly projects: readonly Project[];
   };
@@ -134,6 +151,7 @@ export type SolutionBoundaryContent = {
 };
 
 export type SkillsContent = {
+  readonly visualPanel: VisualPanelContent;
   readonly boundary: SolutionBoundaryContent;
   readonly stack: {
     readonly heading: string;
@@ -147,6 +165,7 @@ export type BlogContent = {
   readonly eyebrow: string;
   readonly title: readonly string[];
   readonly intro: string;
+  readonly visualPanel: BlogVisualPanelContent;
 };
 
 export type PortfolioContent = {

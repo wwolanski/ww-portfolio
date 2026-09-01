@@ -86,6 +86,39 @@ describe('localized detail pages', () => {
   });
 });
 
+describe('localized visual panel content', () => {
+  it.each(['pl', 'en'] as const)('renders the %s about-panel copy from localized content', (locale) => {
+    const site = getSiteContent(locale);
+    const { container } = render(
+      <MemoryRouter initialEntries={[`/${locale}/about`]}>
+        <ThemeProvider><App /></ThemeProvider>
+      </MemoryRouter>,
+    );
+    const visualPanel = site.portfolio.about.visualPanel;
+
+    expect(container.querySelector('.visual-panel__caption small')).toHaveTextContent(visualPanel.kicker);
+    expect(container.querySelector('.visual-panel__caption strong')).toHaveTextContent(visualPanel.title);
+  });
+
+  it('renders the English blog-panel cards from localized content', () => {
+    const site = getSiteContent('en');
+    const { container } = render(
+      <MemoryRouter initialEntries={['/en/blog']}>
+        <ThemeProvider><App /></ThemeProvider>
+      </MemoryRouter>,
+    );
+    const cards = site.portfolio.blog.visualPanel.cards;
+    const renderedCards = container.querySelectorAll('.visual-panel__blog-shapes .blog-visual-card');
+
+    expect(renderedCards).toHaveLength(cards.length);
+    cards.forEach((card, index) => {
+      expect(renderedCards[index]).toHaveTextContent(card.heading);
+      expect(renderedCards[index]).toHaveTextContent(card.status);
+      expect(renderedCards[index]).toHaveTextContent(card.metric);
+    });
+  });
+});
+
 describe('v7 detail visuals', () => {
   it('renders the illustrated about workflow and timeline', () => {
     const { container } = renderPage(<AboutPage site={polishSite} />);

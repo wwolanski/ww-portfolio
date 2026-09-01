@@ -40,6 +40,23 @@ const heroSchema = object({
   lead: string,
 });
 
+const visualPanelSchema = object({
+  kicker: string,
+  title: string,
+});
+
+const visualPanelCardSchema = object({
+  heading: string,
+  status: string,
+  metric: string,
+});
+
+const blogVisualPanelSchema = object({
+  kicker: string,
+  title: string,
+  cards: array(visualPanelCardSchema),
+});
+
 function ctaSchema(target: 'projects' | 'skills'): ContentSchema {
   return object({
     eyebrow: string,
@@ -70,6 +87,7 @@ export const homeContentSchema = object({
 
 export const aboutContentSchema = object({
   hero: heroSchema,
+  visualPanel: visualPanelSchema,
   workflow: object({
     heading: string,
     intro: string,
@@ -113,6 +131,7 @@ const projectSchema = object({
 
 export const projectsContentSchema = object({
   hero: heroSchema,
+  visualPanel: visualPanelSchema,
   selected: object({
     projects: array(projectSchema, {
       sequentialIndexes: true,
@@ -125,6 +144,7 @@ export const projectsContentSchema = object({
 const titledTextSchema = object({ title: string, text: string });
 
 export const skillsContentSchema = object({
+  visualPanel: visualPanelSchema,
   boundary: object({
     eyebrow: string,
     title: stringArray,
@@ -158,6 +178,7 @@ export const blogContentSchema = object({
   eyebrow: string,
   title: stringArray,
   intro: string,
+  visualPanel: blogVisualPanelSchema,
 });
 
 export const uiContentSchema = object({

@@ -6,6 +6,7 @@ import { Link, useLocation, useOutlet } from 'react-router';
 import { getNavigationItem, type PageSlug } from '../../content/navigation';
 import { getPathWithoutLocale } from '../../routing/locale';
 import type { SiteContent } from '../../content/siteContent';
+import type { VisualPanelCard } from '../../content/types';
 import { InlineCopy } from '../ui/InlineCopy';
 import { SiteNav } from './SiteNav';
 import { scrollToTop } from './scrollToTop';
@@ -167,7 +168,7 @@ type VisualPanelLayerProps = {
 function VisualPanelLayer({ site, page }: VisualPanelLayerProps) {
   const isPresent = useIsPresent();
   const item = getNavigationItem(site.navigation, page);
-  const visual = getVisualMeta(page, site.locale);
+  const visual = getVisualMeta(site, page);
 
   return (
     <motion.div
@@ -181,7 +182,7 @@ function VisualPanelLayer({ site, page }: VisualPanelLayerProps) {
       aria-hidden={isPresent ? undefined : true}
     >
       <div className="visual-panel__grid" aria-hidden="true" />
-      {visual.image ? <img src={visual.image} alt="" width="768" height="768" /> : <BlogVisual locale={site.locale} />}
+      {visual.image ? <img src={visual.image} alt="" width="768" height="768" /> : <BlogVisual cards={site.portfolio.blog.visualPanel.cards} />}
       <Link to={`/${site.locale}`} className="back-link" tabIndex={isPresent ? undefined : -1}>
         <ArrowLeft aria-hidden="true" /> {site.messages.common.backHome}
       </Link>
@@ -252,20 +253,7 @@ type VisualMeta = {
   readonly index: string;
 };
 
-function getVisualMeta(page: PageSlug, locale: SiteContent['locale']): VisualMeta {
-  const copy = locale === 'pl'
-    ? {
-        about: { kicker: 'software · product · AI', title: 'Problem → system' },
-        projects: { kicker: 'projekty i eksperymenty', title: 'Build → verify' },
-        skills: { kicker: 'narzędzia i praktyki', title: 'Tools → decisions' },
-        blog: { kicker: 'notatki i idee', title: 'Think → share' },
-      }
-    : {
-        about: { kicker: '', title: '' },
-        projects: { kicker: '', title: '' },
-        skills: { kicker: '', title: '' },
-        blog: { kicker: '', title: '' },
-      };
+function getVisualMeta(site: SiteContent, page: PageSlug): VisualMeta {
   const images: Partial<Record<PageSlug, string>> = {
     about: aboutImage,
     projects: projectsImage,
@@ -273,26 +261,14 @@ function getVisualMeta(page: PageSlug, locale: SiteContent['locale']): VisualMet
   };
   const indexes: Record<PageSlug, string> = { about: '01', projects: '02', skills: '03', blog: '04' };
 
-  return { ...copy[page], image: images[page], index: indexes[page] };
+  return { ...site.portfolio[page].visualPanel, image: images[page], index: indexes[page] };
 }
 
-function BlogVisual({ locale }: { readonly locale: SiteContent['locale'] }) {
-  const copy = locale === 'pl'
-    ? [
-        { heading: 'ARCHITECTURE', status: 'new note', metric: '08 MIN' },
-        { heading: 'AI WORKFLOW', status: 'field note', metric: '09 MIN' },
-        { heading: 'SYSTEMS', status: 'in progress', metric: '06 MIN' },
-      ]
-    : [
-        { heading: '', status: '', metric: '' },
-        { heading: '', status: '', metric: '' },
-        { heading: '', status: '', metric: '' },
-      ];
-
+function BlogVisual({ cards }: { readonly cards: readonly VisualPanelCard[] }) {
   return (
     <div className="visual-panel__blog-shapes">
       <div className="blog-visual-card-stack">
-        {copy.map((card, index) => (
+        {cards.map((card, index) => (
           <div className="blog-visual-card" key={index}>
             <div className="blog-visual-card__heading">{card.heading}</div>
             <div className="blog-visual-card__status">{card.status}</div>
