@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useLocation } from 'react-router';
 import { describe, expect, it } from 'vitest';
@@ -104,12 +104,29 @@ describe('MDX blog', () => {
     expect(container.querySelector('.blog-article-list')).toBeInTheDocument();
   });
 
-  it('does not expose Polish source content on the untranslated English route', async () => {
+  it('renders Polish posts with English UI on the English route', async () => {
+    const articles = await getBlogArticles();
     const site = getSiteContent('en');
     const { container } = renderBlog(site);
 
-    await waitFor(() => expect(container.querySelector('.blog-article-list')).toBeInTheDocument());
-    expect(container.querySelectorAll('.blog-article-list article')).toHaveLength(0);
+    expect(await screen.findByRole('button', { name: `${site.messages.blog.all} (${articles.length})` })).toBeInTheDocument();
+    expect(container.querySelectorAll('.blog-article-list article')).toHaveLength(articles.length);
     expect(container.querySelector('.blog-filter-row')).toHaveAttribute('aria-label', site.messages.blog.filterArticles);
+    expect(screen.getByRole('heading', { name: articles[0]!.title })).toBeInTheDocument();
+  });
+
+  it('loads a Polish post while keeping the English article UI', async () => {
+    const article = (await getBlogArticles())[0];
+    const site = getSiteContent('en');
+
+    expect(article).toBeDefined();
+    if (!article) {
+      return;
+    }
+
+    renderBlog(site, [`/en/blog?article=${article.slug}`]);
+
+    expect(await screen.findByRole('heading', { name: article.title, level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: site.messages.blog.backToBlog })).toBeInTheDocument();
   });
 });

@@ -41,10 +41,6 @@ export function BlogPageContent({ site }: BlogPageProps) {
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
   useEffect(() => {
-    if (site.locale !== 'pl') {
-      return undefined;
-    }
-
     let isActive = true;
 
     void getBlogArticles()
@@ -62,15 +58,14 @@ export function BlogPageContent({ site }: BlogPageProps) {
     return () => {
       isActive = false;
     };
-  }, [site.locale]);
+  }, []);
 
-  const localizedArticles = site.locale === 'pl' ? articles : [];
   const activeArticleSlug = searchParams.get('article');
-  const activeArticle = localizedArticles?.find((article) => article.slug === activeArticleSlug) ?? null;
-  const tagFilters = localizedArticles ? buildTagFilters(localizedArticles) : [];
-  const visibleArticles = localizedArticles && activeTag
-    ? localizedArticles.filter((article) => article.tags.includes(activeTag))
-    : localizedArticles ?? [];
+  const activeArticle = articles?.find((article) => article.slug === activeArticleSlug) ?? null;
+  const tagFilters = articles ? buildTagFilters(articles) : [];
+  const visibleArticles = articles && activeTag
+    ? articles.filter((article) => article.tags.includes(activeTag))
+    : articles ?? [];
 
   function closeArticle() {
     setActiveTag(null);
@@ -83,7 +78,7 @@ export function BlogPageContent({ site }: BlogPageProps) {
 
   return (
     <>
-      {localizedArticles === null ? (
+      {articles === null ? (
         <BlogIndexState message={articleIndexError ? site.messages.blog.errorIndex : site.messages.blog.loadingIndex} isError={articleIndexError} />
       ) : activeArticle ? (
         <BlogArticleView article={activeArticle} site={site} onBack={closeArticle} />
