@@ -4,8 +4,6 @@ export type HeroContent = {
   readonly eyebrow: string;
   readonly title: readonly string[];
   readonly lead: string;
-  readonly tags: readonly string[];
-  readonly accentTag?: string;
 };
 
 export type WorkflowStep = {
@@ -103,40 +101,14 @@ export type Project = {
 export type ProjectsContent = {
   readonly hero: HeroContent;
   readonly selected: {
-    readonly heading: string;
-    readonly intro: string;
     readonly projects: readonly Project[];
   };
   readonly cta: CallToAction;
 };
 
-export type Competency = {
-  readonly index: string;
-  readonly title: string;
-  readonly skills: readonly string[];
-};
-
-export type SkillsShowcase = {
-  readonly eyebrow: string;
-  readonly title: readonly string[];
-  readonly intro: string;
-  readonly columns: readonly {
-    readonly title: string;
-    readonly skills: readonly string[];
-  }[];
-  readonly softTitle: string;
-  readonly softSkills: readonly string[];
-};
-
 export type ToolBand = {
   readonly title: string;
   readonly tools: readonly string[];
-};
-
-export type VerificationCard = {
-  readonly title: string;
-  readonly text: string;
-  readonly highlighted?: boolean;
 };
 
 export type SolutionBoundaryContent = {
@@ -162,30 +134,11 @@ export type SolutionBoundaryContent = {
 };
 
 export type SkillsContent = {
-  readonly hero: HeroContent;
   readonly boundary: SolutionBoundaryContent;
-  readonly showcase: SkillsShowcase;
-  readonly competencies: {
-    readonly heading: string;
-    readonly intro: string;
-    readonly items: readonly Competency[];
-  };
   readonly stack: {
     readonly heading: string;
     readonly intro: string;
     readonly bands: readonly ToolBand[];
-  };
-  readonly architecture: {
-    readonly heading: string;
-    readonly intro: string;
-    readonly title: string;
-    readonly paragraphs: readonly string[];
-    readonly points: readonly string[];
-  };
-  readonly verification: {
-    readonly heading: string;
-    readonly intro: string;
-    readonly cards: readonly VerificationCard[];
   };
   readonly cta: CallToAction;
 };

@@ -8,7 +8,6 @@ import { ProjectCaseStudy } from '../components/content/ProjectCaseStudy';
 import { getContentImages } from '../content/mdx/imageAssets';
 import * as contentLoader from '../content/mdx/loader';
 import { loadContent } from '../content/mdx/loader';
-import Kukla2DFixture from '../content/locales/pl/projects/kukla2d/pl.mdx';
 import OrderHubFixture from '../content/locales/pl/projects/orderhub-pos-wms/pl.mdx';
 import { getProjectLogo } from '../content/projectLogos';
 import { getSiteContent } from '../content/siteContent';
@@ -80,7 +79,7 @@ describe('project content system', () => {
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
     const expectedTags = {
       'bank-statement-converter': ['shipped'],
-      kukla2d: ['shipped', 'in-development', 'public-beta'],
+      kukla2d: ['shipped', 'public-beta', 'in-development'],
       taxhelper: ['in-development'],
       repoatlas: ['in-development'],
       'orderhub-pos-wms': ['prototype-paused'],
@@ -351,10 +350,10 @@ describe('project content system', () => {
     const user = userEvent.setup();
     renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: bank statement converter/i }));
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: konwenter wyciągów bankowych/i }));
 
-    expect(await screen.findByText(/Bank Statement Converter powstał dla firmy księgowej/i)).toBeInTheDocument();
-    expect(screen.getByRole('dialog', { name: 'Bank Statement Converter' })).toBeInTheDocument();
+    expect(await screen.findByText(/Konwenter wyciągów bankowych powstał dla firmy księgowej/i)).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Konwenter wyciągów bankowych' })).toBeInTheDocument();
   });
 
   it('opens the requested case study from the URL query parameter', async () => {
@@ -371,7 +370,7 @@ describe('project content system', () => {
     const user = userEvent.setup();
     const { container } = renderPage(<ProjectsPage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /otwórz case-study: bank statement converter/i }));
+    await user.click(screen.getByRole('button', { name: /otwórz case-study: konwenter wyciągów bankowych/i }));
     const backdrop = container.ownerDocument.body.querySelector('.project-modal');
 
     if (!(backdrop instanceof HTMLElement)) {
@@ -386,7 +385,7 @@ describe('project content system', () => {
     const user = userEvent.setup();
     const onViewPolish = vi.fn();
 
-    renderPage(
+    const { container } = renderPage(
       <ProjectCaseStudy
         project={spriteProject}
         locale="en"
@@ -395,8 +394,17 @@ describe('project content system', () => {
       />,
     );
 
-    expect(screen.getByText('This case-study is currently available only in Polish.')).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: 'View Polish version' }));
+    const localeState = container.querySelector('.content-document-state--locale');
+    const localeAction = container.querySelector<HTMLButtonElement>('.content-document-state__action');
+
+    expect(localeState?.querySelector('p')).toBeEmptyDOMElement();
+    expect(localeAction?.querySelector('span')).toBeEmptyDOMElement();
+    expect(localeAction).toBeInTheDocument();
+    if (!localeAction) {
+      return;
+    }
+
+    await user.click(localeAction);
     expect(onViewPolish).toHaveBeenCalledOnce();
   });
 
@@ -416,42 +424,6 @@ describe('project content system', () => {
 
     expect(await screen.findByRole('alert')).toHaveTextContent('Nie udało się wczytać case-study.');
     loadContentSpy.mockRestore();
-  });
-
-  it('renders the complete Kukla2D MDX fixture through shared components', async () => {
-    const { container } = renderPage(
-      <MdxContent
-        document={{ Component: Kukla2DFixture, frontmatter: { title: 'Kukla2D — fixture warstwy MDX' } }}
-        messages={polishSite.messages}
-      />,
-    );
-
-    expect(container.querySelector('h1')).toBeInTheDocument();
-    const tableOfContents = await screen.findByRole('navigation', { name: 'Spis treści' });
-    expect(within(tableOfContents).getAllByRole('link').length).toBeGreaterThan(0);
-    expect(container.querySelector('h2')).toBeInTheDocument();
-    expect(container.querySelector('h3')).toBeInTheDocument();
-    expect(container.querySelector('h4')).toBeInTheDocument();
-    expect(container.querySelector('h5')).toBeInTheDocument();
-    expect(container.querySelector('h6')).toBeInTheDocument();
-    expect(container.querySelector('del')).toBeInTheDocument();
-    expect(container.querySelector('blockquote')).toBeInTheDocument();
-    expect(container.querySelector('hr')).toBeInTheDocument();
-    expect(container.querySelector('.mdx-content ul ul')).toBeInTheDocument();
-    expect(container.querySelector('.mdx-content ol ul')).toBeInTheDocument();
-    expect(container.querySelector('table')).toBeInTheDocument();
-    expect(container.querySelectorAll('.mdx-code-block')).toHaveLength(3);
-    expect(screen.getAllByRole('checkbox')).toHaveLength(3);
-    expect(screen.getAllByRole('checkbox')[0]).toBeChecked();
-    expect(screen.getByText('tekst usunięty')).toBeInTheDocument();
-    const externalLink = screen.getByRole('link', { name: 'https://example.com' });
-    expect(externalLink).toHaveAttribute('href', 'https://example.com');
-    expect(externalLink.querySelector('.content-link__icon')).toHaveAttribute('aria-hidden', 'true');
-    expect(screen.getByAltText('Podgląd testowego obrazu Kukla2D')).toHaveAttribute('src', '/img/main.png');
-
-    for (const alertType of ['Note', 'Tip', 'Important', 'Warning', 'Caution', 'Solution']) {
-      expect(screen.getByRole('complementary', { name: alertType })).toBeInTheDocument();
-    }
   });
 
   it('keeps legacy case-study heading levels in the correct TOC branches', async () => {

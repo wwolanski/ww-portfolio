@@ -93,7 +93,7 @@ export function AboutPageContent({ site }: AboutPageProps) {
         </section>
 
         <section className="content-section about-section about-section--workflow">
-          <SectionHeading index="03" title={about.workflow.heading} text={about.workflow.intro} />
+          <SectionHeading index="02" title={about.workflow.heading} text={about.workflow.intro} />
           <div className="about-workflow">
             <div className="about-workflow__steps">
               {about.workflow.steps.map((step, index) => (
@@ -113,7 +113,9 @@ export function AboutPageContent({ site }: AboutPageProps) {
             </div>
             <div className="about-process__visual" aria-hidden="true">
               <img src={aboutProcessImage} alt="" loading="lazy" />
-              <div className="about-process__visual-label">Wizualny szkic kierunku portfolio</div>
+              <div className="about-process__visual-label">
+                {site.locale === 'pl' ? 'Wizualny szkic kierunku portfolio' : ''}
+              </div>
             </div>
             <div className={`about-process__grid-reveal${isProcessExpanded ? ' is-expanded' : ''}`}>
               <div

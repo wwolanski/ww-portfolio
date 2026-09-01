@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { App } from '../app/App';
 import { getTechTagDefinition } from '../content/techTags';
 import { getSiteContent } from '../content/siteContent';
+import { getBlogArticles } from '../content/mdx/blogIndex';
 import { TechTag } from '../components/ui/TechTag';
 import { AboutPage } from '../pages/about/AboutPage';
 import { BlogPage } from '../pages/blog/BlogPage';
@@ -22,25 +23,24 @@ function renderPage(page: React.ReactNode) {
   );
 }
 
-const englishSite = getSiteContent('en');
 const polishSite = getSiteContent('pl');
 
 describe('existing portfolio shell', () => {
   it('keeps all home sections and their original links', () => {
-    renderPage(<HomePage site={englishSite} />);
+    renderPage(<HomePage site={polishSite} />);
 
     expect(screen.getByRole('heading', { name: /wojciech wolanski/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /open about page/i })).toHaveAttribute('href', '/en/about');
-    expect(screen.getByRole('link', { name: /open projects page/i })).toHaveAttribute('href', '/en/projects');
-    expect(screen.getByRole('link', { name: /open skills page/i })).toHaveAttribute('href', '/en/skills');
-    expect(screen.getByRole('link', { name: /open blog page/i })).toHaveAttribute('href', '/en/blog');
+    expect(screen.getByRole('link', { name: /otwórz stronę: o mnie/i })).toHaveAttribute('href', '/pl/about');
+    expect(screen.getByRole('link', { name: /otwórz stronę: projekty/i })).toHaveAttribute('href', '/pl/projects');
+    expect(screen.getByRole('link', { name: /otwórz stronę: skills/i })).toHaveAttribute('href', '/pl/skills');
+    expect(screen.getByRole('link', { name: /otwórz stronę: blog/i })).toHaveAttribute('href', '/pl/blog');
   });
 
   it('switches theme and persists the preference', async () => {
     const user = userEvent.setup();
-    renderPage(<HomePage site={englishSite} />);
+    renderPage(<HomePage site={polishSite} />);
 
-    await user.click(screen.getByRole('button', { name: /switch to light theme/i }));
+    await user.click(screen.getByRole('button', { name: /przełącz na jasny motyw/i }));
 
     expect(document.documentElement).not.toHaveClass('dark');
     expect(window.localStorage.getItem('ww-portfolio-theme')).toBe('light');
@@ -50,12 +50,17 @@ describe('existing portfolio shell', () => {
 describe('blog page', () => {
   it('keeps article filtering available while using Polish MDX content', async () => {
     const user = userEvent.setup();
-    renderPage(<BlogPage site={englishSite} />);
+    const articles = await getBlogArticles();
+    const selectedTag = articles[0]?.tags[0];
+    const matchingArticles = articles.filter((article) => article.tags.includes(selectedTag ?? ''));
+    renderPage(<BlogPage site={polishSite} />);
 
-    await user.click(await screen.findByRole('button', { name: 'AI (1)' }));
+    expect(selectedTag).toBeDefined();
+    await user.click(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` }));
 
-    expect(screen.getByRole('heading', { name: /pipeline’y rag bez tajemnic/i })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: /praktyczny przewodnik po dockerze/i })).not.toBeInTheDocument();
+    for (const article of matchingArticles) {
+      expect(screen.getByRole('heading', { name: article.title })).toBeInTheDocument();
+    }
   });
 });
 
@@ -72,7 +77,7 @@ describe('localized detail pages', () => {
     expect(screen.getByRole('heading', { name: /projekty\s*w\s*praktyce\./i })).toBeInTheDocument();
     await user.click(screen.getByRole('link', { name: /zmień język na angielski/i }));
 
-    expect(screen.getByRole('link', { name: /switch language to polish/i })).toHaveAttribute('href', '/pl/projects');
+    expect(document.querySelector('.language-switcher__option[href="/pl/projects"]')).toBeInTheDocument();
   });
 });
 
@@ -86,6 +91,10 @@ describe('v7 detail visuals', () => {
     expect(Array.from(container.querySelectorAll('.about-page > .about-section .section-heading h2')).map((heading) => heading.textContent?.trim())).toEqual([
       'Droga do software',
       'Workflow w praktyce',
+    ]);
+    expect(Array.from(container.querySelectorAll('.about-page > .about-section .section-heading > span')).map((index) => index.textContent)).toEqual([
+      '01',
+      '02',
     ]);
     expect(container.querySelector('.about-process__visual img')).toBeInTheDocument();
     expect(container.querySelectorAll('.about-timeline__thumb img')).toHaveLength(4);
@@ -199,7 +208,7 @@ describe('v7 detail visuals', () => {
     const { container } = renderPage(<SkillsPage site={polishSite} />);
     const stack = polishSite.portfolio.skills.stack;
     const stackTools = stack.bands.flatMap((band) => band.tools);
-    const sections = Array.from(container.querySelectorAll('main > section'));
+    const sections = Array.from(container.querySelectorAll('.detail-main__route-layer > section'));
     const boundaryIndex = sections.findIndex((section) => section.classList.contains('solution-boundary'));
     const technologyIndex = sections.findIndex((section) => section.querySelector('.skills-tools'));
 

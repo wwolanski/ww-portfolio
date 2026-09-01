@@ -29,7 +29,6 @@ export function SkillsPageContent({ site }: SkillsPageProps) {
   const content = site.portfolio.skills.boundary;
   const stack = site.portfolio.skills.stack;
   const [activePairIndex, setActivePairIndex] = useState<number | null>(null);
-  const pairCount = Math.min(content.layers.length, content.principles.length);
 
   return (
     <>
@@ -62,7 +61,7 @@ export function SkillsPageContent({ site }: SkillsPageProps) {
             }}
           >
             <div className="solution-boundary__layers">
-              {content.layers.slice(0, pairCount).map((layer, index) => (
+              {content.layers.map((layer, index) => (
                 <Layer
                   key={layer.title}
                   index={index}
@@ -75,7 +74,7 @@ export function SkillsPageContent({ site }: SkillsPageProps) {
               ))}
             </div>
             <div className="solution-boundary__principles">
-              {content.principles.slice(0, pairCount).map((principle, index) => (
+              {content.principles.map((principle, index) => (
                 <Principle
                   key={principle.title}
                   index={index}

@@ -41,7 +41,7 @@ describe('navigation transitions', () => {
 
     await user.click(screen.getByRole('link', { name: 'Zmień język na Angielski' }));
 
-    expect(screen.getByRole('link', { name: 'Switch language to Polish' })).toBeInTheDocument();
+    expect(container.querySelector('.language-switcher__option[href="/pl/projects"]')).toBeInTheDocument();
     expect(scrollTo).not.toHaveBeenCalled();
     expect(container.querySelector('.detail-page')).toBe(detailPage);
     expect(container.querySelector('.site-nav')).toBe(siteNav);

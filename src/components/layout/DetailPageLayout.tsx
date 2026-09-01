@@ -181,7 +181,7 @@ function VisualPanelLayer({ site, page }: VisualPanelLayerProps) {
       aria-hidden={isPresent ? undefined : true}
     >
       <div className="visual-panel__grid" aria-hidden="true" />
-      {visual.image ? <img src={visual.image} alt="" width="768" height="768" /> : <BlogVisual />}
+      {visual.image ? <img src={visual.image} alt="" width="768" height="768" /> : <BlogVisual locale={site.locale} />}
       <Link to={`/${site.locale}`} className="back-link" tabIndex={isPresent ? undefined : -1}>
         <ArrowLeft aria-hidden="true" /> {site.messages.common.backHome}
       </Link>
@@ -261,10 +261,10 @@ function getVisualMeta(page: PageSlug, locale: SiteContent['locale']): VisualMet
         blog: { kicker: 'notatki i idee', title: 'Think → share' },
       }
     : {
-        about: { kicker: 'software · product · AI', title: 'Problem → system' },
-        projects: { kicker: 'projects and experiments', title: 'Build → verify' },
-        skills: { kicker: 'tools and practices', title: 'Tools → decisions' },
-        blog: { kicker: 'notes and ideas', title: 'Think → share' },
+        about: { kicker: '', title: '' },
+        projects: { kicker: '', title: '' },
+        skills: { kicker: '', title: '' },
+        blog: { kicker: '', title: '' },
       };
   const images: Partial<Record<PageSlug, string>> = {
     about: aboutImage,
@@ -276,28 +276,30 @@ function getVisualMeta(page: PageSlug, locale: SiteContent['locale']): VisualMet
   return { ...copy[page], image: images[page], index: indexes[page] };
 }
 
-function BlogVisual() {
+function BlogVisual({ locale }: { readonly locale: SiteContent['locale'] }) {
+  const copy = locale === 'pl'
+    ? [
+        { heading: 'ARCHITECTURE', status: 'new note', metric: '08 MIN' },
+        { heading: 'AI WORKFLOW', status: 'field note', metric: '09 MIN' },
+        { heading: 'SYSTEMS', status: 'in progress', metric: '06 MIN' },
+      ]
+    : [
+        { heading: '', status: '', metric: '' },
+        { heading: '', status: '', metric: '' },
+        { heading: '', status: '', metric: '' },
+      ];
+
   return (
     <div className="visual-panel__blog-shapes">
       <div className="blog-visual-card-stack">
-        <div className="blog-visual-card">
-          <div className="blog-visual-card__heading">ARCHITECTURE</div>
-          <div className="blog-visual-card__status">new note</div>
-          <div className="blog-visual-card__lines"><i /><i /><i /></div>
-          <div className="blog-visual-card__metric">08 MIN</div>
-        </div>
-        <div className="blog-visual-card">
-          <div className="blog-visual-card__heading">AI WORKFLOW</div>
-          <div className="blog-visual-card__status">field note</div>
-          <div className="blog-visual-card__lines"><i /><i /><i /></div>
-          <div className="blog-visual-card__metric">09 MIN</div>
-        </div>
-        <div className="blog-visual-card">
-          <div className="blog-visual-card__heading">SYSTEMS</div>
-          <div className="blog-visual-card__status">in progress</div>
-          <div className="blog-visual-card__lines"><i /><i /><i /></div>
-          <div className="blog-visual-card__metric">06 MIN</div>
-        </div>
+        {copy.map((card, index) => (
+          <div className="blog-visual-card" key={index}>
+            <div className="blog-visual-card__heading">{card.heading}</div>
+            <div className="blog-visual-card__status">{card.status}</div>
+            <div className="blog-visual-card__lines"><i /><i /><i /></div>
+            <div className="blog-visual-card__metric">{card.metric}</div>
+          </div>
+        ))}
       </div>
     </div>
   );

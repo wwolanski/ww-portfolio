@@ -102,18 +102,6 @@ describe('migrated content', () => {
         content.projects.hero.lead,
         'Są tu rzeczy skończone, rozwijane, zatrzymane i takie, które po prostu nie zadziałały. Razem dają obraz tego, czym do tej pory się zajmowałem.',
       ],
-      [
-        content.skills.hero.lead,
-        'Pracuję na styku product thinking, systems thinking, AI-native development i praktycznego budowania aplikacji full-stack. Poniżej są technologie i praktyki, z których korzystałem w swoich projektach.',
-      ],
-      [
-        content.skills.architecture.paragraphs[0]!,
-        'Dbam o jednoznaczne nazwy, lokalność kodu, małe moduły, czytelne public API, kierunek zależności oraz opis najważniejszych flows i schematów danych. Repozytorium traktuję jako część projektu systemu: jego struktura ma ułatwiać orientację człowiekowi, a jednocześnie ograniczać przestrzeń błędnych decyzji agenta.',
-      ],
-      [
-        content.skills.architecture.paragraphs[1]!,
-        'Ten temat stał się na tyle ważny w mojej pracy, że zacząłem rozwijać RepoAtlas — narzędzie edukacyjno-projektowe do wizualizowania architektur, odpowiedzialności modułów i reguł zależności. Projekt wyrósł bezpośrednio z potrzeby lepszego porządkowania repozytoriów i pracy z ich strukturą.',
-      ],
     ] as const;
 
     for (const [copy, expectedText] of cases) {
@@ -129,7 +117,6 @@ describe('migrated content', () => {
 
     expect(content.about.hero.lead).toBe('');
     expect(content.projects.hero.lead).toBe('');
-    expect(content.skills.hero.lead).toBe('');
 
     const { container } = render(<InlineCopy copy={content.about.hero.lead} />);
     expect(container).toBeEmptyDOMElement();
