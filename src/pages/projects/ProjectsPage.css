@@ -74,10 +74,9 @@
 }
 
 .project-title-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: 1rem;
 }
 
@@ -144,6 +143,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.04em;
+  white-space: nowrap;
   text-transform: uppercase;
   cursor: pointer;
   transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
@@ -249,5 +249,15 @@
 
   .project-details > div:last-child {
     border-bottom: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .project-title-row {
+    grid-template-columns: 1fr;
+  }
+
+  .project-title-row .project-content-button {
+    justify-self: start;
   }
 }
