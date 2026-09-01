@@ -68,7 +68,7 @@ describe('project content system', () => {
     );
     expect(screen.getByRole('link', { name: 'Otwórz GitHub: GPT IMG-2 SPRITESHEET PROCESSOR' })).toHaveAttribute(
       'href',
-      'https://github.com/wwolanski/kukla2d',
+      'https://github.com/wwolanski/gpt_img_2-spritesheet-processor/',
     );
     expect(screen.getByRole('link', { name: 'Otwórz Vercel: RepoAtlas' })).toHaveAttribute(
       'href',
