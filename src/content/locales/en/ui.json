@@ -1,0 +1,68 @@
+{
+  "language": {
+    "label": "Language",
+    "polish": "Polish",
+    "english": "English",
+    "switchTo": "Switch language to {language}"
+  },
+  "theme": {
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme"
+  },
+  "common": {
+    "skipToContent": "Skip to content",
+    "primaryNavigation": "Primary navigation",
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "navigationDescription": "Choose a page to continue browsing.",
+    "home": "Wojciech Wolanski — homepage",
+    "backHome": "Home page",
+    "artwork": "Artwork: {label}",
+    "projectDetails": "{title} details"
+  },
+  "projectContent": {
+    "caseStudy": "case study",
+    "openCaseStudy": "Open case study: {title}",
+    "openExternal": "Open {provider}: {title}",
+    "openGallery": "Open image gallery: {title}",
+    "close": "Close case study",
+    "loading": "Loading case study…",
+    "preparation": "This case study is being prepared.",
+    "error": "Could not load the case study.",
+    "onlyPolish": "This case study is currently available only in Polish.",
+    "viewPolish": "View the Polish version"
+  },
+  "content": {
+    "tableOfContents": "Table of contents",
+    "openTableOfContents": "Open table of contents",
+    "closeTableOfContents": "Close table of contents",
+    "expandProcess": "Show full process",
+    "collapseProcess": "Collapse process steps",
+    "imageGallery": {
+      "label": "Image gallery",
+      "previous": "Previous image",
+      "next": "Next image",
+      "image": "Image {index}",
+      "empty": "There are no images in this gallery yet.",
+      "expand": "Open image in full-screen mode",
+      "close": "Close image preview"
+    }
+  },
+  "actions": {
+    "openPage": "Open page: {label}",
+    "open": "Open"
+  },
+  "blog": {
+    "filterArticles": "Filter articles by tags",
+    "all": "All",
+    "readArticle": "Read: {title}",
+    "articleTags": "Article tags",
+    "backToBlog": "Back",
+    "loadingIndex": "Loading posts…",
+    "errorIndex": "Could not load the post list.",
+    "loadingArticle": "Loading article…",
+    "missingArticle": "This article is unavailable.",
+    "errorArticle": "Could not load the article.",
+    "readTime": "{time} read"
+  }
+}

@@ -1,0 +1,60 @@
+# GPT IMG-2 SPRITESHEET PROCESSOR
+
+**Status:** Discontinued  
+**Typ:** Experiment
+**Stack:** React, Typescript, Python, FastAPI, OpenAI API
+
+Eksperymentalny pipeline do przetwarzania, czyszczenia i stabilizacji spritesheetów generowanych przez `gpt-img-2`.
+
+<ImageGallery />
+
+## Problem
+
+`gpt-img-2` generował niekonsekwentne spritesheety, co w animacji prowadziło do:
+
+- deformacji kształtu postaci między klatkami,
+- mienienia się tekstur i kolorów,
+- niestabilności pozycji postaci.
+
+Najlepiej udało się ograniczyć flickering poprzez korekcję kolorów i normalizację palety. Nie rozwiązywało to jednak fundamentalnego problemu niespójnej geometrii pomiędzy klatkami.
+
+## Podejście
+
+Próbowałem stabilizować asset również poprzez dekompozycję postaci na części przy użyciu **Qwen3-VL + SAM3**.
+
+Rezultat nie był wystarczająco dobry, żeby uzasadnić dalsze zwiększanie złożoności pipeline'u.
+
+## Co zrobiłbym inaczej
+
+### 1. Browser + Backend
+
+Pierwszym błędem było przeniesienie praktycznie całego processingu na backend.
+
+Lepsze podejście:
+
+- **Backend:** tylko ciężkie operacje AI — generowanie, segmentacja, dekompozycja.
+- **Browser / WebGL / WebGPU:** chroma key, despill, centrowanie, korekcja kolorów i inne "lekkie" operacje wykonywane w czasie rzeczywistym.
+
+### 2. Cache + DAG
+
+Wraz z rozwojem pipeline'u każda niewielka zmiana parametrów zaczęła wymagać ponownego uruchamiania całego procesu.
+
+Lepszym rozwiązaniem byłby cache oparty o graf zależności, gdzie zmiana późnego etapu nie powoduje ponownego wykonywania wcześniejszych, często kosztownych operacji.
+
+### 3. Ograniczenia sprzętowe
+
+Lokalne uruchamianie `Qwen3-VL` i `SAM3` na GPU z **8 GB VRAM** szybko stało się ograniczeniem. Bez budżetu na zewnętrzny inference dalsze eksperymentowanie przestało mieć sens.
+
+## Dlaczego projekt został porzucony
+
+Problem okazał się źle postawiony.
+
+Zamiast:
+
+**generować niespójne pełne klatki → próbować je naprawiać**
+
+bardziej obiecujące okazało się:
+
+**wygenerować kontrolowaną strukturę postaci → animować ją deterministycznie**
+
+Ten wniosek stał się jednym z punktów wyjścia do rozwoju **Kukla2D**.

@@ -1,0 +1,636 @@
+---
+title: RepoAtlas
+description: Wizualne narzędzie do nauki, projektowania i docelowo mechanicznego egzekwowania architektury repozytorium.
+---
+
+# OrderHub
+
+**Status:** Prototype / paused  
+**Typ:** Retail operations / WMS / POS / order management  
+**Stack:** React, Typescript, Python, FastAPI, PostgreSQL, Redis + Celery, shadcn + Tailwind, Docker
+
+OrderHub powstał z obserwacji problemów, z którymi spotykam się na co dzień podczas pracy przy realizacji zamówień w e-commerce.
+
+Punktem wyjścia nie było pytanie:
+
+> Jak wyglądałby system retailowy zaprojektowany od początku jako jeden spójny workflow, zamiast zestawu słabo połączonych narzędzi?
+
+<ImageGallery />
+
+---
+
+## Problem
+
+W dużym retailu wiele procesów działa dziś na niezależnych systemach rozwijanych w różnym czasie i do różnych celów.
+
+W praktyce prowadzi to do sytuacji, w której:
+
+* użytkownik pracuje równolegle w wielu narzędziach,
+* poszczególne systemy mają osobne konta i logowanie,
+* dane są synchronizowane częściowo albo wcale,
+* kanały sprzedaży nie mają jednego źródła prawdy,
+* WMS nie posiada wystarczająco bogatego modelu danych, żeby dobrze wspierać order picking,
+* integracje z platformami delivery wykorzystują tylko część ich możliwości,
+* UX narzędzi operacyjnych często jest projektowany bardziej pod system niż pod pracownika.
+
+Najbardziej interesowały mnie problemy widoczne bezpośrednio podczas pickingu.
+
+Przykładowo system może rozumieć dwa kody kreskowe jako dwa niezależne produkty, mimo że operacyjnie reprezentują ten sam towar. Nie zna relacji między pojedynczą butelką a multipackiem, nie posiada pojęcia sensownych zamienników ani informacji o fizycznym położeniu produktu w sklepie.
+
+Bez dobrego źródła danych trudno później zbudować dobrą aplikację pickingową.
+
+---
+
+## Założenie
+
+OrderHub miał być próbą zaprojektowania spójnego systemu obejmującego cały podstawowy przepływ retailowy:
+
+```text
+produkt
+  ↓
+magazyn / stan
+  ↓
+oferta
+  ↓
+kanał sprzedaży
+  ↓
+zamówienie
+  ↓
+picking
+  ↓
+wydanie / delivery / POS
+```
+
+Docelowo jedna platforma mogłaby obsługiwać m.in.:
+
+* katalog produktów,
+* stany magazynowe,
+* oferty i promocje,
+* lokalizacje,
+* kanały sprzedaży,
+* zamówienia,
+* picking,
+* integracje z Uber Eats, Wolt, Glovo i innymi partnerami,
+* POS,
+* urządzenia fiskalne,
+* wymianę danych z systemami zewnętrznymi.
+
+To była bardzo szeroka wizja i z czasem właśnie jej zakres stał się jednym z głównych problemów projektu.
+
+---
+
+# Model domeny okazał się trudniejszy niż UI
+
+Na początku wiele rzeczy wyglądało jak klasyczny CRUD:
+
+```text
+produkt
+nazwa
+EAN
+cena
+stan
+```
+
+Im dłużej modelowałem realne przypadki, tym mniej taki model miał sens.
+
+## Produkt, stan i oferta
+
+Jednym z ważniejszych rozdzielonych pojęć stały się:
+
+| Pojęcie     | Przykład                                                         |
+| ----------- | ---------------------------------------------------------------- |
+| Produkt     | Coca-Cola 0.5L                                                   |
+| Stan        | liczba dostępnych sztuk w konkretnej lokalizacji                 |
+| Oferta      | Coca-Cola 0.5L sprzedawana w Gdańsku przez Uber Eats za 4,49 PLN |
+| Kanał       | sklep stacjonarny, sklep online, Uber Eats, Glovo, Wolt          |
+| Lokalizacja | konkretny sklep / magazyn                                        |
+
+Dzięki temu cena nie musiała być cechą produktu.
+
+Ten sam produkt mógł mieć różne oferty zależnie od:
+
+* lokalizacji,
+* kanału,
+* okresu,
+* promocji,
+* ilości,
+* kampanii.
+
+Kreator ofert obejmował m.in. różne mechaniki cenowe, takie jak:
+
+* stała cena,
+* obniżona cena,
+* `kup X, otrzymaj Y`,
+* `N-ta sztuka -X%`,
+* `N-ta sztuka za określoną cenę`,
+* cena od określonej liczby sztuk.
+
+---
+
+## Wspólny stan i „parasole”
+
+Kolejny problem pojawił się przy pytaniu:
+
+> Co właściwie oznacza „ten sam produkt” z punktu widzenia magazynu?
+
+Nie zawsze jeden rekord produktowy powinien mieć własny niezależny stan.
+
+>[!NOTE]
+>Przykład z gastronomii:
+>
+>```text
+>Gouda 1 g
+>Edamski 2 kg
+>```
+>
+>Dla części procesów bardziej istotna może być informacja:
+>
+>```text
+>Ser żółty: 3 kg
+>```
+>
+>niż dokładne rozbicie na konkretne produkty.
+
+Dlatego powstała koncepcja **parasola** — wspólnej puli magazynowej, do której można podpiąć wiele produktów lub wariantów.
+
+Podobny problem występuje w retailu przy zmianie opakowania lub rebrandingu. Produkt może dostać nowy EAN, mimo że z punktu widzenia części procesów nadal powinien być traktowany jako kontynuacja tego samego towaru.
+
+---
+
+## Aliasy
+
+Osobnym mechanizmem były aliasy pozwalające łączyć różne reprezentacje tego samego produktu.
+
+Przykłady:
+
+* stary i nowy EAN po rebrandingu,
+* pojedyncza butelka i opakowanie zbiorcze,
+* produkt powiązany z osobnym wpisem kaucyjnym.
+
+Taki model szybko pokazał mi, że nawet pozornie proste pytanie:
+
+> Ile mamy Coca-Coli?
+
+może mieć **kilka poprawnych odpowiedzi** zależnie od tego, którego procesu dotyczy.
+
+> Mamy 10% palety Coca-Coli.
+
+> Mamy 1 sześciopak Coca-Coli.
+
+> Mamy 6 butelek Coca-Coli.
+
+> Mamy 9 litrów Coca-Coli.
+
+a do tego:
+
+> Mamy 6 butelek zwrotnych *od* Coca-Coli.
+
+---
+
+## Zamienniki
+
+System miał również wspierać wyszukiwanie zamienników.
+
+Nie chciałem opierać tego na pojedynczej regule typu:
+
+```text
+ta sama kategoria = zamiennik
+```
+
+Kandydaci mogli być zawężani na podstawie kombinacji kilku sygnałów, m.in.:
+
+* kategorii,
+* semantycznego podobieństwa,
+* danych produktowych,
+* fizycznego położenia na mapie sklepu.
+
+Samo położenie produktu jest użyteczną informacją. Jeśli dwa produkty stoją na tej samej lub sąsiedniej półce, jest to dodatkowy sygnał, że mogą pełnić podobną rolę.
+
+*Ten element pozostał koncepcją i finalnie nie został rozwinięty do gotowego systemu rekomendacji zamienników.
+
+---
+
+# Picking i mapa sklepu
+
+Jednym z pierwszych elementów OrderHuba był edytor mapy sklepu.
+
+Z perspektywy czasu był to też jeden z przykładów rozpoczęcia implementacji zbyt wcześnie.
+
+## Edytor 2D
+
+Edytor powstał w `React Konva`.
+
+Pozwalał modelować fizyczną strukturę sklepu:
+
+```text
+gondola
+  └── regał
+       └── półka
+            └── produkt
+```
+
+Pod spodem mapa była reprezentowana jako graf:
+
+```text
+nodes + edges
+```
+
+Dzięki temu system znał nie tylko wizualne położenie elementów, ale również możliwe przejścia między nimi.
+
+Produkt mógł być przypisany do konkretnej półki.
+
+To pozwalało zamienić zamówienie na zestaw punktów, które picker musi odwiedzić.
+
+<ArticleImage
+  filename="ohub_4.png"
+  alt="Edytor mapy sklepu z wizualizacją wygenerowanej trasy pickingu"
+/>
+
+---
+
+# Eksperymenty z routingiem: Pathfinder
+
+Na tej podstawie zacząłem eksperymentować z optymalizacją tras.
+
+Testowałem kilka podejść, m.in.:
+
+* nearest neighbour,
+* 2-opt,
+* 3-opt,
+* Christofides,
+* Google OR-Tools.
+
+UI pozwalało generować losowe zamówienia i uruchamiać różne algorytmy dla tego samego zestawu produktów.
+
+Wynik był wizualizowany bezpośrednio na mapie.
+
+---
+
+## Pathfinder a backend
+
+Pathfinder początkowo działał w tym samym procesie co główne API.
+
+Przy prostszych trasach nie stanowiło to problemu, ale bardziej kosztowne obliczenia zaczynały wpływać na responsywność serwera. Samo `async` tutaj nie wystarczało — pathfinding był przede wszystkim zadaniem CPU-heavy.
+
+Próbowałem odseparować obliczenia przez executor, ale lepszą granicą byłoby uruchamianie pathfindera w osobnym procesie, niezależnie od procesu obsługującego API.
+
+Przy większej skali można byłoby pójść krok dalej:
+
+```text
+API
+ ↓
+kolejka
+ ↓
+pathfinder workers
+ ↓
+wynik
+```
+---
+
+<ArticleImage
+  filename="ohub_5.png"
+  alt="Porównanie algorytmów optymalizacji tras w Pathfinderze"
+/>
+
+## Sama długość trasy nie wystarczała
+
+Szybko okazało się, że czysto matematyczne:
+
+```text
+min(distance)
+```
+
+nie opisuje dobrze realnego pickingu.
+
+Do systemu trafiały dodatkowe preferencje i ograniczenia, np.:
+
+* preferowanie głównych alejek,
+* ograniczanie niepotrzebnego slalomu,
+* pozostawianie niektórych kategorii na później,
+* wcześniejsze zbieranie ciężkich produktów.
+
+Główne alejki mogły być preferowane przez zmianę wag odpowiednich fragmentów grafu.
+
+Wraz z dodawaniem kolejnych zasad algorytm miał jednak coraz mniej swobody w poszukiwaniu matematycznie najkrótszej trasy.
+
+---
+
+## Różne algorytmy, różne rozmiary zamówień
+
+W manualnych testach nie istniał jeden oczywisty zwycięzca.
+
+Dla mniejszych zestawów punktów (~25) dobrze sprawdzał się np. Christofides, podczas gdy przy większych zamówieniach zwykły NN opt2/3 czy OR-Tools zaczynały dawać lepsze rezultaty.
+
+W praktyce pojawiło się jednak ważniejsze pytanie:
+
+> Czy warto zwiększać złożoność obliczeń, żeby zaoszczędzić kolejne kilkadziesiąt sekund?
+
+Typowe zamówienie kompletowane przez pracownika nie zawiera setek pozycji.
+
+Przy około 30–40 produktach różnica między dobrą a jeszcze lepszą trasą często zaczynała mieścić się w marginesie błędu realnej pracy:
+
+* różna wydajność pracownika
+* coś blokuje alejkę,
+* towaru nie ma na półce --> trzeba znaleźć zamiennik
+* produkt znajduje się w innym miejscu niż zakłada system.
+
+---
+
+## Największa optymalizacja była poziom wyżej
+
+Najważniejszy wniosek z eksperymentów z pathfinderem nie dotyczył wyboru konkretnego algorytmu.
+
+Dotyczył sposobu postawienia problemu.
+
+Zamiast optymalizować:
+
+```text
+jedno zamówienie
+→ jeden picker
+→ najkrótsza możliwa trasa
+```
+
+większy potencjał pojawiał się przy optymalizacji całego procesu:
+
+```text
+wiele zamówień
+→ podział sklepu na strefy
+→ batching produktów
+→ kilku pickerów pracujących równolegle
+→ późniejsze scalenie zamówień
+```
+
+Przykładowo jeden pracownik mógłby kompletować produkty z dwóch sąsiadujących alejek dla kilku zamówień jednocześnie, podczas gdy drugi obsługiwałby kolejną strefę.
+
+Potencjalna oszczędność czasu była tu znacznie większa niż dalsza walka o kilkadziesiąt sekund na pojedynczej trasie.
+
+To był moment, w którym problem:
+
+> Jaki algorytm znajdzie najkrótszą trasę?
+
+zmienił się w:
+
+> Jak najlepiej zorganizować cały proces kompletacji?
+
+---
+
+# Integracje
+
+OrderHub miał pełnić rolę centralnego systemu, a nie kolejnego niezależnego narzędzia.
+
+Założeniem było dwukierunkowe spięcie kanałów sprzedaży i systemów zewnętrznych.
+
+```text
+OrderHub
+   ↕
+Uber Eats
+   ↕
+Wolt
+   ↕
+Glovo
+   ↕
+sklep online
+   ↕
+POS / urządzenia fiskalne
+```
+
+Centralnie zarządzane mogłyby być m.in.:
+
+* produkty,
+* ceny,
+* dostępność,
+* oferty,
+* kanały,
+* zamówienia,
+* statusy.
+
+Partner zewnętrzny nie byłby osobnym źródłem prawdy dla tego samego fragmentu domeny.
+
+---
+
+## Visual Data Mapper
+
+Jednym z eksperymentów integracyjnych był własny mapper danych oparty o `React Flow`.
+
+Założenie było proste:
+
+```text
+zewnętrzny JSON
+      ↓
+wizualne mapowanie pól
+      ↓
+transformacja
+      ↓
+model OrderHub
+```
+
+Przykładowo:
+
+```text
+name  → nazwa
+price → product_price
+```
+
+Mapper nie doczekał się pełnych integracji produkcyjnych z platformami delivery.
+
+**Działał jednak na testowych danych pobranych z zewnętrznych sklepów internetowych** i pozwalał mapować ich struktury JSON do formatu możliwego do zaimportowania do OrderHuba.
+
+<ArticleImage
+  filename="ohub_6.png"
+  alt="Wizualny mapper danych łączący pola źródłowe z modelem OrderHuba"
+/>
+
+Pomysł miał ograniczyć ilość ręcznie pisanej logiki integracyjnej dla systemów, które opisują podobne dane pod innymi nazwami i w innych strukturach.
+
+---
+
+# Błędne założenia
+
+OrderHub był jednym z projektów, w których najbardziej widocznie zmieniałem własny model problemu w trakcie developmentu. I nie ukrywam- wynikało to z mojego niedoświadczenia.
+
+Nie wszystkie pierwsze decyzje były dobre. Ale to finalnie okazało się być jedną z najbardziej wartościowych części projektu.
+
+---
+
+## Zacząłem od niewłaściwej warstwy
+
+Jednym z pierwszych elementów, które zacząłem budować, był edytor mapy i pathfinder.
+
+To był ciekawy problem techniczny i bliski dobrze znanym mi realiom z "pola bitwy", ale na tamtym etapie nie miałem jeszcze:
+
+* stabilnego modelu produktu,
+* modelu stanów,
+* modelu zamówienia,
+* dobrze zdefiniowanych relacji domenowych.
+
+W efekcie kolejne odkrycia zmieniały założenia elementów, które już istniały, lub wymagane było operowanie na założeniach.
+
+Edytor map i pathfinder trzeba było przebudowywać kilka razy.
+
+Dzisiaj kolejność byłaby odwrotna:
+
+```text
+research domeny
+→ model podstawowych bytów
+→ jedno pełne flow zamówienia
+→ walidacja modelu
+→ dopiero później optymalizacje
+```
+
+Problemem nie był brak możliwości technicznych. Problemem była zbyt wczesna implementacja przed wystarczającym zrozumieniem domeny.
+
+---
+
+## VAT nie jest cechą produktu
+
+Dobrym przykładem błędnego modelowania był VAT.
+
+Pierwsze podejście:
+
+```text
+produkt → stawka VAT
+```
+
+wydawało się naturalne.
+
+Później próbowałem przenieść VAT na kategorię produktu.
+
+Dopiero dalszy research pokazał, że oba podejścia upraszczają problem w niewłaściwym miejscu.
+
+VAT jest związany z **konkretną sprzedażą i jej kontekstem**, a nie wyłącznie z fizycznym produktem, oraz
+może podlegać **ogromnej ilości reguł i wyjątków**, co wykracza poza możliwości zwykłego podejścia " `if x` -> `then y` "
+
+
+To wymusiło zmianę sposobu myślenia o całym fragmencie modelu.
+
+Był to również jeden z momentów, które doprowadziły mnie głębiej w temat polskiego VAT-u.
+
+Z czasem ten osobny problem urósł na tyle, że stał się jednym z punktów wyjścia do powstania osobnego projektu  **TaxHelper**.
+
+---
+
+# Czego nauczył mnie OrderHub
+
+Największą lekcją nie był konkretny framework ani algorytm.
+
+Było nią modelowanie domeny.
+
+W wielu miejscach zaczynałem od pytania technicznego:
+
+> Jak to zaimplementować?
+
+a dopiero później odkrywałem, że ważniejsze pytanie brzmi:
+
+> Co właściwie próbuję reprezentować?
+
+Kilka przykładów:
+
+| Początkowe pytanie         | Późniejszy problem                                       |
+| -------------------------- | -------------------------------------------------------- |
+| Jak skrócić trasę pickera? | Jak zoptymalizować cały proces kompletacji?              |
+| Gdzie zapisać VAT?         | Z czego stawka VAT faktycznie wynika?                    |
+| Ile mamy produktu?         | Co w tym procesie oznacza „ten sam produkt”?             |
+| Jak podłączyć kolejne API? | Jaki powinien być wspólny model danych między systemami? |
+| Jak narysować sklep?       | Jak fizyczna topologia sklepu wpływa na cały workflow?   |
+
+To zmieniło również sposób, w jaki później podchodziłem do kolejnych projektów.
+
+---
+
+# Dlaczego projekt został wstrzymany
+
+OrderHub zaczął jako próba poprawienia konkretnego fragmentu retailowego workflow.
+
+Z czasem scope objął:
+
+* WMS,
+* order management,
+* katalog produktów,
+* oferty,
+* promocje,
+* kanały sprzedaży,
+* integracje delivery,
+* POS,
+* urządzenia fiskalne,
+* mapę sklepu,
+* routing/pathfinder,
+* optymalizację pracy pickerów,
+* warstwę integracyjną.
+
+W praktyce projekt zaczął przypominać próbę zbudowania kompletnego retail operating system.
+
+Dla jednej osoby rozwijającej projekt po godzinach i finansującej development oraz modele AI z własnych środków taki zakres przestał być racjonalny.
+
+Projekt został więc wstrzymany.
+
+Nie dlatego, że zabrakło kolejnych pomysłów, ale dlatego, że następny etap wymagałby znacznie większego czasu, walidacji i budżetu.
+
+---
+
+# Co zrobiłbym inaczej
+
+### 1. Najpierw zrozumieć zależności w domenie
+
+Za wcześnie zacząłem implementować bardziej zaawansowane elementy systemu, zanim w ogóle dobrze rozumiałem zależności między jego podstawowymi częściami.
+
+W retailu wiele decyzji wpływa na siebie nawzajem. Przykładowo kompletacja zamówień zależy m.in. od:
+
+- produktów,
+- stanów magazynowych,
+- ofert,
+- cen,
+- lokalizacji,
+- zamienników,
+- reguł biznesowych.
+
+To oznacza, że nawet pozornie niezależny pathfinder nie może być projektowany w oderwaniu od reszty systemu.
+
+Dzisiaj więcej czasu poświęciłbym na rozrysowanie zależności i przepływów domenowych przed rozpoczęciem implementacji bardziej zaawansowanych modułów.
+
+### 2. Więcej researchu przed implementacją
+
+OrderHub pokazał mi koszt złych założeń domenowych.
+
+Kilka dni researchu przed implementacją może być tańsze niż wielokrotna przebudowa poprawnie działającego kodu opartego na błędnym modelu.
+
+### 3. Optymalizować system, nie pojedynczą funkcję
+
+Pathfinder był dobrym przykładem lokalnej optymalizacji.
+
+Dalsze skracanie pojedynczej trasy dawało coraz mniejsze korzyści, podczas gdy zmiana sposobu przydzielania zamównień pracownikom mogła zmienić cały proces.
+
+### 4. Oddzielić prototyp produktu od prototypów badawczych
+
+Edytor mapy, algorytmy tras i mapper integracji były wartościowymi eksperymentami.
+
+Nie wszystkie musiały jednak od razu trafiać do jednego rozwijającego się systemu.
+
+---
+
+# Czego nauczył mnie ten projekt
+
+OrderHub pozostaje w statusie **prototype / paused**, ale wpłynął na kilka późniejszych kierunków mojej pracy.
+
+Najważniejsze rzeczy, które z niego wyniosłem:
+
+* większy nacisk na research przed implementacją,
+* ostrożniejsze modelowanie domeny,
+* rozdzielanie produktu, stanu i oferty,
+* patrzenie na optymalizację na poziomie całego procesu,
+* większe znaczenie wspólnego modelu danych w integracjach,
+* świadomość kosztu zbyt szerokiego scope'u,
+* praktyczne doświadczenie z grafami i pathfindingiem,
+* lepsze wyczucie, kiedy kosztowne obliczenia warto odseparować od głównego API,
+* znacznie głębsze zainteresowanie problemami podatkowymi.
+
+Ostatni z tych punktów doprowadził później do rozwoju **TaxHelpera**.
+
+OrderHub nie stał się gotowym systemem retailowym.
+
+Stał się za to projektem, na którym bardzo wyraźnie zobaczyłem różnicę między:
+
+**budowaniem funkcji**
+
+a
+
+**modelowaniem systemu.**

@@ -1,0 +1,117 @@
+{
+  "hero": {
+    "eyebrow": "O mnie · 01",
+    "title": [
+      "Cześć.",
+      "Mam na imię Wojciech.",
+      ""
+    ],
+    "lead": "Mieszkam w Gdańsku, skąd pracuję **AI-native.** Buduję aplikacje, narzędzia i eksperymenty. Technologia, zarówno software, jak i hardware, była ze mną dużo wcześniej niż development. **Do świata dev nie trafiłem jednak najkrótszą drogą.**"
+  },
+  "visualPanel": {
+    "kicker": "software · product · AI",
+    "title": "Problem → system"
+  },
+  "workflow": {
+    "heading": "Workflow w praktyce",
+    "intro": "Ten proces zmienia się w zależności od kontekstu, ale opiera się na podobnych założeniach. **Nie wymyślam koła na nowo, jeśli nie muszę.** Dopiero później przechodzę do projektowania systemu i implementacji.",
+    "steps": [
+      {
+        "index": "01",
+        "title": "Problem",
+        "text": "Analizuję użytkownika, obecny workflow, wymagania oraz ograniczenia, zanim przejdę do rozwiązań."
+      },
+      {
+        "index": "02",
+        "title": "Research",
+        "text": "Sprawdzam podobne projekty, biblioteki, API i dokumentację. Jeśli wchodzę w nową domenę, research jest też momentem, w którym uczę się jej podstaw i terminologii."
+      },
+      {
+        "index": "03",
+        "title": "Model systemu",
+        "text": "Ustalam architekturę, przepływy, granice odpowiedzialności i pierwsze kontrakty. Wybieram optymalne rozwiązania, tworzę pierwszą wersję briefu i określam zakres MVP."
+      },
+      {
+        "index": "04",
+        "title": "Implementacja",
+        "text": "Tworzę plan, rozpisuję pierwsze zadania i zaczynam budowę. Zarówno brief jak i plan może zmieniać się, gdy działająca wersja ujawnia nowe problemy albo lepszy kierunek."
+      },
+      {
+        "index": "05",
+        "title": "Feedback loop",
+        "text": "Feedback pochodzi zarówno z automatycznych kontroli, jak i z przeglądu działającej wersji. Na tej podstawie poprawiam implementację lub kierunek rozwoju."
+      }
+    ],
+    "example": {
+      "label": "Ten sam proces · mały przykład",
+      "title": "To portfolio powstaje według podobnego workflow.",
+      "text": "Skala jest niewielka, ale kolejność decyzji pozostaje podobna: W tym projekcie większość kolejnych iteracji dotyczy treści i hierarchii informacji.",
+      "steps": [
+        {
+          "index": "01",
+          "title": "Research",
+          "text": "Kilkudniowy przegląd setek istniejących portfolio i stron osobistych: konwencje, układy, stylistyka, sposób prezentowania siebie i swoich projektów."
+        },
+        {
+          "index": "02",
+          "title": "Problem/Idea",
+          "text": "Portfolio ma pokazać projekty i sposób pracy bez udawania klasycznej ścieżki „studia → junior → mid → senior”. Ma zaciekawić odbiorcę osobistą historią, wypracowanym podejściem i bogatą dokumentacją projektów, zamiast szpanowania efektami wizualnymi, logotypami technologii i sztucznie napompowanymi claimami."
+        },
+
+
+        {
+          "index": "03",
+          "title": "Architektura i brief.md",
+          "text": "Lekka architektura page-oriented z oddzielną warstwą contentu w .json/.mdx, żeby treść mogła ewoluować niezależnie od widoków. Przygotowanie obszernego briefu projektowego (w tym przypadku z naciskiem na treść), opartym na obszernym dokumencie kontekstowym, który porządkuje informacje o mnie i działa jako source of truth dla całego portfolio."
+        },
+        {
+          "index": "04",
+          "title": "Stack i implementacja",
+          "text": "Statyczna strona webowa w React + TypeScript, z bibliotekami do renderowania i przetwarzania dłuższych treści w .mdx, takich jak case-study czy blog."
+        },
+        {
+          "index": "05",
+          "title": "Feedback loop",
+          "text": "Szkic → plan → prototyp → przegląd → poprawki, aż struktura i kierunek są wystarczająco stabilne. Kolejne feature, szlify i rozbudowa treści przechodzą przez ten sam proces."
+        }
+      ]
+    }
+  },
+  "timeline": {
+    "heading": "Droga do software",
+    "intro": "Obecny sposób pracy wyrósł z kilku wcześniejszych etapów: pierwszych stron i skryptów, lat związanych z audio, pracy w retailu oraz intensywnego powrotu do developmentu w latach 2024–2025.",
+    "items": [
+      {
+        "date": "2008–2012 · nastoletnie lata",
+        "title": "Hosting, fora, CMS-y i pierwsze skrypty",
+        "text": "To były jeszcze czasy yoyo.pl — pierwsze strony w HTML, cięcie i modyfikowanie szablonów, CMS-y, fora i serwery gamingowe. Joomla, Drupal, phpBB, FTP/SSH oraz proste skrypty w Pawn i Lua, m.in. przy San Andreas Multiplayer czy AMX Mod X; głównie tutoriale, fora, gotowce i dużo eksperymentowania."
+      },
+      {
+        "date": "kolejne lata",
+        "title": "Muzyka, audio i techniczne zaplecze produkcji",
+        "text": "Ponad dekada pracy z muzyką, nagrywaniem, live sound i multimediami. To osobna ścieżka, która dała mi dużą swobodę techniczną i obycie z narzędziami. Wiele pojęć, które istnieją w Software i AI — takich jak `sampling`, `bit depth`, `kwantyzacja`, `kompresja`, `buffer` czy `cache` — znałem już wcześniej z audio."
+      },
+      {
+        "date": "2021–2024 retail / e-commerce",
+        "title": "Kontakt z procesem od strony użytkownika",
+        "text": "Praca w e-commerce przy order pickingu i platformach delivery pokazała mi, ile problemów software'owych widać dopiero wtedy, gdy naprawdę wykonuje się dany proces."
+      },
+      {
+        "date": "2024 → dziś",
+        "title": "Powrót do developmentu przez generative AI",
+        "text": "Intensywna nauka współczesnego frontendu, backendu, architektury i agentic workflow. Od tego momentu regularnie buduję własne aplikacje."
+      }
+    ]
+  },
+  "statement": {
+    "kicker": "Na czym skupiam się teraz",
+    "title": "LLM-y i Agentic development. ",
+    "text": "Najwięcej uwagi poświęcam obecnie LLM-om i agentic development. Śledzę rozwój modeli, coding agents i narzędzi wokół nich, ale jeszcze bardziej **interesuje mnie** to, co dzieje się poziom wyżej: jak dobierać narzędzia, **jak projektować repozytoria, po których agenci potrafią sprawnie się poruszać, i jak budować feedback loops, które pozwalają im samodzielnie weryfikować zmiany**.\n\nDuża część tych zainteresowań trafia obecnie do **[RepoAtlas](/pl/projects?caseStudy=repoatlas)** — projektu, nad którym obecnie intensywnie pracuję. Budując go, jednocześnie pogłębiam temat architektury aplikacji: `boundaries`, `dependency rules`, przepływy, odpowiedzialności modułów i sposoby mechanicznego egzekwowania tych zasad."
+  },
+  "cta": {
+    "eyebrow": "Od problemu do działającego rozwiązania",
+    "title": "Zobacz projekty i sposób, w jaki powstawały.",
+    "label": "Zobacz projekty ↗",
+    "target": "projects"
+  }
+}

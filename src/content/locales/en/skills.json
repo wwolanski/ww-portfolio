@@ -1,0 +1,178 @@
+{
+  "visualPanel": {
+    "kicker": "tools & practices",
+    "title": "Tools → decisions"
+  },
+  "boundary": {
+    "eyebrow": "Skills · 03",
+    "title": [
+      "Not every",
+      "problem is",
+      "in the code."
+    ],
+    "lead": "I can tell when continuing with a given approach makes sense and when it brings more complexity than value.",
+    "decision": {
+      "currentTitle": "Current approach",
+      "currentText": "A problem or limitation appears during development.",
+      "question": "Can it be fixed without changing the approach?",
+      "yes": "Yes",
+      "no": "No",
+      "stay": {
+        "title": "The problem is local",
+        "text": "The problem comes from a specific part of the implementation.",
+        "meta": "The fix is limited to the implementation; the underlying approach stays the same."
+      },
+      "rise": {
+        "title": "It keeps coming back",
+        "text": "Each change moves the problem somewhere else or requires another exception.",
+        "meta": "This signals that the approach itself needs to change."
+      },
+      "center": "Decision"
+    },
+    "layersHeading": "Typical signals",
+    "layers": [
+      {
+        "title": "Data model",
+        "text": "How different cases and rules are handled."
+      },
+      {
+        "title": "Architecture",
+        "text": "How responsibilities are separated."
+      },
+      {
+        "title": "Dependencies",
+        "text": "What is coupled to what."
+      },
+      {
+        "title": "Data / state",
+        "text": "Where the source of truth lives."
+      }
+    ],
+    "principles": [
+      {
+        "title": "The number of exceptions keeps growing",
+        "text": "Each new case requires a special path or workaround."
+      },
+      {
+        "title": "A small change stops being local",
+        "text": "A simple change triggers a cascade of changes across the application."
+      },
+      {
+        "title": "A change in one place breaks something elsewhere",
+        "text": "Fixing one case creates a problem or regression elsewhere."
+      },
+      {
+        "title": "Multiple sources of truth emerge",
+        "text": "The same information is maintained independently in several places and requires synchronization."
+      }
+    ],
+    "practiceHeading": "Real-world examples",
+    "examples": [
+      {
+        "title": "GPT IMG-2 SPRITESHEET PROCESSOR",
+        "label": "Abandoned approach"
+      },
+      {
+        "title": "RepoAtlas",
+        "label": "A shift in the model"
+      }
+    ],
+    "musicNote": "I encountered this way of thinking earlier in audio production, where the initial concept often evolves with each new version."
+  },
+  "stack": {
+    "heading": "Technologies I work with",
+    "intro": "My production stack—from traditional web development to the AI ecosystem.",
+    "bands": [
+      {
+        "title": "Frontend",
+        "tools": [
+          "React",
+          "TypeScript",
+          "TanStack Query",
+          "XState",
+          "React Flow",
+          "PixiJS",
+          "IndexedDB"
+        ]
+      },
+      {
+        "title": "UI Systems",
+        "tools": [
+          "Tailwind CSS",
+          "shadcn/ui",
+          "Radix UI",
+          "Base UI"
+        ]
+      },
+      {
+        "title": "Backend & APIs",
+        "tools": [
+          "Python",
+          "FastAPI",
+          "Pydantic",
+          "SQLAlchemy",
+          "Celery",
+          "OpenAPI"
+        ]
+      },
+      {
+        "title": "Data & Search",
+        "tools": [
+          "PostgreSQL",
+          "Redis",
+          "pgvector",
+          "Qdrant"
+        ]
+      },
+      {
+        "title": "AI & Coding Agents",
+        "tools": [
+          "Cursor",
+          "Codex",
+          "OpenAI API",
+          "Gemini API",
+          "OpenRouter",
+          "LM Studio",
+          "ComfyUI"
+        ]
+      },
+      {
+        "title": "MCP",
+        "tools": [
+          "Context7",
+          "CodeGraph (local)"
+        ]
+      },
+      {
+        "title": "Agentic Tooling",
+        "tools": [
+          "CodeGraph",
+          "RTK",
+          "Google Stitch",
+          "Mermaid",
+          "Impeccable"
+        ]
+      },
+      {
+        "title": "Quality & Delivery",
+        "tools": [
+          "CI/CD",
+          "Git",
+          "GitHub",
+          "Docker",
+          "Vitest",
+          "pytest",
+          "Playwright",
+          "ESLint",
+          "Knip"
+        ]
+      }
+    ]
+  },
+  "cta": {
+    "eyebrow": "Practical examples",
+    "title": "See the projects and how they came together.",
+    "label": "Projects ↗",
+    "target": "projects"
+  }
+}

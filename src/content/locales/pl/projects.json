@@ -1,0 +1,241 @@
+{
+  "hero": {
+    "eyebrow": "Wybrane realizacje · 02",
+    "title": [
+      "PROJEKTY",
+      "W PRAKTYCE.",
+      ""
+    ],
+    "lead": "Są tu rzeczy skończone, rozwijane, zatrzymane i takie, które po prostu nie zadziałały. Razem dają obraz tego, czym do tej pory się zajmowałem."
+  },
+  "visualPanel": {
+    "kicker": "projects & experiments",
+    "title": "Build → verify"
+  },
+  "selected": {
+    "projects": [
+      {
+        "index": "01",
+        "slug": "bank-statement-converter",
+        "caseStudySlug": "bank-statement-converter",
+        "category": "DOCUMENT PROCESSING",
+        "tags": [
+          "shipped"
+        ],
+        "title": "Konwenter wyciągów bankowych",
+        "description": "Lokalna aplikacja dla firmy księgowej. Zamienia nietypowe wyciągi bankowe — m.in. HTML/MHTML, PDF lub zrzuty ekranu — na CSV akceptowany przez program Taxomatic. Format docelowy został odtworzony z przykładów dostarczonych przez klienta. Parser obsługuje znane struktury, fallback do OCR.",
+        "facts": [
+          "Python",
+          "FastAPI",
+          "Parser",
+          "OCR"
+        ],
+        "outcome": "REALNY PROBLEM · DZIAŁAJĄCE NARZĘDZIE · MIERZALNY EFEKT",
+        "anchor": "p1",
+        "details": [
+          {
+            "label": "Problem",
+            "text": "Ręczne przepisywanie danych z formatów, których Taxomatic nie przyjmuje bezpośrednio."
+          },
+          {
+            "label": "Decyzja",
+            "text": "Znane banki → parsery deterministyczne. Trudniejsze wejścia → OCR / model multimodalny tam, gdzie ma to sens."
+          },
+          {
+            "label": "Dowód",
+            "text": "Narzędzie jest realnie używane przez kilka osób w codziennym procesie."
+          }
+        ]
+      },
+      {
+  "index": "02",
+  "slug": "kukla2d",
+  "externalLink": {
+    "provider": "github",
+    "href": "https://github.com/wwolanski/kukla2d"
+  },
+  "category": "2D animation software",
+  "tags": [
+    "shipped",
+    "public-beta",
+    "in-development"
+  ],
+  "title": "Kukla2D",
+  "description": "Browser-based animator postaci 2D tworzony z myślą o assetach do gier. Ma upraszczać cały proces — od przygotowania postaci, przez rigging i animację, po eksport — a docelowo połączyć klasyczne narzędzia animacyjne z generative AI.",
+  "facts": [
+    "Browser-based",
+    "React",
+    "TypeScript",
+    "PixiJS",
+    "Character rigging",
+    "Mesh deformation"
+  ],
+  "outcome": "PUBLICZNA BETA · 0.9.2 · KIERUNEK: 1-CLICK CHARACTER ASSETS",
+  "anchor": "p2",
+  "details": [
+    {
+      "label": "Idea",
+      "text": "Darmowe narzędzie z dobrym UX skoncentrowane na animacji postaci 2D do gier, działające bezpośrednio w przeglądarce."
+    },
+    {
+      "label": "Kierunek",
+      "text": "Kukla2D ma łączyć generowanie assetów przez AI, rigging i animację w jednym prostym procesie. Wersja 1.0 ma być stablinym standalone edytorem, gotowym na wprowadznie integracji AI."
+    },
+    {
+      "label": "Cel",
+      "text": "Docelowo możliwie krótka droga od pomysłu na postać do gotowego zestawu assetów i animacji — w stronę workflow typu „one-click asset generator”."
+    }
+  ]
+},
+      
+       {
+  "index": "03",
+  "slug": "taxhelper",
+  "caseStudySlug": "taxhelper",
+  "category": "legal-tech",
+  "tags": [
+    "in-development"
+  ],
+  "title": "TaxHelper",
+  "description": "System budowany pod wiarygodne ustalanie stawek VAT. Zamiast pytać LLM bezpośrednio o odpowiedź, strukturyzuje źródła prawa, rozwiązuje odwołania między przepisami i przygotowuje dane pod deterministyczny rule engine.",
+  "facts": [
+    "Python",
+    "FastAPI",
+    "PostgreSQL + pgvector",
+    "ELI API",
+    "Rule-Engine"
+  ],
+  "outcome": "PRAWO JAKO DANE · DETERMINISTYCZNY RDZEŃ · AI DOPIERO TAM, GDZIE MA SENS",
+  "anchor": "p3",
+"details": [
+  {
+    "label": "Problem",
+    "text": "Odpowiedź podatkowa musi być nie tylko trafna, ale też aktualna, kompletna i możliwa do prześledzenia do konkretnych źródeł."
+  },
+  {
+    "label": "Rdzeń",
+    "text": "Prawo jest zamieniane w strukturalne dane i relacje, które można walidować mechanicznie zamiast pozostawiać interpretację całego procesu modelowi językowemu."
+  },
+  {
+    "label": "Rola AI",
+    "text": "Generative AI ma pomagać tam, gdzie potrzebna jest interpretacja lub synteza, ale nie zastępować źródeł, parsera ani deterministycznych reguł."
+  }
+]
+      },
+      {
+  "index": "04",
+  "slug": "repoatlas",
+  "caseStudySlug": "repoatlas",
+  "externalLink": {
+    "provider": "vercel",
+    "href": "https://vercel.com/"
+  },
+  "category": "developer tooling",
+  "tags": [
+    "in-development"
+  ],
+  "title": "RepoAtlas",
+  "description": "Narzędzie edukacyjno-projektowe do architektury repozytoriów. Pozwala zacząć od gotowego blueprintu, zmieniać decyzje dotyczące struktury, granic, modułów i technologii, a następnie zobaczyć ich wpływ na wynikowy układ repozytorium.",
+  "facts": [
+    "React Flow",
+    "decision-first",
+    "data-driven",
+    "JSON / Markdown"
+  ],
+  "outcome": "Architektura jako zestaw decyzji · docelowo także mechanicznie egzekwowanych",
+  "anchor": "p4",
+"details": [
+  {
+    "label": "Problem",
+    "text": "Architekturę trudno jednocześnie zrozumieć, zaprojektować i później konsekwentnie utrzymać. Dla człowieka problemem jest mnogość nakładających się podejść, a dla coding agents niejednoznaczne wzorce i rosnący chaos w repozytorium."
+  },
+  {
+    "label": "Podejście",
+    "text": "RepoAtlas opisuje architekturę jako zestaw decyzji dotyczących struktury, granic, modułów, przepływów i technologii. Blueprint daje punkt startowy, który można później dostosować do konkretnego projektu."
+  },
+  {
+    "label": "Efekt",
+    "text": "Powtarzalna struktura pomaga człowiekowi szybciej zrozumieć system, a agentom AI łatwiej zrozumieć i odnajdywać kod, korzystać z AST, LSP czy semantic search i utrzymywać istniejące wzorce. Możliwie mechaniczne egzekwowanie tych samych zasad tworzy feedback loop."
+  }
+]
+      },
+   {
+  "index": "05",
+  "slug": "orderhub-pos-wms",
+  "caseStudySlug": "orderhub-pos-wms",
+  "category": "retail operations",
+  "tags": [
+    "prototype-paused"
+  ],
+  "title": "OrderHub POS/WMS",
+  "description": "Prototyp systemu retailowego wynikający bezpośrednio z pracy przy order pickingu. Próba połączenia produktów, stanów, ofert, kanałów sprzedaży, zamówień i pickingu w jeden spójny model zamiast kolejnego niezależnego narzędzia.",
+  "facts": [
+    "domain modeling",
+    "2D store graph",
+    "routing experiments",
+    "integration mapper"
+  ],
+  "outcome": "PAUSED · ZACZĄŁEM OD PATHFINDINGU, A SKOŃCZYŁEM NA MODELOWANIU DOMENY RETAILOWEJ",
+  "anchor": "p5",
+  "details": [
+    {
+      "label": "Problem",
+      "text": "Rozproszone systemy, słaby przepływ danych i ograniczenia obecnego order pickingu obserwowane podczas codziennej pracy."
+    },
+    {
+      "label": "Prototyp",
+      "text": "Produkty i oferty, mapa sklepu jako graf, routing pickera oraz wizualny mapper danych dla integracji."
+    },
+    {
+      "label": "Najważniejszy insight",
+      "text": "Największe zyski nie zawsze leżą w optymalizacji pojedynczej funkcji — często trzeba zmienić model całego procesu."
+    }
+  ]
+},
+      {
+        "index": "06",
+        "slug": "gpt_img_2-spritesheet-processor",
+        "caseStudySlug": "gpt_img_2-spritesheet-processor",
+        "externalLink": {
+          "provider": "github",
+          "href": "https://github.com/wwolanski/gpt_img_2-spritesheet-processor/"
+        },
+        "category": "experiment",
+        "tags": [
+          "discontinued",
+          "public-beta"
+        ],
+        "title": "GPT IMG-2 SPRITESHEET PROCESSOR",
+        "description": "Próba stabilizowania AI-generated spritesheetów za pomocą segmentacji i modeli vision. Rezultaty nie osiągnęły potrzebnej jakości, więc eksperyment zakończył się zmianą modelu problemu.",
+        "facts": [
+          "Python",
+          "gpt-img-2",
+          "Qwen3-VL",
+          "SAM3"
+        ],
+        "outcome": "Discontinued · wniosek wykorzystany później w Kukla2D",
+        "anchor": "p6",
+        "details": [
+          {
+            "label": "Problem",
+            "text": "Niespójne spritesheety generowane przez gpt-image-2 powodowały deformację, flickering i niestabilność pozycji postaci."
+          },
+          {
+            "label": "Podejście",
+            "text": "Korekcja kolorów, normalizacja palety oraz dekompozycja postaci przy użyciu Qwen3-VL i SAM3 i próba stabilizacji wyizolowanych części."
+          },
+          {
+            "label": "Wniosek",
+            "text": "Zmiana reprezentacji problemu stała się jednym z punktów wyjścia do rozwoju Kukla2D."
+          }
+        ]
+      }
+    ]
+  },
+  "cta": {
+    "eyebrow": "Umiejętności i technologie",
+    "title": "Poznaj narzędzia, z których korzystam.",
+    "label": "Zobacz umiejętności ↗",
+    "target": "skills"
+  }
+}

@@ -1,0 +1,509 @@
+---
+title: TaxHelper
+description: System do strukturyzowania i weryfikacji prawa podatkowego, budowany jako fundament pod deterministyczne ustalanie stawek VAT.
+---
+
+# TaxHelper
+
+**Status:** In development  
+**Typ:** Legal-tech  
+**Stack:** React, Typescript, Python, FastAPI, PostgreSQL + pgvector, shadcn + Tailwind
+
+<ImageGallery />
+
+## Problem
+
+Ustalenie właściwej stawki VAT nie zawsze (a właściwie rzadko) sprowadza się do znalezienia jednego artykułu w ustawie.
+
+W zależności od przypadku trzeba uwzględnić m.in. klasyfikację **CN lub PKWiU**, właściwe przepisy i wyjątki, załączniki do ustawy, odwołania do innych aktów, zmiany brzmienia przepisów, a docelowo również materiały takie jak **Wiążące Informacje Stawkowe (WIS)** czy orzecznictwo.
+
+Problemem nie jest więc sam dostęp do informacji. Te są publiczne.
+
+Problemem jest **zebranie właściwych informacji dla konkretnego przypadku, ustalenie zależności między nimi i dojście do odpowiedzi w sposób, który można później prześledzić i uzasadnić.**
+
+### Dlaczego nie wystarczy chatbot?
+
+ChatGPT, Perplexity czy tryby deep research są przydatne jako punkt wejścia do nowego zagadnienia. Sam również korzystam z modeli w ten sposób.
+
+Nie traktowałbym jednak wygenerowanej odpowiedzi jako wiarygodnego mechanizmu klasyfikacji podatkowej.
+
+Model może:
+
+- pominąć istotny wyjątek,
+- oprzeć część odpowiedzi na nieaktualnej informacji,
+- błędnie połączyć kilka przepisów,
+- wskazać niewłaściwe odwołanie,
+- a w skrajnym przypadku wygenerować podstawę prawną, która nie istnieje.
+
+W wielu zastosowaniach taki margines błędu jest akceptowalny. **Przy ustalaniu stawki podatku nie powinien być podstawą działania systemu.**
+
+Sama odpowiedź również nie wystarcza. Chciałem móc zobaczyć, **dlaczego** system doszedł do danego wyniku: jakie przepisy wykorzystał, przez jakie odwołania przeszedł, jaką klasyfikację przyjął i które warunki wpłynęły na rezultat.
+
+> [!SOLUTION]
+> **TaxHelper ma oprzeć klasyfikację VAT przede wszystkim na mechanicznym przetwarzaniu źródeł i jawnych regułach.**
+>
+> Ustawa VAT i powiązane dokumenty są pobierane, parsowane do kontrolowanej struktury i łączone przez cross-reference. Na tej podstawie ma powstać graf prawa oraz rule engine, który przeprowadza konkretny przypadek przez wymagane warunki.
+>
+> Generative AI zostaje przesunięte na koniec procesu: zamiast samodzielnie szukać odpowiedzi w prawie, ma dostać przygotowany rezultat — wykorzystane reguły, przepisy, klasyfikacje, WIS i inne powiązane informacje — i pomóc przede wszystkim w ich czytelnym scaleniu oraz przedstawieniu użytkownikowi.
+
+## Jak trafiłem na ten problem
+
+TaxHelper wyrósł z **OrderHuba**.
+
+Próbowałem tam zautomatyzować klasyfikację VAT dla produktów i ofert. Początkowo podszedłem do tego znacznie prościej: baza kodów PKWiU i CN, semantic search, embeddingi, retrieval wspomagany przez LLM i pierwsze eksperymenty z rule engine.
+
+Szybko okazało się jednak, że problem leży wcześniej.
+
+Nie rozumiałem jeszcze wystarczająco dobrze samej domeny, a klasyfikacja produktu była tylko jednym z elementów potrzebnych do ustalenia właściwej stawki.
+
+Zacząłem więc rozbierać cały proces na części: ustawę VAT, strukturę przepisów, klasyfikacje CN i PKWiU, wyjątki, załączniki, zmiany brzmienia oraz odwołania prowadzące do kolejnych dokumentów.
+
+Im głębiej wchodziłem w temat, tym bardziej przesuwał się właściwy problem.
+
+**Zanim da się zbudować rule engine stosujący przepisy, trzeba najpierw zbudować wiarygodną reprezentację samych źródeł prawa.**
+
+I właśnie na tym etapie znajduje się obecnie TaxHelper.
+
+> Projekt nie jest jeszcze działającym systemem do ustalania VAT. Działają przede wszystkim warstwy odpowiedzialne za pozyskiwanie, parsing i weryfikację dokumentów. Graf prawa, rule engine oraz runtime są kolejnymi etapami.
+
+---
+
+## Pierwsze eksperymenty: PKWiU i CN
+
+Pierwszym elementem, który zacząłem badać, były klasyfikacje **PKWiU i CN**.
+
+Dane trafiły do PostgreSQL, a do wyszukiwania semantycznego wykorzystałem `pgvector` i embeddingi generowane przez Gemini API. Eksperymentowałem między innymi z wyszukiwaniem po pojedynczych kategoriach oraz pełnych ścieżkach klasyfikacji i późniejszym rerankingiem najlepszych wyników.
+
+Jedna z pierwszych rzeczy, które zauważyłem, była dość prosta: samo użycie „lepszego” lub większego embeddingu nie rozwiązuje problemu słabego retrievalu.
+
+Więcej dawało poprawienie całego procesu:
+
+**wyszukanie kandydatów → stopniowe zawężenie → ranking → dopiero później decyzja.**
+
+Ten fragment projektu pozostaje eksperymentalny i będzie jeszcze wymagał optymalizacji.
+
+Do bazy trafiły również oficjalne **klucze przejścia pomiędzy wersjami klasyfikacji**, publikowane przez GUS. Dzięki temu system rozumie zmiany kodów w czasie i zależności między nimi, oraz powinień wyznaczyć poprawny kod zarówno na datę zdarzenia, jaki i jego obecnie obowiązujacą wersję.
+
+Szybko stało się jednak jasne, że znalezienie najbardziej pasującego kodu to tylko fragment problemu.
+
+W praktyce potrzebowałem nie tylko wyszukiwarki kodów, ale reprezentacji prawa, po której można później przeprowadzić deterministyczny proces decyzyjny.
+
+---
+
+## Dlaczego nie `user → LLM → odpowiedź`
+
+Ta decyzja wpłynęła na całą architekturę projektu.
+
+Najprostszy technicznie TaxHelper mógłby wyglądać tak:
+
+```text
+pytanie użytkownika
+        ↓
+       LLM
+        ↓
+odpowiedź o stawce VAT
+```
+
+Problem w tym, że w takim układzie model jednocześnie wyszukuje informacje, interpretuje je, wybiera podstawę prawną i formułuje wynik.
+
+Trudno wtedy jednoznacznie określić, **który etap zawiódł**, jeżeli odpowiedź jest błędna.
+
+W TaxHelperze próbuję ten proces rozdzielić.
+
+Docelowo system ma najpierw mechanicznie ustalić:
+
+```text
+źródła
+   ↓
+struktura prawa
+   ↓
+powiązania i wersje
+   ↓
+reguły
+   ↓
+dane konkretnego przypadku
+   ↓
+wynik + pełna ścieżka uzasadnienia
+```
+
+Dopiero przygotowany w ten sposób materiał może trafić do modelu językowego.
+
+LLM nie ma wtedy wymyślać rozwiązania. Ma przede wszystkim **złożyć i wyjaśnić wynik, który został wcześniej wyprowadzony przez kontrolowany system**.
+
+---
+
+# Warstwa A — dokumenty i parsing
+
+Pierwszym etapem jest zbudowanie kontrolowanego korpusu dokumentów.
+
+TaxHelper posiada niezależne moduły:
+
+- **DOC Harvester** — pobieranie i synchronizacja źródeł,
+- **DOC Parser** — zamiana dokumentów na wewnętrzną reprezentację,
+- **DOC Reviewer** — obsługa przypadków wymagających sprawdzenia.
+
+Podział jest celowy. Każda część ma własną odpowiedzialność i dedykowany katalog w repozytorium, dzięki czemu łatwiej określić, gdzie kończy się pobieranie źródła, gdzie zaczyna interpretacja jego struktury, a gdzie podejmowana jest decyzja człowieka.
+
+## Harvester
+
+Harvester korzysta z osobnych klientów dla źródeł polskich i unijnych, w tym **ELI API** oraz źródeł UE.
+
+Jego zadaniem jest automatyczne pobieranie i synchronizacja dokumentów potrzebnych do przetwarzania ustawy o podatku od towarów i usług — również tych, do których prowadzą zewnętrzne odwołania.
+
+Dokument prawny nie funkcjonuje tutaj jako pojedynczy, izolowany plik. Ustawa może odsyłać do innych ustaw, aktów europejskich czy konkretnych fragmentów tych dokumentów. Jeżeli taki dokument jest częścią zależności, powinien trafić do tego samego korpusu i zostać sparsowany w ten sam sposób.
+
+---
+
+## HTML jest prostszy. W Polsce często zostaje PDF
+
+Przy źródłach unijnych praktycznie każdy dokument posiada reprezentację HTML.
+
+W polskich źródłach duża część materiałów występuje przede wszystkim jako PDF.
+
+To komplikuje parsing, ale TaxHelper **nie korzysta z OCR jako podstawowego sposobu odczytu prawa**. Parser pracuje na tekstowej zawartości dokumentów PDF lub HTML.
+
+OCR byłby technicznie możliwy, ale w tym przypadku ma dwie istotne wady:
+
+1. dodaje koszt przetwarzania,
+2. wprowadza kolejną probabilistyczną warstwę, która może popełnić błąd już podczas odczytu tekstu.
+
+W wielu zastosowaniach pojedynczy błędnie rozpoznany znak nie ma dużego znaczenia. Przy numerze artykułu, kwocie, odwołaniu albo brzmieniu przepisu może mieć.
+
+Dlatego tam, gdzie dokument zawiera dostępny tekst, wolę parsować go bezpośrednio, zamiast przepuszczać przez model OCR.
+
+---
+
+# Prawo jako struktura, nie blok tekstu
+
+Wynikiem parsowania nie jest po prostu `.txt` z treścią ustawy.
+
+Parser rozpoznaje jednostki strukturalne dokumentu, m.in.:
+
+- artykuły,
+- ustępy,
+- punkty,
+- litery,
+- niższe poziomy zagnieżdżenia.
+
+Pełna treść dokumentu zapisywana jest jako Markdown z inline tagami wskazującymi konkretne node'y.
+
+Przykładowo:
+
+```text
+<node: art_112>
+
+<node: art_112:pkt_3:ust_4:lit_b>
+```
+
+Dzięki temu tekst pozostaje nadal możliwy do przeczytania jako dokument, ale jednocześnie jego fragmenty posiadają stabilne identyfikatory, na których może później operować system.
+
+To ważne, ponieważ reguła nie powinna wskazywać na „fragment tekstu gdzieś w artykule 112”.
+
+Powinna móc wskazać konkretny node.
+
+---
+
+## Cross-reference
+
+Drugim ważnym elementem są odwołania pomiędzy przepisami.
+
+TaxHelper rozróżnia:
+
+**internal cross-references** — odniesienia do innych fragmentów tego samego dokumentu,
+
+oraz
+
+**external cross-references** — odniesienia do innych aktów.
+
+W samym Markdownie odwołanie może zostać zapisane lekko, np.:
+
+```text
+<!xref_id: 22222>
+```
+
+Pełne informacje o referencji znajdują się w manifeście JSON.
+
+Manifest może przechowywać między innymi:
+
+- target dokumentu,
+- konkretny target node,
+- cytowane brzmienie,
+- informacje potrzebne do późniejszego zbudowania grafu.
+
+Zewnętrzny dokument jest wcześniej pobierany i parsowany przy użyciu tego samego modelu struktury.
+
+Parser nie zapisuje więc jedynie:
+
+> ten fragment wspomina TFUE.
+
+Może sprawdzić, czy wskazany rozdział lub inna jednostka rzeczywiście istnieje w sparsowanym dokumencie i połączyć referencję z konkretnym node'em.
+
+---
+
+# Warstwa B — jeśli parser nie wie, nie powinien zgadywać
+
+Prawo zawiera konstrukcje, które potrafią być znacznie mniej regularne niż typowa struktura:
+
+> art. 56 pkt 1 ust. 2, 5 i 7 oraz art. 76 pkt 6 i 7 oraz rozdział 4 TFUE
+
+Parser potrafi obsługiwać rozbudowane zagnieżdżenia i odwołania, ale nie każdy przypadek daje się rozwiązać z taką samą pewnością.
+
+Dlatego parsing posiada **confidence threshold**.
+
+Jeżeli system nie potrafi wystarczająco pewnie:
+
+- rozpoznać struktury,
+- rozdzielić złożonego odwołania,
+- znaleźć target node,
+- potwierdzić zewnętrznego odniesienia,
+
+przypadek trafia do **review queue**.
+
+Obecnie review jest manualne.
+
+Osoba przeglądająca przypadek może zobaczyć problem, zaakceptować wynik albo go edytować.
+
+Docelowo część takiego review może zostać wsparta przez LLM, ale obecnie model nie podejmuje tych decyzji automatycznie.
+
+To jest celowe.
+
+**Niepewność jest reprezentowana jako stan systemu, zamiast być ukrywana przez najbardziej prawdopodobną odpowiedź parsera.**
+
+---
+
+# Testy jako druga warstwa kontroli
+
+Sam confidence score nie wystarcza.
+
+Parser posiada również testy sprawdzające integralność wygenerowanej struktury.
+
+Przykładowo system może wykrywać:
+
+- nielegalne duplikaty node'ów,
+- nieprawidłową liczbę jednostek indeksowanych,
+- problemy z hierarchią,
+- niespójności identyfikatorów,
+- referencje prowadzące do nieistniejących node'ów.
+
+Szczególnym przypadkiem są jednostki posiadające indeksy. W prawie może legalnie istnieć np. artykuł podstawowy oraz kolejne jednostki oznaczone indeksem, dlatego walidacja nie może po prostu zabronić każdego podobnego identyfikatora. Musi rozróżniać poprawną strukturę od faktycznej duplikacji.
+
+Ten mechanizm jest dla mnie ważny również ze względu na AI-native workflow.
+
+Zamiast instruować agenta:
+
+> uważaj, żeby parser nie generował duplikatów,
+
+wolę mieć test, który po takiej regresji po prostu zakończy walidację błędem.
+
+---
+
+# Editorial — stare i nowe brzmienie
+
+Kolejnym problemem jest czas.
+
+Ten sam artykuł nie musi mieć jednego brzmienia obowiązującego zawsze.
+
+Teksty ujednolicone ustawy VAT zawierają informacje o zmianach bezpośrednio w treści — m.in. oznaczenia starego i nowego brzmienia oraz przypisy marginalne określające moment wejścia zmiany w życie.
+
+TaxHelper posiada osobny system **editorial**, który reprezentuje te warianty na poziomie konkretnych node'ów.
+
+Może więc istnieć:
+
+```text
+art_112:ust_1
+├── brzmienie A
+└── brzmienie B
+```
+
+z informacją o okresie obowiązywania poszczególnych wersji.
+
+## Świadome ograniczenie MVP
+
+TaxHelper nie próbuje obecnie odtwarzać kompletnej historii ustawy VAT od jej pierwszej publikacji.
+
+Żeby zrobić to poprawnie, należałoby wziąć pierwotny dokument i następnie nałożyć na niego wszystkie późniejsze nowelizacje, obwieszczenia i zmiany.
+
+To znacznie zwiększyłoby zakres projektu jeszcze przed powstaniem właściwego rule engine.
+
+MVP operuje więc na dostępnych **tekstach ujednoliconych** i na zmianach brzmienia, które są w nich reprezentowane.
+
+Sam model editorial został jednak zaprojektowany tak, aby jeden node mógł posiadać dowolną liczbę wariantów. W przyszłości pełna historia może więc zostać do niego dołączona bez zmiany podstawowej reprezentacji.
+
+---
+
+# Załączniki też są częścią prawa
+
+Ustawa VAT zawiera również załączniki, w tym duże struktury tabelaryczne.
+
+Nie traktuję ich jako nieustrukturyzowanego dodatku do dokumentu.
+
+Parser zamienia załączniki na dedykowaną reprezentację JSON.
+
+Dzięki temu późniejszy rule engine będzie mógł operować na danych z tabel w ten sam sposób, w jaki operuje na strukturze artykułów — bez konieczności ponownego parsowania wizualnego układu dokumentu podczas każdego zapytania.
+
+---
+
+# Pięć warstw
+
+Całą architekturę TaxHelpera traktuję obecnie jako pięć kolejnych warstw.
+
+## A. Source & Parsing
+
+Źródłowe dokumenty są:
+
+**pobierane → synchronizowane → parsowane → normalizowane**
+
+Rezultatem są Markdown, manifesty i dane załączników.
+
+## B. Review
+
+Przypadki, których warstwa A nie potrafi rozwiązać wystarczająco pewnie, są:
+
+**wykrywane → kierowane do review → zatwierdzane albo poprawiane**
+
+Na tym etapie znajduje się obecnie znaczna część rozwoju projektu.
+
+## C. Graph
+
+Kolejnym etapem ma być zbudowanie grafu na podstawie:
+
+- sparsowanej struktury dokumentów,
+- cross-reference
+- danych editorial,
+- załączników,
+- informacji zaakceptowanych lub poprawionych w warstwie B.
+
+Warstwa C ma konsumować zweryfikowane dane, a nie zgadywać, jak naprawić błędy parsera.
+
+## D. Rule Engine
+
+Dopiero na takim fundamencie ma powstać właściwy silnik reguł.
+
+Jego zadaniem będzie przełożenie przepisów VAT na jawne warunki i decyzje, które można wykonywać mechanicznie.
+
+Dokładna reprezentacja reguł nie jest jeszcze ustalona.
+
+## E. Compilation & Runtime
+
+Ostatnią warstwę wyobrażam sobie jako kompilację systemu do niezależnego, wersjonowanego artefaktu.
+
+Przykładowo:
+
+```text
+taxhelper-runtime-2026-08.zip
+```
+
+Taka paczka mogłaby zawierać wszystko, czego potrzebuje właściwa aplikacja do pracy z konkretną wersją prawa.
+
+Po zmianie przepisów pipeline generowałby nową paczkę. Poprzednia pozostawałaby archiwalna.
+
+Dzięki temu runtime nie musi być bezpośrednio sprzężony z harvesterem, parserami, kolejką review czy procesem budowania grafu.
+
+To na razie **docelowa architektura**, nie gotowa funkcja projektu.
+
+---
+
+# Docelowy rezultat
+
+TaxHelper nie ma odpowiadać na pytanie:
+
+> „Jaka jest chyba stawka VAT dla tego produktu?”
+
+Docelowo chciałbym, żeby system był w stanie przeprowadzić użytkownika przez wymagane informacje.
+
+Przykładowy flow mógłby wyglądać tak:
+
+```text
+towar / usługa
+      ↓
+klasyfikacja CN / PKWiU
+      ↓
+pytania wynikające z odpowiednich przepisów
+      ↓
+kolejne warunki i wyjątki
+      ↓
+konkretne node'y prawa i załączników
+      ↓
+wynik klasyfikacji VAT
+```
+
+- Jeżeli do rozstrzygnięcia potrzebna jest dodatkowa cecha przypadku, system powinien o nią zapytać.
+
+- Jeżeli wynik zależy od kodu klasyfikacji, powinien skorzystać z odpowiedniej bazy.
+
+- Jeżeli reguła wynika z wyjątku w innym artykule, powinien przejść przez właściwą relację w grafie.
+
+**Celem jest możliwie mechaniczne dojście do odpowiedzi, wraz ze ścieżką pokazującą, skąd ta odpowiedź się wzięła.**
+
+---
+
+# Stan projektu
+
+TaxHelper jest nadal w budowie.
+
+Obecnie działają przede wszystkim fundamenty związane z warstwami **A i B**:
+
+- pobieranie i synchronizacja dokumentów,
+- klient ELI i źródeł UE,
+- parsing PDF i HTML,
+- strukturalne node'y,
+- internal i external cross-reference
+- manifesty,
+- editorial,
+- parsing załączników do JSON,
+- confidence i review queue,
+- manual review,
+- walidacja i testy,
+- baza CN/PKWiU,
+- oficjalne klucze przejścia,
+- eksperymentalny semantic retrieval.
+
+Warstwy **C–E**, czyli pełny graf, rule engine i kompilowany runtime package, są kolejnymi etapami.
+
+Dlatego nie traktuję jeszcze TaxHelpera jako gotowej aplikacji do klasyfikacji VAT.
+
+Na razie jest przede wszystkim systemem przygotowującym dane i fundament pod rozwiązanie, któremu później będzie można zaufać bardziej niż pojedynczej odpowiedzi modelu językowego.
+
+---
+
+# Czego nauczył mnie ten projekt
+
+TaxHelper jest pierwszym moim projektem, w którym tak mocno musiałem rozdzielić **informację źródłową, interpretację, niepewność i późniejsze wykonanie reguł**.
+
+Kilka rzeczy szczególnie zmieniło moje podejście.
+
+### 1. Najpierw trzeba zrozumieć domenę
+
+Projekt zaczął się od próby klasyfikacji VAT w OrderHubie. Dopiero później zrozumiałem, jak wiele elementów pomijałem.
+
+Research nie był tutaj etapem poprzedzającym implementację przez kilka godzin. Stał się dużą częścią projektu.
+
+### 2. Nie każdy problem potrzebuje LLM-a
+
+Im bardziej krytyczna jest informacja, tym ważniejsze staje się pytanie, czy naprawdę warto wprowadzać probabilistyczny element.
+
+W TaxHelperze modele mają swoje miejsce, ale nie chcę nimi zastępować parsera, oficjalnych danych ani reguł, które można sprawdzić mechanicznie.
+
+### 3. Niepewność warto przechowywać jawnie
+
+Jeżeli parser nie jest pewny cross-reference znacznie lepiej utworzyć review case niż dopisać najbardziej prawdopodobny target i kontynuować pipeline tak, jakby nic się nie stało.
+
+### 4. Zakres MVP może być mniejszy bez projektowania ślepej uliczki
+
+Pełna rekonstrukcja historii zmian ustawy byłaby dużym osobnym projektem.
+
+Na potrzeby pierwszej wersji wystarczą informacje dostępne w tekstach ujednoliconych, ale model editorial nadal może zostać przygotowany tak, żeby później przyjąć pełną historię.
+
+### 5. Dane wejściowe są częścią architektury
+
+Na początku myślałem przede wszystkim o końcowym rule engine i końcowym UX.
+
+W praktyce duża część trudności pojawiła się dużo wcześniej: jakie są możliwości pozyskania danych z zewnętrznych źródeł, jak pobrać dokumenty, rozpoznać ich strukturę, utrzymać referencje, wersje, załączniki i wiedzieć, kiedy wynik parsera wymaga sprawdzenia.
+
+Bez tego nawet najlepszy rule engine działałby na fundamencie, któremu trudno zaufać.
+
+---
+
+TaxHelper nadal ma przed sobą najtrudniejszą część — graf i sam silnik reguł.
+
+**Na ten moment priotytetem jest wypracowanie najlepszego i możliwie automatycznego modelu przetwarzania danych wejściowych, który zagwarantuje stabliny grunt pod dalszy rozwój. Bez tego nie ma sensu rozwijać kolejnych warstw.**

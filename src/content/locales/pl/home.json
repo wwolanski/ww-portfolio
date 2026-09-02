@@ -1,0 +1,24 @@
+{
+  "kicker": "Software developer",
+  "portfolioSections": "Sekcje portfolio",
+  "cards": {
+    "about": {
+      "label": "O mnie",
+      "description": "Kim jestem, czym się zajmuję i jak myślę o oprogramowaniu."
+    },
+    "projects": {
+      "label": "Projekty",
+      "description": "Wybrane projekty, nad którymi dotychczas pracowałem."
+    },
+    "skills": {
+      "label": "Skills",
+      "description": "Technologie, narzędzia i sposoby rozwiązywania problemów, których używam na co dzień."
+    },
+    "blog": {
+      "label": "Blog",
+      "description": "Opinie, komentarze i spostrzeżenia na różne tematy."
+    }
+  },
+  "basedIn": "Based in Poland",
+  "workingWorldwide": "Working worldwide"
+}

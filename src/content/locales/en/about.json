@@ -1,0 +1,115 @@
+{
+  "hero": {
+    "eyebrow": "About me · 01",
+    "title": [
+      "Hi.",
+      "My name is Wojciech.",
+      ""
+    ],
+    "lead": "I live in Gdańsk and take an **AI-native** approach to my work. I build applications, tools, and experiments. Technology—software and hardware alike—has been part of my life since long before I got into software development. **I didn’t take the most direct route into the dev world, though.**"
+  },
+  "visualPanel": {
+    "kicker": "software · product · AI",
+    "title": "Problem → system"
+  },
+  "workflow": {
+    "heading": "Workflow in practice",
+    "intro": "The process changes with the context, but it rests on the same basic assumptions. **I don’t reinvent the wheel unless I have to.** System design and implementation come later.",
+    "steps": [
+      {
+        "index": "01",
+        "title": "Problem",
+        "text": "I start by understanding the user, the current workflow, the requirements, and the constraints before thinking about solutions."
+      },
+      {
+        "index": "02",
+        "title": "Research",
+        "text": "I review similar projects, libraries, APIs, and documentation. If I’m entering a new domain, research is also when I learn its basics and terminology."
+      },
+      {
+        "index": "03",
+        "title": "System model",
+        "text": "I define the architecture, the flows, the boundaries of responsibility, and the initial contracts. I choose the best-fit solutions, create the first version of the brief, and define the MVP scope."
+      },
+      {
+        "index": "04",
+        "title": "Implementation",
+        "text": "I make a plan, break down the first tasks, and start building. Both the brief and the plan may change when a working version reveals new problems or a better direction."
+      },
+      {
+        "index": "05",
+        "title": "Feedback loop",
+        "text": "Feedback comes from both automated checks and reviews of the working version. I use it to refine the implementation or adjust its direction."
+      }
+    ],
+    "example": {
+      "label": "The same process · a small example",
+      "title": "This portfolio is being built with a similar workflow.",
+      "text": "The scale is small, but the order of decisions remains similar. In this project, most subsequent iterations focus on content and information hierarchy.",
+      "steps": [
+        {
+          "index": "01",
+          "title": "Research",
+          "text": "I spent several days reviewing hundreds of existing portfolios and personal websites, looking at conventions, layouts, visual styles, and ways of presenting myself and my projects."
+        },
+        {
+          "index": "02",
+          "title": "Problem/Idea",
+          "text": "The portfolio should show my projects and the way I work without pretending that I followed the classic “degree → junior → mid → senior” path. It should draw people in with a personal story, a considered approach, and rich project documentation—not with visual showmanship, technology logos, or inflated claims."
+        },
+        {
+          "index": "03",
+          "title": "Architecture and brief.md",
+          "text": "A lightweight, page-oriented architecture with a separate content layer in `.json`/`.mdx`, allowing content to evolve independently of the views. I also prepared an extensive project brief—with a particular focus on content in this case—based on a detailed context document that organizes information about me and serves as the source of truth for the entire portfolio."
+        },
+        {
+          "index": "04",
+          "title": "Stack and implementation",
+          "text": "A static website built with React and TypeScript, with libraries for rendering and processing longer `.mdx` content such as case studies and blog posts."
+        },
+        {
+          "index": "05",
+          "title": "Feedback loop",
+          "text": "Draft → plan → prototype → review → improvements, until the structure and direction are stable enough. New features, refinements, and content expansion all go through the same process."
+        }
+      ]
+    }
+  },
+  "timeline": {
+    "heading": "My path to software development",
+    "intro": "My current way of working grew out of several earlier chapters: my first websites and scripts, years spent working in audio, a period in retail, and an intensive return to software development in 2024–2025.",
+    "items": [
+      {
+        "date": "2008–2012 · teenage years",
+        "title": "Hosting, forums, CMSs, and my first scripts",
+        "text": "Back in the days of yoyo.pl, I built my first HTML pages, sliced and modified templates, worked with CMSs, forums, and gaming servers. Joomla, Drupal, phpBB, and FTP/SSH, wrote simple Pawn and Lua scripts for San Andreas Multiplayer and AMX Mod X—mostly following tutorials and forum posts, using ready-made snippets, and experimenting a lot."
+      },
+      {
+        "date": "The years that followed",
+        "title": "Music, audio and the technical side of production",
+        "text": "I spent more than a decade working with music, recording, live sound, and multimedia. It was a separate path that gave me a strong technical foundation and fluency with tools. Many concepts used in software and AI—such as `sampling`, `bit depth`, `quantization`, `compression`, `buffer`, or `cache` — were already familiar to me from audio."
+      },
+      {
+        "date": "2021–2024 retail / e-commerce",
+        "title": "Seeing the process from the user’s side",
+        "text": "Working in e-commerce, including order picking and delivery platforms, showed me how many software problems only become visible when you actually go through a process yourself."
+      },
+      {
+        "date": "2024 → today",
+        "title": "Returning to development through generative AI",
+        "text": "An intensive period of learning modern frontend and backend development, architecture, and agentic workflows. Since then, I’ve been regularly building my own applications."
+      }
+    ]
+  },
+  "statement": {
+    "kicker": "What I’m focusing on now",
+    "title": "LLMs and agentic development.",
+    "text": "Most of my attention is currently on LLMs and agentic development. I keep up with new models, coding agents, and the tools around them, but I’m even more interested in what happens one level above: how to choose tools, **how to design repositories that agents can navigate efficiently, and how to build feedback loops that let them verify changes independently**.\n\nMany of these interests currently come together in **[RepoAtlas](/en/projects?caseStudy=repoatlas)**—a project I’m actively working on. As I build it, I’m also deepening my understanding of application architecture: `boundaries`, `dependency rules`, flows, module responsibilities, and ways to enforce these rules mechanically."
+  },
+  "cta": {
+    "eyebrow": "From a problem to a working solution",
+    "title": "See the projects and how they came together.",
+    "label": "View projects ↗",
+    "target": "projects"
+  }
+}

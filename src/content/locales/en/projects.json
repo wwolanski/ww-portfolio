@@ -1,0 +1,240 @@
+{
+  "hero": {
+    "eyebrow": "Selected work · 02",
+    "title": [
+      "PROJECTS",
+      "IN PRACTICE.",
+      ""
+    ],
+    "lead": "This collection includes finished projects, ongoing work, paused efforts, and things that simply didn’t work. Together, they paint a picture of the work I’ve done so far."
+  },
+  "visualPanel": {
+    "kicker": "projects & experiments",
+    "title": "Build → verify"
+  },
+  "selected": {
+    "projects": [
+      {
+        "index": "01",
+        "slug": "bank-statement-converter",
+        "caseStudySlug": "bank-statement-converter",
+        "category": "DOCUMENT PROCESSING",
+        "tags": [
+          "shipped"
+        ],
+        "title": "Bank Statement Converter",
+        "description": "A local application for an accounting firm. It converts non-standard bank statements—including HTML/MHTML, PDFs, and screenshots—into CSV files accepted by Taxomatic. The target format was reconstructed from examples provided by the client. The parser handles known structures and falls back to OCR when needed.",
+        "facts": [
+          "Python",
+          "FastAPI",
+          "Parser",
+          "OCR"
+        ],
+        "outcome": "REAL PROBLEM · WORKING TOOL · MEASURABLE IMPACT",
+        "anchor": "p1",
+        "details": [
+          {
+            "label": "Problem",
+            "text": "Manual re-entry of data from formats that Taxomatic does not accept directly."
+          },
+          {
+            "label": "Decision",
+            "text": "Known bank formats → deterministic parsers. More difficult inputs → OCR or a multimodal model where appropriate."
+          },
+          {
+            "label": "Evidence",
+            "text": "The tool is actively used by several people as part of their daily workflow."
+          }
+        ]
+      },
+      {
+        "index": "02",
+        "slug": "kukla2d",
+        "externalLink": {
+          "provider": "github",
+          "href": "https://github.com/wwolanski/kukla2d"
+        },
+        "category": "2D animation software",
+        "tags": [
+          "shipped",
+          "public-beta",
+          "in-development"
+        ],
+        "title": "Kukla2D",
+        "description": "A browser-based 2D character animator built with game assets in mind. It is designed to simplify the whole process—from preparing a character through rigging and animation to export—and eventually combine traditional animation tools with generative AI.",
+        "facts": [
+          "Browser-based",
+          "React",
+          "TypeScript",
+          "PixiJS",
+          "Character rigging",
+          "Mesh deformation"
+        ],
+        "outcome": "PUBLIC BETA · 0.9.2 · DIRECTION: 1-CLICK CHARACTER ASSETS",
+        "anchor": "p2",
+        "details": [
+          {
+            "label": "Idea",
+            "text": "A free browser-based tool with a good user experience, focused on 2D character animation for games."
+          },
+          {
+            "label": "Direction",
+            "text": "Kukla2D is intended to combine AI asset generation, rigging, and animation in one simple process. The goal for version 1.0 is a stable, standalone editor ready for future AI integrations."
+          },
+          {
+            "label": "Goal",
+            "text": "The long-term goal is to make the path from a character idea to a ready-to-use set of assets and animations as short as possible—moving toward a “one-click asset generator” workflow."
+          }
+        ]
+      },
+      {
+        "index": "03",
+        "slug": "taxhelper",
+        "caseStudySlug": "taxhelper",
+        "category": "legal-tech",
+        "tags": [
+          "in-development"
+        ],
+        "title": "TaxHelper",
+        "description": "A system designed to determine VAT rates reliably. Instead of asking an LLM for an answer directly, it structures legal sources, resolves cross-references between provisions, and prepares the data for a deterministic rules engine.",
+        "facts": [
+          "Python",
+          "FastAPI",
+          "PostgreSQL + pgvector",
+          "ELI API",
+          "Rules engine"
+        ],
+        "outcome": "LAW AS DATA · DETERMINISTIC CORE · AI ONLY WHERE IT MAKES SENSE",
+        "anchor": "p3",
+        "details": [
+          {
+            "label": "Problem",
+            "text": "A tax answer must be not only accurate, but also up to date, complete, and traceable to specific sources."
+          },
+          {
+            "label": "Core",
+            "text": "Law is converted into structured data and relationships that can be validated mechanically, rather than leaving the interpretation of the entire process to a language model."
+          },
+          {
+            "label": "Role of AI",
+            "text": "Generative AI is meant to help where interpretation or synthesis is needed, but not to replace the sources, the parser, or deterministic rules."
+          }
+        ]
+      },
+      {
+        "index": "04",
+        "slug": "repoatlas",
+        "caseStudySlug": "repoatlas",
+        "externalLink": {
+          "provider": "vercel",
+          "href": "https://vercel.com/"
+        },
+        "category": "developer tooling",
+        "tags": [
+          "in-development"
+        ],
+        "title": "RepoAtlas",
+        "description": "An educational tool for designing repository architecture. It lets you start from a ready-made blueprint, adjust decisions about structure, boundaries, modules, and technologies, and then see how those choices affect the resulting repository layout.",
+        "facts": [
+          "React Flow",
+          "decision-first",
+          "data-driven",
+          "JSON / Markdown"
+        ],
+        "outcome": "Architecture as a set of decisions · eventually also enforced mechanically",
+        "anchor": "p4",
+        "details": [
+          {
+            "label": "Problem",
+            "text": "Architecture is hard to understand, design, and maintain consistently over time. People have to contend with overlapping approaches; coding agents have to navigate ambiguous patterns and a repository that grows increasingly chaotic."
+          },
+          {
+            "label": "Approach",
+            "text": "RepoAtlas describes architecture as a set of decisions about structure, boundaries, modules, flows, and technologies. A blueprint provides a starting point that can later be adapted to a specific project."
+          },
+          {
+            "label": "Outcome",
+            "text": "A repeatable structure helps people understand the system faster and makes it easier for AI agents to understand and navigate the code, use ASTs, LSP, or semantic search, and preserve existing patterns. Mechanically enforcing the same rules as far as possible creates a feedback loop."
+          }
+        ]
+      },
+      {
+        "index": "05",
+        "slug": "orderhub-pos-wms",
+        "caseStudySlug": "orderhub-pos-wms",
+        "category": "retail operations",
+        "tags": [
+          "prototype-paused"
+        ],
+        "title": "OrderHub POS/WMS",
+        "description": "A retail system prototype that grew directly out of my work in order picking. It attempts to combine products, inventory, offers, sales channels, orders, and picking into one coherent model instead of another standalone tool.",
+        "facts": [
+          "domain modeling",
+          "2D store graph",
+          "routing experiments",
+          "integration mapper"
+        ],
+        "outcome": "PAUSED · I STARTED WITH PATHFINDING AND ENDED UP MODELING THE RETAIL DOMAIN",
+        "anchor": "p5",
+        "details": [
+          {
+            "label": "Problem",
+            "text": "Fragmented systems, weak data flow, and limitations in the existing order-picking workflow that I observed in day-to-day work."
+          },
+          {
+            "label": "Prototype",
+            "text": "Products and offers, a store map modeled as a graph, picker routing, and a visual data mapper for integrations."
+          },
+          {
+            "label": "Key insight",
+            "text": "The biggest gains do not always come from optimizing a single function—often, the model for the entire process needs to change."
+          }
+        ]
+      },
+      {
+        "index": "06",
+        "slug": "gpt_img_2-spritesheet-processor",
+        "caseStudySlug": "gpt_img_2-spritesheet-processor",
+        "externalLink": {
+          "provider": "github",
+          "href": "https://github.com/wwolanski/gpt_img_2-spritesheet-processor/"
+        },
+        "category": "experiment",
+        "tags": [
+          "discontinued",
+          "public-beta"
+        ],
+        "title": "GPT IMG-2 SPRITESHEET PROCESSOR",
+        "description": "An attempt to stabilize AI-generated spritesheets using segmentation and vision models. The results did not meet the required quality, so the experiment ended with a different way of modeling the problem.",
+        "facts": [
+          "Python",
+          "gpt-img-2",
+          "Qwen3-VL",
+          "SAM3"
+        ],
+        "outcome": "Discontinued · insight later used in Kukla2D",
+        "anchor": "p6",
+        "details": [
+          {
+            "label": "Problem",
+            "text": "Inconsistent spritesheets generated by gpt-image-2 caused deformation, flickering and unstable character positioning."
+          },
+          {
+            "label": "Approach",
+            "text": "Color correction, palette normalization, and character decomposition using Qwen3-VL and SAM3, followed by an attempt to stabilize the isolated parts."
+          },
+          {
+            "label": "Conclusion",
+            "text": "Reframing the problem became one of the starting points for developing Kukla2D."
+          }
+        ]
+      }
+    ]
+  },
+  "cta": {
+    "eyebrow": "Skills and technologies",
+    "title": "Explore the tools I work with.",
+    "label": "View skills ↗",
+    "target": "skills"
+  }
+}

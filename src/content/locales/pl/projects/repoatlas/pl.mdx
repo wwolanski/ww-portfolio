@@ -1,0 +1,610 @@
+---
+title: RepoAtlas
+description: Wizualne narzędzie do nauki, projektowania i docelowo mechanicznego egzekwowania architektury repozytorium.
+---
+
+# RepoAtlas
+
+**Status:** In development  
+**Typ:** Developer tooling  
+**Stack:** React, Typescript
+
+RepoAtlas to narzędzie do nauki, projektowania i docelowo egzekwowania architektury repozytorium.
+
+Powstało z dwóch problemów, które zaczęły się ze sobą łączyć. Z jednej strony architektura aplikacji jest trudna do przyswojenia. Nazwy takie jak `feature-first`, `layered`, `hexagonal`, `ports and adapters`, DDD czy vertical slice często dotyczą innych poziomów systemu, a mimo to łatwo traktować je jak konkurencyjne odpowiedzi na jedno pytanie.
+
+Z drugiej strony przy pracy z coding agents brak jasno ustalonej struktury bardzo szybko zaczyna być widoczny w samym repo. Jeżeli podobne problemy są rozwiązywane za każdym razem trochę inaczej, kolejne modele dostają coraz mniej jednoznaczny kontekst.
+
+>[!SOLUTION]
+>RepoAtlas ma pomóc najpierw tę architekturę zobaczyć, zrozumieć, później ją zaprojektować, a następnie część ustaleń zamienić w mechaniczne reguły pilnujące implementacji.
+
+## Problem
+
+Współczesny development ma ogromną liczbę konwencji, wzorców i sposobów organizowania aplikacji.
+
+`feature-first`, `layered`, `clean`, `hexagonal`, `ports and adapters`, DDD, vertical slices, public API, DTO, read/write, local state, global state — lista pojęć i koncepcji szybko robi się długa, a poszczególne pojęcia nie zawsze opisują ten sam poziom systemu, lub bywają tożsame.
+
+Część ma kilka nazw. Część jest rozwinięciem innych konceptów. Część można stosować jednocześnie.
+
+A to dopiero początek, ponieważ samo utworzenie folderów:
+
+```text
+domain/
+application/
+infrastructure/
+ui/
+````
+
+nie tworzy jeszcze architektury.
+
+Można mieć dokładnie taki układ i jednocześnie pozwolić, żeby `domain` importował `ui`, każdy feature miał inne public API, a podobna logika raz trafiała do `services/`, raz do `helpers/`, a innym razem do `application/`.
+
+Architektura zaczyna mieć znaczenie dopiero wtedy, kiedy za strukturą idą również:
+
+* odpowiedzialności,
+* granice modułów,
+* kierunki zależności,
+* publiczne API,
+* przepływy,
+* reguły dotyczące tego, co może zależeć od czego.
+
+Do tego dochodzi problem samej terminologii.
+
+```text
+feature-first
+layered
+hexagonal
+DDD
+```
+
+nie muszą oznaczać czterech alternatywnych architektur.
+
+Ta sama aplikacja może mieć:
+
+```text
+organizacja repo
+→ feature-first
+
+organizacja wewnątrz feature
+→ layered
+
+granica z zewnętrznym systemem
+→ ports and adapters
+
+use cases
+→ read / write
+
+client state
+→ Zustand
+
+server state
+→ TanStack Query
+```
+
+Te decyzje dotyczą różnych części systemu i mogą istnieć jednocześnie.
+
+To stało się później jednym z głównych problemów samego modelu danych RepoAtlasu.
+
+### Przy coding agents niespójność rośnie szybciej
+
+W poprzednich projektach często zaczynałem od działającej wersji, a decyzje dotyczące struktury zostawiałem na później.
+
+Na początku koszt jest niewielki. Projekt jest mały, więc łatwo jeszcze pamiętać, gdzie co się znajduje.
+
+Później jeden agent tworzy:
+
+```text
+orders/
+  application/
+  domain/
+```
+
+drugi:
+
+```text
+cart/
+  services/
+  helpers/
+```
+
+a trzeci:
+
+```text
+auth/
+  logic/
+  utils/
+```
+
+Każdy fragment może działać poprawnie. Problem zaczyna się wtedy, kiedy repo jako całość przestaje mieć jeden sposób organizowania podobnych rzeczy.
+
+W klasycznym developmentcie taki drift również się zdarza.
+
+>[!IMPORTANT]
+> Agentic workflow zwiększa jednak tempo, w którym może się pojawić. W krótkim czasie **powstaje dużo więcej kodu, a człowiek nie zawsze nadąża** utrzymać pełny obraz zależności, przepływów i lokalnych konwencji.
+
+## Pomysł
+
+RepoAtlas ma działać w trzech etapach:
+
+```text
+zrozumieć
+    ↓
+zaprojektować
+    ↓
+pilnować
+```
+
+Pierwszy etap jest edukacyjny. Zamiast samego drzewa katalogów można zobaczyć role poszczególnych elementów, granice, relacje i scenariuszowy flow.
+
+Drugi jest projektowy. Użytkownik zaczyna od gotowego blueprintu i dostosowuje go do konkretnej aplikacji.
+
+Trzeci ma połączyć ten model z kodem. Jeżeli dana decyzja może zostać sprawdzona mechanicznie, powinna później stać się checkerem uruchamianym podczas developmentu.
+
+### Blueprint jako punkt startowy
+
+Obecna wersja RepoAtlasu zawiera kilka reference blueprintów, między innymi warianty feature-first, layered i hexagonal.
+
+Blueprint nie jest jednak gotowym drzewem do bezmyślnego skopiowania. Zawiera zestaw decyzji, możliwe warianty, rozszerzenia i technologie.
+
+Można więc zacząć od działającej struktury, a później zobaczyć, jak zmienia się ona po podjęciu kolejnych decyzji.
+
+RepoAtlas pokazuje dziś nie tylko strukturę repo, ale też między innymi policies, scenariuszowe flow, technologie oraz różnice pomiędzy wariantami.
+
+## Pierwszy model był oparty na presetach
+
+Na początku RepoAtlas reprezentował architekturę bardziej jak gotowy wariant.
+
+W uproszczeniu:
+
+```text
+architectureId
+    ↓
+profile
+    ↓
+topology
+    ↓
+options / extensions
+    ↓
+resolved preset
+```
+
+Istniały osobne rodziny dla feature-first, layered i hexagonal oraz konkretne topologie, takie jak:
+
+```text
+pragmatic feature-first
+global layers
+feature-local layers
+minimal hexagon
+feature hexagon
+```
+
+Ten model nie był prosty. Już wtedy obsługiwał rozszerzenia, warianty, module instances, technologie i różne sposoby organizacji poszczególnych elementów.
+
+Przez pewien czas działało to dobrze.
+
+Problem pojawił się właśnie dlatego, że możliwości RepoAtlasu zaczęły rosnąć.
+
+## Preset zaczął zawierać za dużo decyzji naraz
+
+Z czasem doszły kolejne niezależne osie.
+
+Feature mógł być prosty:
+
+```text
+flat
+```
+
+albo zawierać:
+
+```text
+domain
+```
+
+albo:
+
+```text
+application + domain
+```
+
+Integracja z backendem mogła mieć wariant:
+
+```text
+minimal
+dto
+read-write
+```
+
+Use case'y również mogły być organizowane na różne sposoby.
+
+Do tego dochodziły:
+
+* różne decyzje dla różnych modułów,
+* state management,
+* frameworki,
+* technologie,
+* extensions,
+* różne granice architektoniczne.
+
+W efekcie jedna aplikacja mogła wyglądać tak:
+
+```text
+feature-first
++
+layered wewnątrz feature
++
+ports and adapters na wybranej granicy
++
+read/write w orders
++
+flat use cases w checkout
++
+backend integration z DTO
+```
+
+W takim układzie `architectureId = layered` albo `architectureId = hexagonal` przestawało być dobrym opisem systemu.
+
+Stary model nadal potrafił reprezentować wiele takich przypadków, ale robił to za pomocą kilku różnych mechanizmów:
+
+```text
+topology
+option
+profile
+recipe
+extension variant
+technology binding
+module configuration
+```
+
+Coraz trudniej było więc powiedzieć:
+
+> która konkretna decyzja spowodowała ten fragment wynikowej architektury?
+
+To doprowadziło do największej jak dotąd migracji w projekcie.
+
+## Migracja do decision-first
+
+W sierpniu przebudowany został główny model danych RepoAtlasu.
+
+Zamiast traktować architekturę przede wszystkim jako wybór gotowego wariantu, nowy model traktuje ją jako kompozycję decyzji.
+
+W uproszczeniu:
+
+```text
+blueprint
++
+decisions
++
+scope
++
+compatibility
++
+realizations
++
+extensions
+    ↓
+resolved repository design
+```
+
+Blueprint nadal jest kuratorowanym punktem startowym, ale nie zamyka całej aplikacji w jednej etykiecie.
+
+### Decyzja może dotyczyć tylko części systemu
+
+To okazało się szczególnie ważne przy modułach.
+
+Dwa feature'y mogą powstawać z tego samego template'u, ale mieć różne potrzeby.
+
+Na przykład:
+
+```text
+checkout
+→ use cases: flat
+```
+
+oraz:
+
+```text
+orders
+→ use cases: read-write
+```
+
+Wynik może więc wyglądać tak:
+
+```text
+checkout/
+  application/
+
+orders/
+  application/
+    read/
+    write/
+```
+
+Nie potrzeba osobnego presetu dla każdej takiej kombinacji.
+
+To nadal ta sama aplikacja. Różni się tylko lokalna decyzja dotycząca konkretnego modułu.
+
+### Struktura jest wynikiem decyzji
+
+Migracja pomogła też rozdzielić znaczenie architektury od samych folderów.
+
+Jeżeli użytkownik wybiera:
+
+```text
+domain presence = present
+```
+
+RepoAtlas nie traktuje tego wyłącznie jako polecenia dodania:
+
+```text
+model/
+```
+
+Najpierw istnieje decyzja. Blueprint określa, co ta decyzja oznacza w danym wariancie architektury. Dopiero potem powstaje odpowiednia struktura.
+
+Dzięki temu można pokazać nie tylko:
+
+```text
+features/
+  orders/
+    model/
+```
+
+ale też wyjaśnić, dlaczego `model/` w ogóle się tam znalazł.
+
+To był ważny krok od katalogu gotowych struktur do narzędzia, które próbuje opisywać architekturę jako system powiązanych decyzji.
+
+## Dlaczego spójność od początku ma znaczenie dla GenAI
+
+RepoAtlas zaczął też coraz mocniej łączyć się z drugim problemem, czyli pracą coding agents.
+
+Modele generatywne działają w dużej mierze przez przewidywanie kolejnych elementów na podstawie kontekstu. Określenie ich jako bardzo rozbudowanego autocomplete jest uproszczeniem, ale w tym przypadku dobrze pokazuje problem.
+
+Istniejące repo jest częścią tego kontekstu.
+
+Jeżeli model widzi:
+
+```text
+orders/
+  application/
+
+cart/
+  services/
+
+auth/
+  logic/
+```
+
+ma kilka różnych przykładów tego, gdzie może trafić podobna odpowiedzialność.
+
+Jeżeli natomiast kolejne moduły używają tej samej struktury:
+
+```text
+feature/
+  domain/
+  application/
+  infrastructure/
+  ui/
+```
+
+oraz tych samych zasad dotyczących nazw, importów i publicznego API, kontekst jest znacznie bardziej jednoznaczny.
+
+Nowy kod ma wtedy więcej istniejących przykładów, do których może się dopasować.
+
+To działa także w drugą stronę. Jeżeli repo od początku jest niespójne, każda kolejna generacja może dodać następny lokalny wariant. Po pewnym czasie agent nie ma już jednego dominującego wzorca, który powinien kontynuować.
+
+Dlatego porządek repo nie jest tylko kwestią czytelności dla człowieka. Jest też częścią środowiska, w którym pracuje model.
+
+### Struktura pomaga też narzędziom wokół modelu
+
+Coding agent nie musi szukać kodu wyłącznie tekstowo.
+
+AST, LSP, symbol resolution czy code graph mogą pomagać znaleźć definicję, referencje i zależności.
+
+Im bardziej przewidywalne są nazwy, granice i publiczne API, tym łatwiej zawęzić wyszukiwanie do właściwego fragmentu repo.
+
+W praktyce może to oznaczać mniej niepotrzebnie czytanych plików i mniej kontekstu potrzebnego do wykonania zmiany.
+
+Z tego powodu RepoAtlas ma największy sens na początku projektu, zanim w repo pojawi się kilka konkurencyjnych konwencji.
+
+## Sam projekt architektury nie wystarcza
+
+Można ustalić zasadę:
+
+```text
+domain
+nie może zależeć od
+ui
+```
+
+ale jeśli nic jej później nie sprawdza, prędzej czy później może zostać złamana.
+
+Dokumentacja dla agenta nadal jest potrzebna. Tam jednak, gdzie regułę można sprawdzić automatycznie, lepszym zabezpieczeniem jest mechaniczna kontrola.
+
+```text
+ARCH-014
+
+domain may not depend on ui
+```
+
+Taki błąd może wrócić bezpośrednio do agenta, który poprawia zmianę i uruchamia kontrolę ponownie.
+
+To jest warstwa, która ma zacząć pojawiać się przed wersją 1.0.
+
+## Nie każda zasada nadaje się na twardy checker
+
+Podczas projektowania tego systemu pojawił się podział na trzy klasy.
+
+### Deterministic
+
+Regułę da się sprawdzić jednoznacznie.
+
+```text
+domain importuje ui
+```
+
+albo:
+
+```text
+dependency graph zawiera cykl
+```
+
+Tutaj wynik może być prosty:
+
+```text
+PASS / FAIL
+```
+
+### Heuristic
+
+Narzędzie może jednoznacznie ustalić fakt, ale nie jego znaczenie.
+
+Przykład:
+
+```text
+shared/currency.ts
+→ jeden consumer
+→ billing
+```
+
+Fakt, że plik ma tylko jednego konsumenta, jest mechanicznie sprawdzalny.
+
+Wniosek:
+
+> ten plik powinien zostać przeniesiony do billing
+
+nie jest już pewny.
+
+To sygnał do sprawdzenia, nie automatyczny błąd.
+
+### Semantic
+
+Niektórych decyzji nie da się ocenić bez zrozumienia kodu.
+
+```text
+calculateOrderDiscount()
+```
+
+Czy jest generycznym helperem, czy regułą domenową Orders?
+
+AST może znaleźć funkcję, jej referencje i importy. Nie odpowie jednak na pytanie, jakie znaczenie ma ta funkcja w systemie.
+
+Tutaj potrzebny jest review człowieka albo modelu.
+
+W skrócie:
+
+```text
+deterministic
+→ da się udowodnić naruszenie
+
+heuristic
+→ da się wykryć podejrzany sygnał
+
+semantic
+→ trzeba zrozumieć znaczenie kodu
+```
+
+Ten podział jest istotny, bo próba zamiany każdej zasady jakościowej w twardy `FAIL` szybko prowadzi do checkerów pełnych arbitralnych ograniczeń.
+
+## Feedback loop dla coding agents
+
+Docelowy przepływ nie powinien kończyć się na tym, że agent dostaje dokument z zasadami.
+
+Może wyglądać tak:
+
+```text
+agent implementuje
+       ↓
+uruchamia kontrole
+       ↓
+errors / warnings
+       ↓
+poprawia zmianę
+       ↓
+uruchamia kontrole ponownie
+```
+
+Pod spodem nie musi działać jeden wielki custom checker.
+
+Część zasad mogą obsługiwać istniejące narzędzia:
+
+```text
+TypeScript / ESLint
+→ lokalna poprawność kodu
+
+dependency analysis
+→ kierunki zależności i cykle
+
+dead-code analysis
+→ nieużywane pliki i eksporty
+
+custom checks
+→ reguły wynikające bezpośrednio z blueprintu
+```
+
+RepoAtlas może określać, jakie zasady wynikają z wybranego modelu architektury i jak powinny zostać sprawdzone.
+
+Wtedy ta sama decyzja, która wcześniej wpłynęła na strukturę projektu, może później stać się częścią kontroli utrzymującej tę strukturę podczas dalszej pracy.
+
+## Gdzie projekt jest teraz
+
+Obecna wersja obejmuje przede wszystkim naukę i projektowanie.
+
+Można wybrać blueprint, zmieniać decyzje, konfigurować extensions, moduły i technologie oraz oglądać wynikową strukturę, polityki i przepływy.
+
+Projekt działa już na nowym modelu decision-first, który zastąpił wcześniejszy system oparty głównie na pakietach i topologiach.
+
+Do 1.0 ma dojść pierwsza praktyczna warstwa checkerów. Nie pełny system analizujący każdy aspekt codebase, tylko wystarczający zestaw reguł, żeby połączyć projekt architektury z rzeczywistym feedback loopem podczas implementacji.
+
+Dalszy kierunek obejmuje generowanie startowej struktury projektu, integrację z CLI i CI oraz pomoc LLM przy dobieraniu blueprintu, rozszerzeń i technologii na podstawie opisu aplikacji.
+
+Tak, ten kierunek jest lepszy. Obecna sekcja jest poprawna, ale nadal brzmi trochę jak lista wniosków o architekturze. U Ciebie ważniejsze jest pokazanie, **co konkretnie lepiej rozumiesz po tym projekcie** i jak to wpływa na pracę z agentami.
+
+Ja bym to przepisał tak:
+
+## Rzeczy, które wyniosłem z projektu
+
+### Dużo lepiej rozumiem architekturę jako system decyzji
+
+RepoAtlas uporządkował mi różnicę między strukturą katalogów a samą architekturą. Foldery są tylko jednym z efektów. Znaczenie przede wszystkim mają odpowiedzialności, granice, kierunki zależności, publiczne API i przepływy.
+
+Lepiej rozumiem też, że feature-first, layered, hexagonal czy DDD nie zawsze są konkurencyjnymi wyborami. Mogą opisywać różne aspekty tej samej aplikacji.
+
+### Lepiej rozumiem, jak agenci znajdują i interpretują kod
+
+Praca nad RepoAtlasem mocno poszerzyła moje spojrzenie na to, jak coding agents poruszają się po repozytorium.
+
+W zależności od narzędzia mogą korzystać z semantic search, AST, LSP, symbol resolution, code graphów, grep/ripgrep, wyszukiwania tekstowego i innych mechanizmów zawężania kontekstu.
+
+To zmienia sposób patrzenia na strukturę repo. Dobre nazwy, lokalne odpowiedzialności, jasne granice i przewidywalne publiczne API pomagają nie tylko człowiekowi, ale też narzędziom, które próbują znaleźć właściwy fragment kodu dla modelu.
+
+### Jakość architektury wpływa na jakość pracy agentów
+
+Spójne repo daje modelowi bardziej jednoznaczny kontekst i więcej przykładów tego samego wzorca.
+
+Jeżeli podobne feature'y są organizowane w podobny sposób, agent łatwiej odnajduje właściwe symbole i ma mniej powodów, żeby tworzyć kolejny lokalny wariant struktury.
+
+W praktyce dobra architektura pomaga więc nie tylko w utrzymaniu projektu. **Bezpośrednio wpływa też na jakość pracy agentów AI - Może zmniejszyć ilość niepotrzebnego kontekstu, skrócić wyszukiwanie i zredukować liczbę tokenów potrzebnych do zrozumienia przepływów i zależności potrzebnych do wykonania konkretnej zmiany.**
+
+### Architektura i checkery mogą być częścią feedback loop
+
+Samo opisanie zasad w dokumentacji nie gwarantuje, że kolejne zmiany będą ich przestrzegać.
+
+Jeżeli część reguł da się sprawdzić mechanicznie, checker może zwrócić agentowi konkretny błąd, a agent poprawić zmianę i uruchomić kontrolę ponownie.
+
+```text
+agent implementuje
+       ↓
+sprawdza architekturę i kod
+       ↓
+dostaje feedback
+       ↓
+poprawia zmianę
+       ↓
+sprawdza ponownie
+```
+
+To mocno zmieniło moje podejście do architektury w AI-native workflow. Nie jest już tylko sposobem organizowania kodu. Razem z checkerami może być częścią systemu, który pomaga agentowi utrzymywać tę organizację podczas kolejnych iteracji.
+
+---
+
+RepoAtlas rozwija się właśnie w tym kierunku: od wizualnego opisu architektury do modelu, który może później pomagać utrzymać ją podczas pracy z generowanym kodem.

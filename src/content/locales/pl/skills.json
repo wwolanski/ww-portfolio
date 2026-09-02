@@ -1,0 +1,168 @@
+{
+  "visualPanel": {
+    "kicker": "tools & practices",
+    "title": "Tools → decisions"
+  },
+  "boundary": {
+    "eyebrow": "Umiejętności · 03",
+    "title": ["Nie każdy", "problem jest", "w kodzie."],
+    "lead": "Potrafię ocenić, kiedy dalsze rozwijanie obecnego podejścia ma sens, a kiedy zaczyna generować więcej złożoności niż wartości.",
+    "decision": {
+    "currentTitle": "Obecne podejście",
+    "currentText": "W trakcie pracy pojawia się problem albo ograniczenie.",
+    "question": "Czy da się to naprawić bez zmiany podejścia?",
+    "yes": "Tak",
+    "no": "Nie",
+    "stay": {
+      "title": "Problem jest lokalny",
+      "text": "Problem wynika z konkretnego fragmentu implementacji.",
+      "meta": "Poprawka dotyczy implementacji — samo podejście pozostaje bez zmian."
+    },
+    "rise": {
+      "title": "Problem wraca",
+      "text": "Każda zmiana przenosi problem w inne miejsce albo wymaga kolejnego wyjątku.",
+      "meta": "To sygnał, że samo podejście wymaga zmiany."
+    },
+    "center": "Decyzja"
+  },
+    "layersHeading": "Typowe sygnały",
+  "layers": [
+    {
+      "title": "Model danych",
+      "text": "Jak obsługiwane są przypadki i reguły."
+    },
+    {
+      "title": "Architektura",
+      "text": "Jak rozdzielone są odpowiedzialności."
+    },
+    {
+      "title": "Zależności",
+      "text": "Co jest ze sobą sprzężone."
+    },
+    {
+      "title": "Dane / stan",
+      "text": "Gdzie znajduje się źródło prawdy."
+    }
+  ],
+  "principles": [
+    {
+      "title": "Rośnie liczba wyjątków",
+      "text": "Każdy kolejny przypadek wymaga specjalnej ścieżki albo obejścia."
+    },
+    {
+      "title": "Mała zmiana przestaje być lokalna",
+      "text": "Prosta zmiana wymusza lawinę zmian w całej aplikacji."
+    },
+    {
+      "title": "Zmiana w jednym miejscu psuje inne",
+      "text": "Poprawienie jednego przypadku powoduje problem albo regresję w innym."
+    },
+    {
+      "title": "Pojawia się kilka źródeł prawdy",
+      "text": "Ta sama informacja jest utrzymywana niezależnie w kilku miejscach i wymaga synchronizacji."
+    }
+  ],
+    "practiceHeading": "Przykłady z praktyki",
+    "examples": [
+      { "title": "GPT IMG-2 SPRITESHEET PROCESSOR", "label": "Porzucone podejście" },
+      { "title": "RepoAtlas", "label": "Zmiana modelu" }
+    ],
+    "musicNote": "To podejście znałem wcześniej ze środowiska produkcji audio, gdzie pierwsza koncepcja również często ewoluuje wraz z kolejnymi wersjami."
+  },
+  "stack": {
+    "heading": "Technologie, z którymi pracuję",
+    "intro": "Mój stack do zadań produkcyjnych — od klasycznego web devu po ekosystem AI.",
+    "bands": [
+      {
+        "title": "Frontend",
+        "tools": [
+          "React",
+          "TypeScript",
+          "TanStack Query",
+          "XState",
+          "React Flow",
+          "PixiJS",
+          "IndexedDB"
+        ]
+      },
+      {
+        "title": "UI Systems",
+        "tools": [
+          "Tailwind CSS",
+          "shadcn/ui",
+          "Radix UI",
+          "Base UI"
+        ]
+      },
+      {
+        "title": "Backend & APIs",
+        "tools": [
+          "Python",
+          "FastAPI",
+          "Pydantic",
+          "SQLAlchemy",
+          "Celery",
+          "OpenAPI"
+        ]
+      },
+      {
+        "title": "Data & Search",
+        "tools": [
+          "PostgreSQL",
+          "Redis",
+          "pgvector",
+          "Qdrant"
+        ]
+      },
+      {
+        "title": "AI & Coding Agents",
+        "tools": [
+          "Cursor",
+          "Codex",
+          "OpenAI API",
+          "Gemini API",
+          "OpenRouter",
+          "LM Studio",
+          "ComfyUI"
+        ]
+      },
+      {
+        "title": "MCP",
+        "tools": [
+          "Context7",
+          "CodeGraph (local)"
+        ]
+      },
+      {
+        "title": "Agentic Tooling",
+        "tools": [
+          "CodeGraph",
+          "RTK",
+          "Google Stitch",
+          "Mermaid",
+          "Impeccable"
+        ]
+      },
+      {
+        "title": "Quality & Delivery",
+        "tools": [
+          "CI/CD",
+          "Git",
+          "GitHub",
+          "Docker",
+          "Vitest",
+          "pytest",
+          "Playwright",
+          "ESLint",
+          "Knip"
+        ]
+      }
+    ]
+  },
+  "cta": {
+    "eyebrow": "Praktyczne przykłady",
+    "title": "Zobacz projekty i sposób, w jaki powstawały.",
+    "label": "Projekty ↗",
+    "target": "projects"
+  }
+}

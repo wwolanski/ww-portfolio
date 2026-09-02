@@ -1,0 +1,68 @@
+{
+  "language": {
+    "label": "Język",
+    "polish": "Polski",
+    "english": "Angielski",
+    "switchTo": "Zmień język na {language}"
+  },
+  "theme": {
+    "switchToLight": "Przełącz na jasny motyw",
+    "switchToDark": "Przełącz na ciemny motyw"
+  },
+  "common": {
+    "skipToContent": "Przejdź do treści",
+    "primaryNavigation": "Główna nawigacja",
+    "openNavigation": "Otwórz nawigację",
+    "closeNavigation": "Zamknij nawigację",
+    "navigationDescription": "Wybierz stronę, aby kontynuować przeglądanie.",
+    "home": "Wojciech Wolanski — strona główna",
+    "backHome": "Strona główna",
+    "artwork": "Grafika: {label}",
+    "projectDetails": "Szczegóły {title}"
+  },
+  "projectContent": {
+    "caseStudy": "case-study",
+    "openCaseStudy": "Otwórz case-study: {title}",
+    "openExternal": "Otwórz {provider}: {title}",
+    "openGallery": "Otwórz galerię obrazów: {title}",
+    "close": "Zamknij okno case-study",
+    "loading": "Ładowanie case-study…",
+    "preparation": "Case-study jest w przygotowaniu.",
+    "error": "Nie udało się wczytać case-study.",
+    "onlyPolish": "Ten case-study jest obecnie dostępny tylko w wersji polskiej.",
+    "viewPolish": "Wyświetl wersję PL"
+  },
+  "content": {
+    "tableOfContents": "Spis treści",
+    "openTableOfContents": "Otwórz spis treści",
+    "closeTableOfContents": "Zamknij spis treści",
+    "expandProcess": "Pokaż pełny proces",
+    "collapseProcess": "Zwiń etapy procesu",
+    "imageGallery": {
+      "label": "Galeria obrazów",
+      "previous": "Poprzedni obraz",
+      "next": "Następny obraz",
+      "image": "Obraz {index}",
+      "empty": "Galeria nie zawiera jeszcze obrazów.",
+      "expand": "Otwórz obraz w trybie pełnoekranowym",
+      "close": "Zamknij podgląd obrazu"
+    }
+  },
+  "actions": {
+    "openPage": "Otwórz stronę: {label}",
+    "open": "Otwórz"
+  },
+  "blog": {
+    "filterArticles": "Filtruj artykuły według tagów",
+    "all": "Wszystkie",
+    "readArticle": "Przeczytaj: {title}",
+    "articleTags": "Tagi artykułu",
+    "backToBlog": "Powrót",
+    "loadingIndex": "Ładowanie wpisów…",
+    "errorIndex": "Nie udało się wczytać listy wpisów.",
+    "loadingArticle": "Ładowanie artykułu…",
+    "missingArticle": "Ten artykuł jest niedostępny.",
+    "errorArticle": "Nie udało się wczytać artykułu.",
+    "readTime": "{time} czytania"
+  }
+}

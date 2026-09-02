@@ -1,0 +1,17 @@
+{
+  "eyebrow": "Notes and ideas · 04",
+  "title": [
+    "Thoughts",
+    "in public."
+  ],
+  "intro": "My opinions, thoughts, observations, and commentary, written off the cuff and without much ceremony. This is the less official part of the portfolio (:",
+  "visualPanel": {
+    "kicker": "notes & ideas",
+    "title": "Think → share",
+    "cards": [
+      { "heading": "ARCHITECTURE", "status": "new note", "metric": "08 MIN" },
+      { "heading": "AI WORKFLOW", "status": "field note", "metric": "09 MIN" },
+      { "heading": "SYSTEMS", "status": "in progress", "metric": "06 MIN" }
+    ]
+  }
+}

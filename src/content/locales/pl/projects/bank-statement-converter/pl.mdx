@@ -1,0 +1,159 @@
+---
+title: Konwerter wyciągów bankowych HTML i MHTML
+description: Lokalne narzędzie dla firmy księgowej, które rozpoznaje wyciągi z mBanku i Millennium i zamienia je na CSV zgodny z Taxomatic.
+---
+
+# Konwenter wyciągów bankowych
+
+**Status:** Shipped  
+**Typ:** Internal tool / accounting  
+**Stack:** JavaScript, Python, FastAPI, OpenAI API
+
+<ImageGallery />
+
+
+Konwenter wyciągów bankowych powstał dla firmy księgowej korzystającej z programu Taxomatic.
+
+Problem dotyczył wyciągów bankowych, których nie dało się normalnie zaimportować do systemu. Klientom zdarza zdarza się dostarczać firmie wyciągi bankowe w niestandardowych formatach. W przykładowych materiałach, które dostałem na początku, pojawiały się głównie `.html`, `.mhtml` `.pdf` oraz zrzuty ekranu.
+
+> [!SOLUTION]
+> Rozwiązaniem tego problemu jest małe lokalne narzędzie, które rozpoznaje format wyciągu, odczytuje dane i zapisuje je jako CSV zgodny z Taxomatic.
+
+Konwenter, w zależności od miesiąca, **oszczędza od kilku do kilkunastu godzin pracy.**
+
+---
+
+## Problem
+
+Taxomatic obsługuje standard `MT940` i `określone struktury CSV`. Problem zaczynał się wtedy, gdy wyciąg był zapisany w innym formacie.
+
+Dokładna przyczyna problemu, tzn dlaczego klientom firmy zdarza się dostarczać te nietypowe formy dokumentów nie jest mi znana. Zakładam, że wynika to albo z ograniczeń zewnętrznej platformy, lub nietechnicznych użytkowników, którzy nie potrafią samodzielnie dostarczyć dokumentów w odpowiednim formacie.
+
+W praktyce kończyło się to ręcznym przepisywaniem transakcji do systemu.
+
+Decyzją firmy było rozwiązanie tego problemu po swojej stronie.
+
+---
+
+## Format Taxomatic bez specyfikacji
+
+Nie miałem pełnej specyfikacji CSV oczekiwanego przez Taxomatic.
+
+Miałem za to przykładowe pliki, które importowały się poprawnie. Na ich podstawie odtworzyłem strukturę wyjściową i do niej zacząłem sprowadzać dane odczytane z różnych wyciągów.
+
+Cały proces kończy się więc w tym samym miejscu:
+
+```text
+wyciąg
+  ↓
+odczyt danych
+  ↓
+normalizacja
+  ↓
+CSV dla Taxomatic
+```
+
+Dzięki temu format wejściowy może być inny, ale wynik ma zawsze tę samą strukturę.
+
+---
+
+## Parsery dla znanych formatów
+
+Przewidywalne struktury HTML i MHTML pozowoliły na zbudowanie deterministycznych profili parsera.
+
+Użytkownik nie wybiera banku ręcznie. Converter analizuje plik i próbuje rozpoznać format sam.
+
+Jeżeli struktura pasuje do jednego z obsługiwanych wariantów, uruchamiany jest odpowiedni parser.
+
+```text
+plik
+  ↓
+rozpoznanie formatu
+  ↓
+parser mBank / Millennium
+  ↓
+normalizacja
+  ↓
+CSV
+```
+
+Ta ścieżka jest całkowicie mechaniczna i to właśnie ona jest używana obecnie.
+
+---
+
+## Zakres, który ustaliłem zbyt szeroko
+
+Tutaj popełniłem błąd.
+
+W materiałach, które dostałem na początku, były nie tylko HTML i MHTML, ale też PDF-y i screenshoty. Bez dokładniejszej konsultacji założyłem, że aplikacja powinna obsługiwać wszystkie te przypadki.
+
+Dlatego oprócz parserów przygotowałem też fallback dla plików, których struktury aplikacja nie potrafiła rozpoznać.
+
+Taki dokument mógł zostać wysłany do GenAI API. Model odczytywał dane i zwracał je w strukturze, którą aplikacja mogła dalej przetworzyć.
+
+To pozwalało obsłużyć również PDF-y, screenshoty albo HTML/MHTML o nieznanej strukturze.
+
+Finalnie okazało się, że w codziennej pracy wystarczają HTML i MHTML.
+
+Problem nie leżał więc w implementacji. Po prostu zbyt wcześnie potraktowałem cały zestaw przykładowych materiałów jako zakres funkcji.
+
+**Powinienem był najpierw dokładniej ustalić, które przypadki naprawdę trzeba obsłużyć.**
+
+Obsługa OCR nadal działa w kodzie, ale jest wyłączona. Używana wersja convertera opiera się na automatycznym rozpoznawaniu znanych struktur HTML i MHTML oraz parserach dla mBanku i Millennium.
+
+---
+
+## Sama aplikacja jest mała
+
+Nie ma tu rozbudowanej architektury.
+
+Projekt to kilka plików `.py`, prosty frontend w HTML/CSS i lokalny backend w FastAPI.
+
+I w tym przypadku to wystarcza. Narzędzie ma kilku użytkowników w jednej firmie i wykonuje jedno konkretne zadanie.
+
+---
+
+## Jak wygląda używany workflow
+
+Dzisiaj proces wygląda mniej więcej tak:
+
+1. użytkownik przekazuje plik,
+2. aplikacja rozpoznaje jego strukturę,
+3. wybiera parser dla obsługiwanego banku,
+4. odczytuje transakcje,
+5. normalizuje dane,
+6. generuje CSV gotowy do importu w Taxomatic.
+
+Jeżeli struktura pliku nie pasuje do żadnego znanego parsera, aplikacja nie przechodzi automatycznie do ścieżki OCR, bo ta funkcja jest obecnie wyłączona.
+
+---
+
+## Efekt i wnioski
+
+Konwerter jest używany przez kilka osób w firmie księgowej.
+
+Wcześniej część pracy wyglądała tak:
+
+```text
+otwórz wyciąg
+↓
+znajdź transakcję
+↓
+przepisz dane
+↓
+powtórz
+```
+
+Dla obsługiwanych wyciągów wygląda dziś tak:
+
+```text
+dodaj plik
+↓
+wygeneruj CSV
+↓
+zaimportuj do Taxomatic
+```
+
+To jeden z mniejszych projektów, ale jednocześnie jeden z najbardziej konkretnych. Jest używany, rozwiązuje powtarzalny problem i ma mierzalny efekt.
+
+Najważniejsza lekcja z tego projektu dotyczyła komunikacji z klientem. Zbyt szybko uznałem przykładowe materiały za pełny zakres i zacząłem implementować wszystkie warianty. Powinienem był wcześniej dokładniej ustalić, które przypadki rzeczywiście mają wejść do używanej wersji.
