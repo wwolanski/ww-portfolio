@@ -1,7 +1,6 @@
 import { ChevronDown } from 'lucide-react';
-import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 
-import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta, Statement } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { SectionHeading } from '../../components/ui/SectionHeading';
@@ -19,22 +18,6 @@ import workflowResearchIcon from '../../../img/icons/workflow-research.svg';
 import workflowSystemIcon from '../../../img/icons/workflow-system.svg';
 
 type AboutPageProps = { readonly site: SiteContent };
-
-export function AboutPage({ site }: AboutPageProps) {
-  const { about } = site.portfolio;
-
-  return (
-    <DetailPageLayout
-      site={site}
-      page="about"
-      eyebrow={about.hero.eyebrow}
-      title={<PageTitle lines={about.hero.title} />}
-      intro={<InlineCopy copy={about.hero.lead} />}
-    >
-      <AboutPageContent site={site} />
-    </DetailPageLayout>
-  );
-}
 
 export function AboutPageContent({ site }: AboutPageProps) {
   const { messages } = site;
@@ -151,10 +134,6 @@ export function AboutPageContent({ site }: AboutPageProps) {
         <FooterCta site={site} content={about.cta} />
     </div>
   );
-}
-
-function PageTitle({ lines }: { readonly lines: readonly string[] }): ReactNode {
-  return <>{lines.map((line, index) => <span key={`${line}-${index}`}><InlineCopy copy={line} />{index < lines.length - 1 && <br />}</span>)}</>;
 }
 
 const workflowIcons = [

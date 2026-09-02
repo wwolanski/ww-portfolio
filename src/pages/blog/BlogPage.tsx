@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 
 import { ContentDocumentView } from '../../components/content/ContentDocumentView';
-import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { getBlogArticles, type BlogArticle } from '../../content/mdx/blogIndex';
 import type { SiteContent } from '../../content/siteContent';
@@ -14,25 +13,6 @@ type TagFilter = {
   readonly tag: string | null;
   readonly count: number;
 };
-
-export function BlogPage({ site }: BlogPageProps) {
-  const { blog: content } = site.portfolio;
-  const [searchParams] = useSearchParams();
-  const [titleLineOne, titleLineTwo] = content.title;
-
-  return (
-    <DetailPageLayout
-      site={site}
-      page="blog"
-      eyebrow={content.eyebrow}
-      title={<><InlineCopy copy={titleLineOne ?? ''} /><br /><InlineCopy copy={titleLineTwo ?? ''} /></>}
-      intro={<InlineCopy copy={content.intro} />}
-      showHero={!searchParams.get('article')}
-    >
-      <BlogPageContent site={site} />
-    </DetailPageLayout>
-  );
-}
 
 export function BlogPageContent({ site }: BlogPageProps) {
   const [articles, setArticles] = useState<readonly BlogArticle[] | null>(null);

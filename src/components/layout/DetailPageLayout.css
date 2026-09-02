@@ -381,10 +381,6 @@
   margin-left: clamp(310px, 29vw, 520px);
 }
 
-.detail-content--fonts-pending {
-  visibility: hidden;
-}
-
 .detail-main__route-layer {
   min-width: 0;
 }

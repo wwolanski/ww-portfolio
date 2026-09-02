@@ -11,7 +11,7 @@ import { loadContent } from '../content/mdx/loader';
 import OrderHubFixture from '../content/locales/pl/projects/orderhub-pos-wms/pl.mdx';
 import { getProjectLogo } from '../content/projectLogos';
 import { getSiteContent } from '../content/siteContent';
-import { ProjectsPage } from '../pages/projects/ProjectsPage';
+import { ProjectsPageContent } from '../pages/projects/ProjectsPage';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
 
 function renderPage(page: React.ReactNode) {
@@ -70,7 +70,7 @@ describe('project content system', () => {
   });
 
   it('renders the discontinued project as a regular list row with actions for every project', () => {
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
     const projectsWithExternalLink = projects.filter((project) => project.externalLink);
     const projectsWithGallery = projects.filter((project) => !project.externalLink);
 
@@ -92,7 +92,7 @@ describe('project content system', () => {
   });
 
   it('renders every project tag from the JSON configuration', () => {
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
 
     for (const project of projects) {
       const row = getProjectRow(container, project.slug);
@@ -106,7 +106,7 @@ describe('project content system', () => {
 
   it('opens a project gallery directly from the list and restores focus on close', async () => {
     const user = userEvent.setup();
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
     const row = getProjectRow(container, 'bank-statement-converter');
     const trigger = row.querySelector<HTMLButtonElement>('[data-project-action="gallery"]');
 
@@ -130,7 +130,7 @@ describe('project content system', () => {
 
   it('opens the Sprite case study, renders MDX content, and restores focus on close', async () => {
     const user = userEvent.setup();
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
 
     const trigger = getProjectContentButton(container, spriteProject.slug);
     await user.click(trigger);
@@ -227,7 +227,7 @@ describe('project content system', () => {
 
   it('opens the image lightbox from the case study gallery, navigates it, and restores focus on close', async () => {
     const user = userEvent.setup();
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
 
     await user.click(getProjectContentButton(container, spriteProject.slug));
     const gallery = await screen.findByRole('region', { name: polishSite.messages.content.imageGallery.label });
@@ -331,7 +331,7 @@ describe('project content system', () => {
     })));
 
     const user = userEvent.setup();
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
 
     await user.click(getProjectContentButton(container, spriteProject.slug));
     const toggle = await screen.findByRole('button', { name: polishSite.messages.content.openTableOfContents });
@@ -361,7 +361,7 @@ describe('project content system', () => {
 
   it('opens the Bank Statement Converter case study from its MDX document', async () => {
     const user = userEvent.setup();
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
 
     await user.click(getProjectContentButton(container, 'bank-statement-converter'));
 
@@ -374,7 +374,7 @@ describe('project content system', () => {
   it('opens the requested case study from the URL query parameter', async () => {
     render(
       <MemoryRouter initialEntries={['/pl/projects?caseStudy=gpt_img_2-spritesheet-processor']}>
-        <ThemeProvider><ProjectsPage site={polishSite} /></ThemeProvider>
+        <ThemeProvider><ProjectsPageContent site={polishSite} /></ThemeProvider>
       </MemoryRouter>,
     );
 
@@ -383,7 +383,7 @@ describe('project content system', () => {
 
   it('closes the modal when the backdrop is clicked', async () => {
     const user = userEvent.setup();
-    const { container } = renderPage(<ProjectsPage site={polishSite} />);
+    const { container } = renderPage(<ProjectsPageContent site={polishSite} />);
 
     await user.click(getProjectContentButton(container, 'bank-statement-converter'));
     const backdrop = container.ownerDocument.body.querySelector('.project-modal');
@@ -414,7 +414,7 @@ describe('project content system', () => {
 
     expect(localeState).toBeInTheDocument();
     expect(localeState?.querySelector('p')).toHaveTextContent(/\S/);
-    expect(localeAction?.querySelector('span')).toHaveTextContent(/\S/);
+    expect(localeAction?.querySelector(':scope > span:last-child')).toHaveTextContent(/\S/);
     expect(localeAction).toBeInTheDocument();
     if (!localeAction) {
       return;

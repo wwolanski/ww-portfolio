@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { AnimatePresence, motion, useIsPresent, type MotionStyle } from 'motion/react';
 import { Link, useLocation, useOutlet } from 'react-router';
@@ -10,7 +10,6 @@ import type { VisualPanelCard } from '../../content/types';
 import { InlineCopy } from '../ui/InlineCopy';
 import { SiteNav } from './SiteNav';
 import { scrollToTop } from './scrollToTop';
-import { areCriticalFontsReady, loadCriticalFonts } from '../../styles/criticalFonts';
 
 import aboutImage from '../../../img/detail-about.webp';
 import projectsImage from '../../../img/detail-projects.webp';
@@ -67,8 +66,6 @@ export function DetailPageLayout({
   children,
 }: DetailPageLayoutProps) {
   const item = getNavigationItem(site.navigation, page);
-  const criticalFontsReady = useCriticalFontsReady();
-
   return (
     <div className={`detail-page detail-page--${page}`} style={{ '--page-accent': item.accent } as CSSProperties}>
       <aside className="visual-panel" data-page={page} aria-label={site.messages.common.artwork(item.label)}>
@@ -77,50 +74,25 @@ export function DetailPageLayout({
         </AnimatePresence>
       </aside>
 
-      <div className={`detail-content${criticalFontsReady ? '' : ' detail-content--fonts-pending'}`}>
+      <div className="detail-content">
         <SiteNav site={site} compact />
         <main id="main-content" className={showHero ? undefined : 'detail-main--document'}>
           <AnimatePresence mode="wait" onExitComplete={scrollToTop}>
-            {criticalFontsReady ? (
-              <DetailMainLayer
-                key={routeKey}
-                site={site}
-                page={page}
-                eyebrow={eyebrow}
-                title={title}
-                intro={intro}
-                showHero={showHero}
-                children={children}
-              />
-            ) : null}
+            <DetailMainLayer
+              key={routeKey}
+              site={site}
+              page={page}
+              eyebrow={eyebrow}
+              title={title}
+              intro={intro}
+              showHero={showHero}
+              children={children}
+            />
           </AnimatePresence>
         </main>
       </div>
     </div>
   );
-}
-
-function useCriticalFontsReady() {
-  const [ready, setReady] = useState(areCriticalFontsReady);
-
-  useEffect(() => {
-    if (ready) {
-      return undefined;
-    }
-
-    let isMounted = true;
-    void loadCriticalFonts().then(() => {
-      if (isMounted) {
-        setReady(true);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [ready]);
-
-  return ready;
 }
 
 type DetailMainLayerProps = {

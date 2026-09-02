@@ -8,11 +8,7 @@ import { getTechTagDefinition } from '../content/techTags';
 import { getSiteContent } from '../content/siteContent';
 import { getBlogArticles } from '../content/mdx/blogIndex';
 import { TechTag } from '../components/ui/TechTag';
-import { AboutPage } from '../pages/about/AboutPage';
-import { BlogPage } from '../pages/blog/BlogPage';
 import { HomePage } from '../pages/home/HomePage';
-import { ProjectsPage } from '../pages/projects/ProjectsPage';
-import { SkillsPage } from '../pages/skills/SkillsPage';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
 
 function renderPage(page: React.ReactNode) {
@@ -20,6 +16,14 @@ function renderPage(page: React.ReactNode) {
     <MemoryRouter>
       <ThemeProvider>{page}</ThemeProvider>
     </MemoryRouter>
+  );
+}
+
+function renderAppAt(pathname: string) {
+  return render(
+    <MemoryRouter initialEntries={[pathname]}>
+      <ThemeProvider><App /></ThemeProvider>
+    </MemoryRouter>,
   );
 }
 
@@ -56,7 +60,7 @@ describe('blog page', () => {
     const articles = await getBlogArticles();
     const selectedTag = articles[0]?.tags[0];
     const matchingArticles = articles.filter((article) => article.tags.includes(selectedTag ?? ''));
-    renderPage(<BlogPage site={polishSite} />);
+    renderAppAt('/pl/blog');
 
     expect(selectedTag).toBeDefined();
     await user.click(await screen.findByRole('button', { name: `${selectedTag} (${matchingArticles.length})` }));
@@ -121,7 +125,7 @@ describe('localized visual panel content', () => {
 
 describe('v7 detail visuals', () => {
   it('renders the illustrated about workflow and timeline', () => {
-    const { container } = renderPage(<AboutPage site={polishSite} />);
+    const { container } = renderAppAt('/pl/about');
 
     expect(container.querySelector('.visual-panel[data-page="about"]')).toBeInTheDocument();
     expect(container.querySelector('.about-workflow__steps')).toBeInTheDocument();
@@ -138,7 +142,7 @@ describe('v7 detail visuals', () => {
   });
 
   it('renders inline Markdown in prose content outside the hero lead', () => {
-    const { container } = renderPage(<AboutPage site={polishSite} />);
+    const { container } = renderAppAt('/pl/about');
     const workflowIntro = container.querySelector<HTMLElement>('.about-section--workflow .section-heading p');
 
     if (!workflowIntro) {
@@ -150,7 +154,7 @@ describe('v7 detail visuals', () => {
   });
 
   it('renders localized RepoAtlas links to the case study', () => {
-    const about = renderPage(<AboutPage site={polishSite} />);
+    const about = renderAppAt('/pl/about');
     const aboutLink = about.container.querySelector<HTMLAnchorElement>('a[href="/pl/projects?caseStudy=repoatlas"]');
 
     expect(aboutLink).toBeInTheDocument();
@@ -160,7 +164,7 @@ describe('v7 detail visuals', () => {
     expect(aboutLink.querySelectorAll('.content-link__icon')).toHaveLength(1);
     about.unmount();
 
-    const skills = renderPage(<SkillsPage site={polishSite} />);
+    const skills = renderAppAt('/pl/skills');
     const skillsLink = skills.container.querySelector<HTMLAnchorElement>('a[href="/pl/projects?caseStudy=repoatlas"]');
 
     expect(skillsLink).toBeInTheDocument();
@@ -171,7 +175,7 @@ describe('v7 detail visuals', () => {
   });
 
   it('links the GPT IMG-2 example to its case study', () => {
-    const { container } = renderPage(<SkillsPage site={polishSite} />);
+    const { container } = renderAppAt('/pl/skills');
     const projectLink = container.querySelector<HTMLAnchorElement>(
       'a[href="/pl/projects?caseStudy=gpt_img_2-spritesheet-processor"]',
     );
@@ -181,7 +185,7 @@ describe('v7 detail visuals', () => {
 
   it('reveals the complete example process on demand', async () => {
     const user = userEvent.setup();
-    const { container } = renderPage(<AboutPage site={polishSite} />);
+    const { container } = renderAppAt('/pl/about');
     const reveal = container.querySelector('.about-process__grid-reveal');
     const viewport = container.querySelector('.about-process__grid-viewport');
     const toggle = screen.getByRole('button', { name: polishSite.messages.content.expandProcess });
@@ -198,7 +202,7 @@ describe('v7 detail visuals', () => {
   });
 
   it('renders the custom skills boundary section and blog card rail', () => {
-    const { container, unmount } = renderPage(<SkillsPage site={polishSite} />);
+    const { container, unmount } = renderAppAt('/pl/skills');
 
     expect(container.querySelector('.solution-boundary')).toBeInTheDocument();
     expect(container.querySelector('.solution-boundary h1')).toHaveTextContent(/\S/);
@@ -207,14 +211,14 @@ describe('v7 detail visuals', () => {
     expect(container.querySelectorAll('.solution-boundary__principle')).toHaveLength(4);
 
     unmount();
-    const blog = renderPage(<BlogPage site={polishSite} />);
+    const blog = renderAppAt('/pl/blog');
     expect(blog.container.querySelector('.visual-panel[data-page="blog"]')).toBeInTheDocument();
     expect(blog.container.querySelectorAll('.visual-panel__blog-shapes .blog-visual-card')).toHaveLength(3);
   });
 
   it('synchronizes hover highlighting between boundary layers and principles', async () => {
     const user = userEvent.setup();
-    const { container } = renderPage(<SkillsPage site={polishSite} />);
+    const { container } = renderAppAt('/pl/skills');
     const layers = container.querySelectorAll<HTMLElement>('.solution-boundary__layer');
     const principles = container.querySelectorAll<HTMLElement>('.solution-boundary__principle');
     const secondPrinciple = principles[1];
@@ -248,7 +252,7 @@ describe('v7 detail visuals', () => {
   });
 
   it('renders the technologies section directly after the solution boundary', () => {
-    const { container } = renderPage(<SkillsPage site={polishSite} />);
+    const { container } = renderAppAt('/pl/skills');
     const stack = polishSite.portfolio.skills.stack;
     const stackTools = stack.bands.flatMap((band) => band.tools);
     const sections = Array.from(container.querySelectorAll('.detail-main__route-layer > section'));
@@ -262,16 +266,16 @@ describe('v7 detail visuals', () => {
   });
 
   it('keeps the statement only on about and ends other detail pages with their CTA', () => {
-    const about = renderPage(<AboutPage site={polishSite} />);
+    const about = renderAppAt('/pl/about');
     expect(about.container.querySelector('.statement')).toBeInTheDocument();
     about.unmount();
 
-    const skills = renderPage(<SkillsPage site={polishSite} />);
+    const skills = renderAppAt('/pl/skills');
     expect(skills.container.querySelector('.statement')).not.toBeInTheDocument();
     expect(skills.container.querySelector('.footer-cta__link[href="/pl/projects"]')).toBeInTheDocument();
     skills.unmount();
 
-    const projects = renderPage(<ProjectsPage site={polishSite} />);
+    const projects = renderAppAt('/pl/projects');
     expect(projects.container.querySelector('.statement')).not.toBeInTheDocument();
   });
 

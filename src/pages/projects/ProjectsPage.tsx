@@ -2,7 +2,6 @@ import { useCallback, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router';
 
-import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta } from '../../components/ui/ClosingSections';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { ProjectModal } from '../../components/ui/ProjectModal';
@@ -14,22 +13,6 @@ import type { SiteContent } from '../../content/siteContent';
 import { getLocalizedPath } from '../../routing/locale';
 
 type ProjectsPageProps = { readonly site: SiteContent };
-
-export function ProjectsPage({ site }: ProjectsPageProps) {
-  const { projects: content } = site.portfolio;
-
-  return (
-    <DetailPageLayout
-      site={site}
-      page="projects"
-      eyebrow={content.hero.eyebrow}
-      title={<PageTitle lines={content.hero.title} />}
-      intro={<InlineCopy copy={content.hero.lead} />}
-    >
-      <ProjectsPageContent site={site} />
-    </DetailPageLayout>
-  );
-}
 
 export function ProjectsPageContent({ site }: ProjectsPageProps) {
   const { projects: content } = site.portfolio;
@@ -163,8 +146,4 @@ function getProjectMonogram(title: string): string {
     .map((word) => word.charAt(0))
     .join('')
     .toUpperCase();
-}
-
-function PageTitle({ lines }: { readonly lines: readonly string[] }) {
-  return <>{lines.map((line, index) => <span key={`${line}-${index}`}><InlineCopy copy={line} />{index < lines.length - 1 && <br />}</span>)}</>;
 }

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useLocation } from 'react-router';
 import { describe, expect, it } from 'vitest';
 
-import { BlogPage } from '../pages/blog/BlogPage';
+import { App } from '../app/App';
 import { getBlogArticles, parseBlogFrontmatter } from '../content/mdx/blogIndex';
 import { getSiteContent } from '../content/siteContent';
 import { ThemeProvider } from '../features/theme/ThemeProvider';
@@ -19,7 +19,7 @@ function renderBlog(site: ReturnType<typeof getSiteContent>, initialEntries = [`
     <MemoryRouter initialEntries={initialEntries}>
       <ThemeProvider>
         <LocationProbe />
-        <BlogPage site={site} />
+        <App />
       </ThemeProvider>
     </MemoryRouter>,
   );
