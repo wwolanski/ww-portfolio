@@ -4,11 +4,11 @@ import { BrowserRouter } from 'react-router';
 
 import { App } from './app/App';
 import { ThemeProvider } from './features/theme/ThemeProvider';
-import { loadCriticalFonts, preloadCriticalFonts } from './styles/criticalFonts';
+import { preloadDetailHeroFonts, preloadHomeFonts } from './styles/preloadHomeFonts';
 import './styles/index.css';
 
-preloadCriticalFonts();
-void loadCriticalFonts();
+preloadHomeFonts();
+preloadDetailHeroFonts();
 
 const root = document.querySelector<HTMLDivElement>('#root');
 

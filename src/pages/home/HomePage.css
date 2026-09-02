@@ -1,10 +1,16 @@
 .home-page {
+  --font-body: "Home DM Sans", sans-serif;
+  --font-name: "Home Montserrat", sans-serif;
+  --font-condensed: "Home Bebas Neue", sans-serif;
+  --font-narrow: "Home Roboto Condensed", sans-serif;
+
   position: relative;
   height: 100svh;
   min-height: 100svh;
   overflow: hidden;
   background: var(--surface);
   color: var(--ink);
+  font-family: var(--font-body);
 }
 
 :root.dark .home-page {
