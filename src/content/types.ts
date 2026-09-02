@@ -146,7 +146,12 @@ export type SolutionBoundaryContent = {
   readonly layers: readonly { readonly title: string; readonly text: string }[];
   readonly principles: readonly { readonly title: string; readonly text: string }[];
   readonly practiceHeading: string;
-  readonly examples: readonly { readonly title: string; readonly label: string }[];
+  readonly examples: readonly {
+    readonly title: string;
+    readonly label: string;
+    readonly projectSlug: string;
+    readonly icon: string;
+  }[];
   readonly musicNote: string;
 };
 

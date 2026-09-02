@@ -5,7 +5,6 @@ import {
 import { useState } from 'react';
 import { Link } from 'react-router';
 
-import { DetailPageLayout } from '../../components/layout/DetailPageLayout';
 import { FooterCta } from '../../components/ui/ClosingSections';
 import { SectionHeading } from '../../components/ui/SectionHeading';
 import { TechTag } from '../../components/ui/TechTag';
@@ -16,14 +15,6 @@ type SkillsPageProps = { readonly site: SiteContent };
 
 const layerIcons = [ListTree, Blocks, Network, Database] as const;
 const principleIcons = [GitBranchPlus, Maximize2, Link2, Copy] as const;
-
-export function SkillsPage({ site }: SkillsPageProps) {
-  return (
-    <DetailPageLayout site={site} page="skills" eyebrow="" title={null} intro={null} showHero={false}>
-      <SkillsPageContent site={site} />
-    </DetailPageLayout>
-  );
-}
 
 export function SkillsPageContent({ site }: SkillsPageProps) {
   const content = site.portfolio.skills.boundary;
@@ -92,20 +83,24 @@ export function SkillsPageContent({ site }: SkillsPageProps) {
         <section className="solution-boundary__practice" aria-labelledby="practice-heading">
           <MiniHeading id="practice-heading">{content.practiceHeading}</MiniHeading>
           <div className="solution-boundary__practice-grid">
-            {content.examples.map((example, index) => (
-              <Link
-                aria-label={example.title}
-                className="solution-boundary__example"
-                to={`/${site.locale}/projects${index === 0 ? '?caseStudy=gpt_img_2-spritesheet-processor' : '?caseStudy=repoatlas'}`}
-                key={example.title}
-              >
-                <span className="solution-boundary__example-icon" aria-hidden="true">
-                  {index === 0 ? <Code2 /> : <GitBranch />}
-                </span>
-                <span><strong>{example.title}</strong><small>{example.label}</small></span>
-                <ArrowRight aria-hidden="true" />
-              </Link>
-            ))}
+            {content.examples.map((example) => {
+              const ExampleIcon = example.icon === 'code' ? Code2 : GitBranch;
+
+              return (
+                <Link
+                  aria-label={example.title}
+                  className="solution-boundary__example"
+                  to={`/${site.locale}/projects?caseStudy=${encodeURIComponent(example.projectSlug)}`}
+                  key={example.title}
+                >
+                  <span className="solution-boundary__example-icon" aria-hidden="true">
+                    <ExampleIcon />
+                  </span>
+                  <span><strong>{example.title}</strong><small>{example.label}</small></span>
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              );
+            })}
             <aside className="solution-boundary__music-note">
               <span aria-hidden="true"><MusicGlyph /></span>
               <p>{content.musicNote}</p>

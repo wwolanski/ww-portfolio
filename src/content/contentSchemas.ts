@@ -163,7 +163,12 @@ export const skillsContentSchema = object({
     layers: array(titledTextSchema),
     principles: array(titledTextSchema),
     practiceHeading: string,
-    examples: array(object({ title: string, label: string })),
+    examples: array(object({
+      title: string,
+      label: string,
+      projectSlug: string,
+      icon: { type: 'string', values: ['code', 'branch'] },
+    }), { uniqueBy: ['projectSlug'] }),
     musicNote: string,
   }, { equalLength: [['layers', 'principles']] }),
   stack: object({

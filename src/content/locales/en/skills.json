@@ -70,11 +70,15 @@
     "examples": [
       {
         "title": "GPT IMG-2 SPRITESHEET PROCESSOR",
-        "label": "Abandoned approach"
+        "label": "Abandoned approach",
+        "projectSlug": "gpt_img_2-spritesheet-processor",
+        "icon": "code"
       },
       {
         "title": "RepoAtlas",
-        "label": "A shift in the model"
+        "label": "A shift in the model",
+        "projectSlug": "repoatlas",
+        "icon": "branch"
       }
     ],
     "musicNote": "I encountered this way of thinking earlier in audio production, where the initial concept often evolves with each new version."

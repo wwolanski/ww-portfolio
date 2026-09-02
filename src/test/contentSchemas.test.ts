@@ -29,6 +29,14 @@ describe.each(Object.entries(localizedContent))('%s locale content', (_locale, c
     expect(errors, errors.join('\n')).toEqual([]);
   });
 
+  it('links every skills example to a declared project', () => {
+    const projectSlugs = new Set(content.projects.selected.projects.map((project) => project.slug));
+
+    for (const example of content.skills.boundary.examples) {
+      expect(projectSlugs.has(example.projectSlug), `Unknown project slug: ${example.projectSlug}`).toBe(true);
+    }
+  });
+
 });
 
 function validateContent(value: unknown, schema: ContentSchema, path = '$'): string[] {

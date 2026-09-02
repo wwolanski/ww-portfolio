@@ -64,8 +64,18 @@
   ],
     "practiceHeading": "Przykłady z praktyki",
     "examples": [
-      { "title": "GPT IMG-2 SPRITESHEET PROCESSOR", "label": "Porzucone podejście" },
-      { "title": "RepoAtlas", "label": "Zmiana modelu" }
+      {
+        "title": "GPT IMG-2 SPRITESHEET PROCESSOR",
+        "label": "Porzucone podejście",
+        "projectSlug": "gpt_img_2-spritesheet-processor",
+        "icon": "code"
+      },
+      {
+        "title": "RepoAtlas",
+        "label": "Zmiana modelu",
+        "projectSlug": "repoatlas",
+        "icon": "branch"
+      }
     ],
     "musicNote": "To podejście znałem wcześniej ze środowiska produkcji audio, gdzie pierwsza koncepcja również często ewoluuje wraz z kolejnymi wersjami."
   },
