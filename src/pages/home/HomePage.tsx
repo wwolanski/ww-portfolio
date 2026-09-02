@@ -2,6 +2,7 @@ import { ArrowDownRight } from 'lucide-react';
 import { Link } from 'react-router';
 
 import { LanguageSwitcher } from '../../components/layout/LanguageSwitcher';
+import { preloadVisualPanelImages } from '../../components/layout/preloadVisualPanelImages';
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import type { SiteContent } from '../../content/siteContent';
 import { getLocalizedPath } from '../../routing/locale';
@@ -40,7 +41,12 @@ export function HomePage({ site }: HomePageProps) {
               data-card={item.slug}
               style={{ '--card-accent': item.accent } as React.CSSProperties}
             >
-              <Link className="home-card__link" to={getLocalizedPath(locale, item.href)} aria-label={messages.actions.openPage(item.label)}>
+              <Link
+                className="home-card__link"
+                to={getLocalizedPath(locale, item.href)}
+                aria-label={messages.actions.openPage(item.label)}
+                onClick={preloadVisualPanelImages}
+              >
                 <span className="home-card__number">0{index + 1}</span>
                 <span className="home-card__media">
                   <img src={item.image} alt="" width="724" height="2172" />

@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { AnimatePresence, motion, useIsPresent, type MotionStyle } from 'motion/react';
 import { Link, useLocation, useOutlet } from 'react-router';
@@ -9,11 +9,8 @@ import type { SiteContent } from '../../content/siteContent';
 import type { VisualPanelCard } from '../../content/types';
 import { InlineCopy } from '../ui/InlineCopy';
 import { SiteNav } from './SiteNav';
+import { preloadVisualPanelImages, visualPanelImages } from './preloadVisualPanelImages';
 import { scrollToTop } from './scrollToTop';
-
-import aboutImage from '../../../img/detail-about.webp';
-import projectsImage from '../../../img/detail-projects.webp';
-import skillsImage from '../../../img/detail-skills.webp';
 
 const routeTransition = {
   duration: 0.25,
@@ -40,6 +37,10 @@ export function DetailPageRoute({ site }: DetailPageRouteProps) {
   const outlet = useOutlet();
   const page = getDetailPage(location.pathname);
   const meta = getDetailPageMeta(site, page, location.search);
+
+  useEffect(() => {
+    preloadVisualPanelImages();
+  }, []);
 
   return (
     <DetailPageLayout
@@ -154,7 +155,7 @@ function VisualPanelLayer({ site, page }: VisualPanelLayerProps) {
       aria-hidden={isPresent ? undefined : true}
     >
       <div className="visual-panel__grid" aria-hidden="true" />
-      {visual.image ? <img src={visual.image} alt="" width="768" height="768" /> : <BlogVisual cards={site.portfolio.blog.visualPanel.cards} />}
+      {visual.image ? <img src={visual.image} alt="" width="768" height="768" loading="eager" fetchPriority="high" /> : <BlogVisual cards={site.portfolio.blog.visualPanel.cards} />}
       <Link to={`/${site.locale}`} className="back-link" tabIndex={isPresent ? undefined : -1}>
         <ArrowLeft aria-hidden="true" /> {site.messages.common.backHome}
       </Link>
@@ -226,14 +227,9 @@ type VisualMeta = {
 };
 
 function getVisualMeta(site: SiteContent, page: PageSlug): VisualMeta {
-  const images: Partial<Record<PageSlug, string>> = {
-    about: aboutImage,
-    projects: projectsImage,
-    skills: skillsImage,
-  };
   const indexes: Record<PageSlug, string> = { about: '01', projects: '02', skills: '03', blog: '04' };
 
-  return { ...site.portfolio[page].visualPanel, image: images[page], index: indexes[page] };
+  return { ...site.portfolio[page].visualPanel, image: visualPanelImages[page], index: indexes[page] };
 }
 
 function BlogVisual({ cards }: { readonly cards: readonly VisualPanelCard[] }) {
