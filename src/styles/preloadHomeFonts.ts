@@ -25,11 +25,13 @@ const polishExtensionFontUrls = [
 ] as const;
 
 export function preloadHomeFonts(pathname = window.location.pathname) {
-  if (!homePathPattern.test(pathname)) {
+  const appPathname = getAppPathname(pathname);
+
+  if (!homePathPattern.test(appPathname)) {
     return;
   }
 
-  const fontUrls = pathname === '/en' || pathname === '/en/'
+  const fontUrls = appPathname === '/en' || appPathname === '/en/'
     ? latinFontUrls
     : [...latinFontUrls, ...polishExtensionFontUrls];
 
@@ -37,13 +39,29 @@ export function preloadHomeFonts(pathname = window.location.pathname) {
 }
 
 export function preloadDetailHeroFonts(pathname = window.location.pathname) {
-  const match = detailHeroPathPattern.exec(pathname);
+  const match = detailHeroPathPattern.exec(getAppPathname(pathname));
 
   if (!match) {
     return;
   }
 
   appendFontPreloads(match[1] === 'pl' ? [antonLatin, antonLatinExt] : [antonLatin]);
+}
+
+function getAppPathname(pathname: string): string {
+  const basePath = import.meta.env.BASE_URL;
+
+  if (basePath === '/') {
+    return pathname;
+  }
+
+  const normalizedBasePath = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
+
+  if (pathname !== normalizedBasePath && !pathname.startsWith(`${normalizedBasePath}/`)) {
+    return pathname;
+  }
+
+  return pathname.slice(normalizedBasePath.length) || '/';
 }
 
 function appendFontPreloads(fontUrls: readonly string[]) {

@@ -11,6 +11,7 @@ preloadHomeFonts();
 preloadDetailHeroFonts();
 
 const root = document.querySelector<HTMLDivElement>('#root');
+const routerProps = import.meta.env.BASE_URL === '/' ? {} : { basename: import.meta.env.BASE_URL };
 
 if (!root) {
   throw new Error('Root element was not found.');
@@ -18,7 +19,7 @@ if (!root) {
 
 createRoot(root).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter {...routerProps}>
       <ThemeProvider>
         <App />
       </ThemeProvider>
