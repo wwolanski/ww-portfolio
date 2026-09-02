@@ -6,6 +6,8 @@ Personal portfolio presenting selected software projects, case studies, skills, 
 
 **Content & i18n:** MDX (technical writing), JSON locale files (pl/en)
 
+https://wwolanski.github.io/ww-portfolio/
+
 ## Local development
 
 Requires Node.js 22 or newer.

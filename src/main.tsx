@@ -4,10 +4,8 @@ import { BrowserRouter } from 'react-router';
 
 import { App } from './app/App';
 import { ThemeProvider } from './features/theme/ThemeProvider';
-import { preloadDetailHeroFonts, preloadHomeFonts } from './styles/preloadHomeFonts';
-import './styles/index.css';
+import { preloadDetailHeroFonts } from './styles/preloadFonts';
 
-preloadHomeFonts();
 preloadDetailHeroFonts();
 
 const root = document.querySelector<HTMLDivElement>('#root');

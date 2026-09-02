@@ -14,6 +14,31 @@ test.describe('portfolio smoke', () => {
       .toBeVisible();
   });
 
+  test('keeps fallback fonts hidden behind the responsive loading skeleton', async ({ page }) => {
+    await page.route('**/*.woff2', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 650));
+      await route.continue();
+    });
+
+    await page.goto('/pl', { waitUntil: 'domcontentloaded' });
+
+    await expect(page.locator('html')).toHaveClass(/home-fonts-pending/);
+    await expect(page.locator('.home-page > .home-shell')).toHaveCSS('visibility', 'hidden');
+    await expect(page.locator('.home-loading')).toBeVisible();
+
+    await expect(page.locator('.home-title')).toBeVisible();
+    await expect(page.locator('html')).not.toHaveClass(/home-fonts-pending/);
+
+    const fontsReady = await page.evaluate(() => [
+      document.fonts.check('800 1em "Home Montserrat"'),
+      document.fonts.check('700 1em "Home DM Sans"'),
+      document.fonts.check('400 1em "Home Bebas Neue"'),
+      document.fonts.check('400 1em "Home Roboto Condensed"'),
+    ]);
+
+    expect(fontsReady).toEqual([true, true, true, true]);
+  });
+
   test('keeps the full navigation until mobile and opens the title-only WW drawer horizontally', async ({ page }) => {
     await page.goto('/pl/projects');
 

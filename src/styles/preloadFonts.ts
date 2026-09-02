@@ -1,42 +1,7 @@
 import antonLatin from '@fontsource/anton/files/anton-latin-400-normal.woff2?url';
 import antonLatinExt from '@fontsource/anton/files/anton-latin-ext-400-normal.woff2?url';
-import bebasNeueLatin from '@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2?url';
-import bebasNeueLatinExt from '@fontsource/bebas-neue/files/bebas-neue-latin-ext-400-normal.woff2?url';
-import dmSansLatin from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
-import dmSansLatinExt from '@fontsource-variable/dm-sans/files/dm-sans-latin-ext-wght-normal.woff2?url';
-import montserratLatin from '@fontsource/montserrat/files/montserrat-latin-800-normal.woff2?url';
-import robotoCondensedLatin from '@fontsource/roboto-condensed/files/roboto-condensed-latin-400-normal.woff2?url';
-import robotoCondensedLatinExt from '@fontsource/roboto-condensed/files/roboto-condensed-latin-ext-400-normal.woff2?url';
 
-const homePathPattern = /^\/(?:pl|en)?\/?$/;
 const detailHeroPathPattern = /^\/(pl|en)\/(?:about|projects|blog)\/?$/;
-
-const latinFontUrls = [
-  bebasNeueLatin,
-  dmSansLatin,
-  montserratLatin,
-  robotoCondensedLatin,
-] as const;
-
-const polishExtensionFontUrls = [
-  bebasNeueLatinExt,
-  dmSansLatinExt,
-  robotoCondensedLatinExt,
-] as const;
-
-export function preloadHomeFonts(pathname = window.location.pathname) {
-  const appPathname = getAppPathname(pathname);
-
-  if (!homePathPattern.test(appPathname)) {
-    return;
-  }
-
-  const fontUrls = appPathname === '/en' || appPathname === '/en/'
-    ? latinFontUrls
-    : [...latinFontUrls, ...polishExtensionFontUrls];
-
-  appendFontPreloads(fontUrls);
-}
 
 export function preloadDetailHeroFonts(pathname = window.location.pathname) {
   const match = detailHeroPathPattern.exec(getAppPathname(pathname));

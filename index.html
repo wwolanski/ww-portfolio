@@ -8,6 +8,31 @@
     <meta property="og:title" content="Wojciech Wolanski — Full-stack developer" />
     <meta property="og:description" content="Selected work, technical writing and the tools behind it." />
     <meta property="og:type" content="website" />
+    <link rel="preload" href="/node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/node_modules/@fontsource/montserrat/files/montserrat-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/node_modules/@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin media="not all" data-home-font-preload />
+    <link rel="preload" href="/node_modules/@fontsource/roboto-condensed/files/roboto-condensed-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin media="not all" data-home-font-preload />
+    <link rel="preload" href="/node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-ext-wght-normal.woff2" as="font" type="font/woff2" crossorigin media="not all" data-home-font-preload-pl />
+    <link rel="preload" href="/node_modules/@fontsource/roboto-condensed/files/roboto-condensed-latin-ext-400-normal.woff2" as="font" type="font/woff2" crossorigin media="not all" data-home-font-preload-pl />
+    <link rel="preload" href="/img/1.webp" as="image" media="not all" data-home-preload />
+    <link rel="preload" href="/img/2.webp" as="image" media="not all" data-home-preload />
+    <link rel="preload" href="/img/3.webp" as="image" media="not all" data-home-preload />
+    <link rel="preload" href="/img/4.webp" as="image" media="not all" data-home-preload />
+    <script>
+      const homeLocaleMatch = window.location.pathname.match(/\/(pl|en)\/?$/);
+      const isHomePath = window.location.pathname === '/' || homeLocaleMatch;
+
+      if (isHomePath) {
+        document.documentElement.classList.add('home-fonts-pending');
+        document.querySelectorAll('[data-home-font-preload]').forEach((link) => { link.media = 'all'; });
+        document.querySelectorAll('[data-home-preload]').forEach((link) => { link.media = 'all'; });
+
+        if (homeLocaleMatch?.[1] === 'pl') {
+          document.querySelectorAll('[data-home-font-preload-pl]').forEach((link) => { link.media = 'all'; });
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="/src/styles/index.css" />
     <title>Wojciech Wolanski — Full-stack developer</title>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5d4d0d85-a429-4952-b509-fb464c7cb3eb"></script>
   </head>
