@@ -1,9 +1,8 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { Dialog } from 'radix-ui';
-import { ArrowUpRight, BookOpen, Folder, Menu, UserRound, Wrench, X, type LucideIcon } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router';
 
-import type { PageSlug } from '../../content/navigation';
 import type { SiteContent } from '../../content/siteContent';
 import { getLocalizedPath } from '../../routing/locale';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -13,13 +12,6 @@ type SiteNavProps = {
   readonly site: SiteContent;
   readonly compact?: boolean;
 };
-
-const navigationIcons = {
-  about: UserRound,
-  projects: Folder,
-  skills: Wrench,
-  blog: BookOpen,
-} satisfies Record<PageSlug, LucideIcon>;
 
 export function SiteNav({ site, compact = false }: SiteNavProps) {
   const { locale, messages, navigation } = site;
@@ -96,7 +88,7 @@ export function SiteNav({ site, compact = false }: SiteNavProps) {
             <Dialog.Overlay className="site-nav__scrim" />
             <Dialog.Content
               className="site-nav__drawer"
-              style={{ '--nav-accent': activeNavigationItem?.accent ?? '#08c8e8' } as CSSProperties}
+              style={{ '--drawer-accent': activeNavigationItem?.accent ?? '#08c8e8' } as CSSProperties}
             >
               <div className="site-nav__drawer-header">
                 <Dialog.Title className="site-nav__drawer-title">
@@ -108,28 +100,15 @@ export function SiteNav({ site, compact = false }: SiteNavProps) {
                   </button>
                 </Dialog.Close>
               </div>
-              <Dialog.Description className="site-nav__drawer-description">
-                {messages.common.navigationDescription}
-              </Dialog.Description>
               <nav className="site-nav__drawer-links" aria-label={messages.common.primaryNavigation}>
                 {navigation.map((item) => {
-                  const Icon = navigationIcons[item.slug];
-
                   return (
                     <Dialog.Close asChild key={item.slug}>
                       <NavLink
                         to={getLocalizedPath(locale, item.href)}
                         className="site-nav__drawer-link"
-                        style={{ '--drawer-link-accent': item.accent } as CSSProperties}
                       >
-                        <span className="site-nav__drawer-link-icon" aria-hidden="true">
-                          <Icon />
-                        </span>
-                        <span className="site-nav__drawer-link-copy">
-                          <span className="site-nav__drawer-link-label">{item.label}</span>
-                          <span className="site-nav__drawer-link-description">{item.description}</span>
-                        </span>
-                        <ArrowUpRight className="site-nav__drawer-link-arrow" aria-hidden="true" />
+                        <span className="site-nav__drawer-link-label">{item.label}</span>
                       </NavLink>
                     </Dialog.Close>
                   );

@@ -14,7 +14,7 @@ test.describe('portfolio smoke', () => {
       .toBeVisible();
   });
 
-  test('keeps the full navigation until mobile and opens the WW drawer horizontally', async ({ page }) => {
+  test('keeps the full navigation until mobile and opens the title-only WW drawer horizontally', async ({ page }) => {
     await page.goto('/pl/projects');
 
     await page.setViewportSize({ width: 1024, height: 900 });
@@ -43,7 +43,9 @@ test.describe('portfolio smoke', () => {
 
     await expect(page.locator('.site-nav__portal')).toHaveCSS('z-index', '1000');
     await expect(page.getByRole('dialog')).toBeVisible();
-    await expect(page.locator('.site-nav__drawer-link-icon')).toHaveCount(4);
-    await expect(page.locator('.site-nav__drawer-link-description')).toHaveCount(4);
+    await expect(page.locator('.site-nav__drawer-link-icon')).toHaveCount(0);
+    await expect(page.locator('.site-nav__drawer-link-description')).toHaveCount(0);
+    await expect(page.locator('.site-nav__drawer-link-label')).toHaveText(['O mnie', 'Projekty', 'Skills', 'Blog']);
+    await expect(page.locator('.site-nav__drawer-link[aria-current="page"]')).toHaveCSS('color', 'rgb(244, 165, 28)');
   });
 });
