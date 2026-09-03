@@ -11,9 +11,15 @@ description: Wizualne narzędzie do nauki, projektowania i docelowo mechaniczneg
 
 RepoAtlas to narzędzie do nauki, projektowania i docelowo egzekwowania architektury repozytorium.
 
-Powstało z dwóch problemów, które zaczęły się ze sobą łączyć. Z jednej strony architektura aplikacji jest trudna do przyswojenia. Nazwy takie jak `feature-first`, `layered`, `hexagonal`, `ports and adapters`, DDD czy vertical slice często dotyczą innych poziomów systemu, a mimo to łatwo traktować je jak konkurencyjne odpowiedzi na jedno pytanie.
+<ImageGallery />
 
-Z drugiej strony przy pracy z coding agents brak jasno ustalonej struktury bardzo szybko zaczyna być widoczny w samym repo. Jeżeli podobne problemy są rozwiązywane za każdym razem trochę inaczej, kolejne modele dostają coraz mniej jednoznaczny kontekst.
+Program powstał z dwóch problemów, które zaczęły się ze sobą łączyć. 
+
+1. Po pierwsze, architektura aplikacji jest ogólnie (wydaje mi się) dosyć trudna do przyswojenia. 
+Wiele koncepcji takich jak `feature-first`, `layered`, `hexagonal`, `ports and adapters`, DDD czy vertical slice często dotyczy innych poziomów systemu, a mimo to łatwo traktować je jak konkurencyjne odpowiedzi na jedno pytanie. 
+Dokładając do tego jeszcze frameworki, biblioteki, czy różne poziomy ziarnistości - łatwo stracić kontrolę.
+
+2. Po drugie, przy pracy z coding agents brak jasno ustalonej struktury od dnia pierwszego bardzo szybko zaczyna być widoczny w całym repo. Jeżeli podobne problemy są rozwiązywane za każdym razem trochę inaczej, kolejne modele dostają coraz mniej jednoznaczny kontekst. *W efekcie prowadzi to do degradacji ich performance i większego zużycia tokenów.* - a to z kolei jeszcze bardziej nasila problem nr. 1
 
 >[!SOLUTION]
 >RepoAtlas ma pomóc najpierw tę architekturę zobaczyć, zrozumieć, później ją zaprojektować, a następnie część ustaleń zamienić w mechaniczne reguły pilnujące implementacji.
@@ -120,7 +126,7 @@ Każdy fragment może działać poprawnie. Problem zaczyna się wtedy, kiedy rep
 W klasycznym developmentcie taki drift również się zdarza.
 
 >[!IMPORTANT]
-> Agentic workflow zwiększa jednak tempo, w którym może się pojawić. W krótkim czasie **powstaje dużo więcej kodu, a człowiek nie zawsze nadąża** utrzymać pełny obraz zależności, przepływów i lokalnych konwencji.
+> Agentic workflow zwiększa jednak tempo, w którym może się pojawić. W krótkim czasie **powstaje dużo więcej kodu, niż człowiek jest w stanie opanować**, tzn. utrzymać pełny obraz zależności, przepływów i lokalnych konwencji.
 
 ## Pomysł
 
@@ -557,9 +563,6 @@ Do 1.0 ma dojść pierwsza praktyczna warstwa checkerów. Nie pełny system anal
 
 Dalszy kierunek obejmuje generowanie startowej struktury projektu, integrację z CLI i CI oraz pomoc LLM przy dobieraniu blueprintu, rozszerzeń i technologii na podstawie opisu aplikacji.
 
-Tak, ten kierunek jest lepszy. Obecna sekcja jest poprawna, ale nadal brzmi trochę jak lista wniosków o architekturze. U Ciebie ważniejsze jest pokazanie, **co konkretnie lepiej rozumiesz po tym projekcie** i jak to wpływa na pracę z agentami.
-
-Ja bym to przepisał tak:
 
 ## Rzeczy, które wyniosłem z projektu
 
