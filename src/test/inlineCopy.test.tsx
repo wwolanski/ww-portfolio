@@ -2,6 +2,20 @@ import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { InlineCopy } from '../components/ui/InlineCopy';
+import { withBasePath } from '../routing/basePath';
+
+describe('withBasePath', () => {
+  it('prefixes root-relative content links for a repository deployment', () => {
+    expect(withBasePath('/pl/projects?caseStudy=repoatlas', '/ww-portfolio/'))
+      .toBe('/ww-portfolio/pl/projects?caseStudy=repoatlas');
+  });
+
+  it('does not alter external, hash, or already-prefixed links', () => {
+    expect(withBasePath('https://example.com', '/ww-portfolio/')).toBe('https://example.com');
+    expect(withBasePath('#section', '/ww-portfolio/')).toBe('#section');
+    expect(withBasePath('/ww-portfolio/pl/projects', '/ww-portfolio/')).toBe('/ww-portfolio/pl/projects');
+  });
+});
 
 describe('InlineCopy', () => {
   it('renders emphasis, strong text, and inline code', () => {

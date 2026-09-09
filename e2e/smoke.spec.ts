@@ -7,6 +7,20 @@ async function openPolishHome(page: Page) {
 }
 
 test.describe('portfolio smoke', () => {
+  test('declares Polish as the default document language and switches it for English', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveURL(/\/pl\/?$/);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'pl');
+    await expect(page.locator('meta[name="google"]')).toHaveAttribute('content', 'notranslate');
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Portfolio Wojciecha/);
+    await expect(page.locator('link[hreflang="pl"]')).toHaveAttribute('href', /\/pl\/?$/);
+
+    await page.goto('/en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /Portfolio of Wojciech/);
+    await expect(page.locator('link[hreflang="en"]')).toHaveAttribute('href', /\/en\/?$/);
+  });
+
   test('opens the Polish home page and renders the main navigation entry point', async ({ page }) => {
     await openPolishHome(page);
 

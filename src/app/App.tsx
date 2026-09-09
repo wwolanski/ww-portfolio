@@ -2,6 +2,7 @@ import { Navigate, Route, Routes, useParams } from 'react-router';
 import { MotionConfig } from 'motion/react';
 
 import { DetailPageRoute } from '../components/layout/DetailPageLayout';
+import { DocumentLanguage } from '../components/layout/DocumentLanguage';
 import { ScrollToTop } from '../components/layout/ScrollToTop';
 import { getSiteContent } from '../content/siteContent';
 import { AboutPageContent } from '../pages/about/AboutPage';
@@ -42,6 +43,7 @@ function LocalizedRoutes() {
 export function App() {
   return (
     <MotionConfig reducedMotion="user">
+      <DocumentLanguage />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Navigate to={`/${defaultLocale}`} replace />} />

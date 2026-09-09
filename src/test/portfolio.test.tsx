@@ -54,6 +54,15 @@ describe('existing portfolio shell', () => {
   });
 });
 
+describe('document language', () => {
+  it.each(['pl', 'en'] as const)('sets the document language for the %s route', (locale) => {
+    const { unmount } = renderAppAt(`/${locale}`);
+
+    expect(document.documentElement).toHaveAttribute('lang', locale);
+    unmount();
+  });
+});
+
 describe('blog page', () => {
   it('keeps article filtering available while using Polish MDX content', async () => {
     const user = userEvent.setup();

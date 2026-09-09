@@ -8,6 +8,12 @@ export function isLocale(value: string | undefined): value is Locale {
   return value === 'pl' || value === 'en';
 }
 
+export function getLocaleFromPathname(pathname: string): Locale {
+  const localeMatch = pathname.match(/(?:^|\/)(pl|en)(?=\/|$)/);
+
+  return isLocale(localeMatch?.[1]) ? localeMatch[1] : defaultLocale;
+}
+
 export function getPathWithoutLocale(pathname: string): string {
   return pathname.replace(/^\/(?:pl|en)(?=\/|$)/, '') || '/';
 }

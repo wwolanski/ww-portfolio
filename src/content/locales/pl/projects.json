@@ -42,7 +42,7 @@
             "text": "Znane banki → parsery deterministyczne. Trudniejsze wejścia → OCR / model multimodalny tam, gdzie ma to sens."
           },
           {
-            "label": "Dowód",
+            "label": "Efekt",
             "text": "Narzędzie jest realnie używane przez kilka osób w codziennym procesie."
           }
         ]
