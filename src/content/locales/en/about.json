@@ -77,7 +77,7 @@
   },
   "timeline": {
     "heading": "My path to software development",
-    "intro": "My current way of working grew out of several earlier chapters: my first websites and scripts, years spent working in audio, a period in retail, and an intensive return to software development in 2024–2025.",
+    "intro": "My current way of working grew out of several earlier chapters: my first websites and scripts, years spent working in audio, a period in retail, and a return to software development since 2024.",
     "items": [
       {
         "date": "2008–2012 · teenage years",
@@ -90,7 +90,7 @@
         "text": "I spent more than a decade working with music, recording, live sound, and multimedia. It was a separate path that gave me a strong technical foundation and fluency with tools. Many concepts used in software and AI—such as `sampling`, `bit depth`, `quantization`, `compression`, `buffer`, or `cache` — were already familiar to me from audio."
       },
       {
-        "date": "2021–2024 retail / e-commerce",
+        "date": "2021–2024 · retail / e-commerce",
         "title": "Seeing the process from the user’s side",
         "text": "Working in e-commerce, including order picking and delivery platforms, showed me how many software problems only become visible when you actually go through a process yourself."
       },

@@ -6,6 +6,7 @@ import { ContentDocumentView } from '../../components/content/ContentDocumentVie
 import { InlineCopy } from '../../components/ui/InlineCopy';
 import { getBlogArticles, type BlogArticle } from '../../content/mdx/blogIndex';
 import type { SiteContent } from '../../content/siteContent';
+import type { Locale } from '../../routing/locale';
 
 type BlogPageProps = { readonly site: SiteContent };
 
@@ -108,7 +109,9 @@ function BlogIndex({
       <div className="blog-filter-row blog-filter-row--hero" role="group" aria-label={site.messages.blog.filterArticles}>
         {tagFilters.map((filter) => {
           const isActive = activeTag === filter.tag;
-          const label = filter.tag ?? site.messages.blog.all;
+          const label = filter.tag === null
+            ? site.messages.blog.all
+            : translateBlogTag(filter.tag, site.locale);
 
           return (
             <button
@@ -130,7 +133,7 @@ function BlogIndex({
               <div className="blog-article-index">{String(index + 1).padStart(2, '0')}</div>
               <div className="blog-article-body">
                 <div className="blog-article-meta">
-                  <span>{article.tags.join(' · ')}</span>
+                  <span>{article.tags.map((tag) => translateBlogTag(tag, site.locale)).join(' · ')}</span>
                   <span>{formatArticleDate(article.date, site.locale)}</span>
                   <span><Clock3 aria-hidden="true" /> {site.messages.blog.readTime(article.readTime)}</span>
                 </div>
@@ -197,7 +200,7 @@ function BlogArticleHeader({ article, site }: BlogArticleHeaderProps) {
       <h1><InlineCopy copy={article.title} /></h1>
       {article.description ? <p><InlineCopy copy={article.description} /></p> : null}
       <ul className="blog-article-header__tags" aria-label={site.messages.blog.articleTags}>
-        {article.tags.map((tag) => <li key={tag} className="tag-chip">{tag}</li>)}
+        {article.tags.map((tag) => <li key={tag} className="tag-chip">{translateBlogTag(tag, site.locale)}</li>)}
       </ul>
     </header>
   );
@@ -225,4 +228,16 @@ function formatArticleDate(value: string, locale: SiteContent['locale']): string
     year: 'numeric',
     timeZone: 'UTC',
   }).format(new Date(`${value}T00:00:00Z`));
+}
+
+const blogTagTranslations: Record<Locale, Readonly<Record<string, string>>> = {
+  pl: {},
+  en: {
+    Wideo: 'Video',
+    Trendy: 'Trends',
+  },
+};
+
+function translateBlogTag(tag: string, locale: Locale): string {
+  return blogTagTranslations[locale][tag] ?? tag;
 }

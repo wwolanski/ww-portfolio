@@ -36,7 +36,9 @@ type ExternalProjectLinkProps = {
 
 function ExternalProjectLink({ project, link, messages }: ExternalProjectLinkProps) {
   const providerLabel = providerLabels[link.provider];
-  const label = messages.projectContent.openExternal(providerLabel, project.title);
+  const label = link.provider === 'vercel'
+    ? messages.projectContent.openProvider(providerLabel)
+    : messages.projectContent.openExternal(providerLabel, project.title);
 
   return (
     <a

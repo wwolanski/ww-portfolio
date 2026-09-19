@@ -6,7 +6,7 @@
       "W PRAKTYCE.",
       ""
     ],
-    "lead": "Są tu rzeczy skończone, rozwijane, zatrzymane i takie, które po prostu nie zadziałały. Razem dają obraz tego, czym do tej pory się zajmowałem."
+    "lead": "Ta lista obejmuje rzeczy skończone, rozwijane i zatrzymane, a także próby, które po prostu nie zadziałały. Razem pokazują zakres mojego dotychczasowego doświadczenia."
   },
   "visualPanel": {
     "kicker": "projects & experiments",
@@ -22,7 +22,7 @@
         "tags": [
           "shipped"
         ],
-        "title": "Konwenter wyciągów bankowych",
+        "title": "Konwerter wyciągów bankowych",
         "description": "Lokalna aplikacja dla firmy księgowej. Zamienia nietypowe wyciągi bankowe — m.in. HTML/MHTML, PDF lub zrzuty ekranu — na CSV akceptowany przez program Taxomatic. Format docelowy został odtworzony z przykładów dostarczonych przez klienta. Parser obsługuje znane struktury, fallback do OCR.",
         "facts": [
           "Python",
@@ -79,11 +79,11 @@
     },
     {
       "label": "Kierunek",
-      "text": "Kukla2D ma łączyć generowanie assetów przez AI, rigging i animację w jednym prostym procesie. Wersja 1.0 ma być stablinym standalone edytorem, gotowym na wprowadznie integracji AI."
+      "text": "Kukla2D ma łączyć generowanie assetów przez AI, rigging i animację w jednym prostym procesie. Wersja 1.0 będzie stabilnym autonomicznym edytorem, gotowym na wprowadzenie integracji AI."
     },
     {
       "label": "Cel",
-      "text": "Docelowo możliwie krótka droga od pomysłu na postać do gotowego zestawu assetów i animacji — w stronę workflow typu „one-click asset generator”."
+      "text": "Docelowo możliwie krótka droga od pomysłu na postać do gotowego zestawu assetów i animacji — w stronę workflow typu \"one-click asset generator\"."
     }
   ]
 },
@@ -107,10 +107,10 @@
   ],
   "outcome": "PRAWO JAKO DANE · DETERMINISTYCZNY RDZEŃ · AI DOPIERO TAM, GDZIE MA SENS",
   "anchor": "p3",
-"details": [
+  "details": [
   {
     "label": "Problem",
-    "text": "Odpowiedź podatkowa musi być nie tylko trafna, ale też aktualna, kompletna i możliwa do prześledzenia do konkretnych źródeł."
+    "text": "Odpowiedź podatkowa musi być nie tylko trafna, ale też aktualna, kompletna i weryfikowalna na podstawie konkretnych źródeł."
   },
   {
     "label": "Rdzeń",
@@ -226,7 +226,7 @@
           },
           {
             "label": "Wniosek",
-            "text": "Zmiana reprezentacji problemu stała się jednym z punktów wyjścia do rozwoju Kukla2D."
+            "text": "Zmiana reprezentacji problemu stała się jednym z punktów wyjścia do rozwoju [Kukla2D](https://github.com/wwolanski/kukla2d)."
           }
         ]
       }

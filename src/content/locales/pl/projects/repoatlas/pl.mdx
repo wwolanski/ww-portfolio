@@ -17,9 +17,9 @@ Program powstał z dwóch problemów, które zaczęły się ze sobą łączyć.
 
 1. Po pierwsze, architektura aplikacji jest ogólnie (wydaje mi się) dosyć trudna do przyswojenia. 
 Wiele koncepcji takich jak `feature-first`, `layered`, `hexagonal`, `ports and adapters`, DDD czy vertical slice często dotyczy innych poziomów systemu, a mimo to łatwo traktować je jak konkurencyjne odpowiedzi na jedno pytanie. 
-Dokładając do tego jeszcze frameworki, biblioteki, czy różne poziomy ziarnistości - łatwo stracić kontrolę.
+Dokładając do tego jeszcze frameworki, biblioteki czy różne poziomy ziarnistości — łatwo stracić kontrolę.
 
-2. Po drugie, przy pracy z coding agents brak jasno ustalonej struktury od dnia pierwszego bardzo szybko zaczyna być widoczny w całym repo. Jeżeli podobne problemy są rozwiązywane za każdym razem trochę inaczej, kolejne modele dostają coraz mniej jednoznaczny kontekst. *W efekcie prowadzi to do degradacji ich performance i większego zużycia tokenów.* - a to z kolei jeszcze bardziej nasila problem nr. 1
+2. Po drugie, przy pracy z coding agents brak jasno ustalonej struktury od dnia pierwszego bardzo szybko zaczyna być widoczny w całym repo. Jeżeli podobne problemy są rozwiązywane za każdym razem trochę inaczej, kolejne modele dostają coraz mniej jednoznaczny kontekst. *W efekcie prowadzi to do pogorszenia ich wydajności i większego zużycia tokenów* — a to z kolei jeszcze bardziej nasila problem nr. 1.
 
 >[!SOLUTION]
 >RepoAtlas ma pomóc najpierw tę architekturę zobaczyć, zrozumieć, później ją zaprojektować, a następnie część ustaleń zamienić w mechaniczne reguły pilnujące implementacji.
@@ -28,7 +28,7 @@ Dokładając do tego jeszcze frameworki, biblioteki, czy różne poziomy ziarnis
 
 Współczesny development ma ogromną liczbę konwencji, wzorców i sposobów organizowania aplikacji.
 
-`feature-first`, `layered`, `clean`, `hexagonal`, `ports and adapters`, DDD, vertical slices, public API, DTO, read/write, local state, global state — lista pojęć i koncepcji szybko robi się długa, a poszczególne pojęcia nie zawsze opisują ten sam poziom systemu, lub bywają tożsame.
+`feature-first`, `layered`, `clean`, `hexagonal`, `ports and adapters`, DDD, vertical slices, public API, DTO, read/write, local state, global state — lista pojęć i koncepcji szybko robi się długa, a poszczególne pojęcia nie zawsze opisują ten sam poziom systemu lub bywają tożsame.
 
 Część ma kilka nazw. Część jest rozwinięciem innych konceptów. Część można stosować jednocześnie.
 
@@ -39,7 +39,9 @@ domain/
 application/
 infrastructure/
 ui/
-````
+services/
+helpers/
+```
 
 nie tworzy jeszcze architektury.
 
@@ -126,7 +128,7 @@ Każdy fragment może działać poprawnie. Problem zaczyna się wtedy, kiedy rep
 W klasycznym developmentcie taki drift również się zdarza.
 
 >[!IMPORTANT]
-> Agentic workflow zwiększa jednak tempo, w którym może się pojawić. W krótkim czasie **powstaje dużo więcej kodu, niż człowiek jest w stanie opanować**, tzn. utrzymać pełny obraz zależności, przepływów i lokalnych konwencji.
+> Agentic workflow zwiększa jednak tempo, w jakim taki drift może się pojawić. W krótkim czasie **powstaje dużo więcej kodu, niż człowiek jest w stanie opanować**, tzn. utrzymać pełny obraz zależności, przepływów i lokalnych konwencji.
 
 ## Pomysł
 
@@ -261,9 +263,7 @@ technology binding
 module configuration
 ```
 
-Coraz trudniej było więc powiedzieć:
-
-> która konkretna decyzja spowodowała ten fragment wynikowej architektury?
+Coraz trudniej było więc określić, która konkretna decyzja spowodowała ten fragment wynikowej architektury.
 
 To doprowadziło do największej jak dotąd migracji w projekcie.
 
@@ -586,7 +586,7 @@ Spójne repo daje modelowi bardziej jednoznaczny kontekst i więcej przykładów
 
 Jeżeli podobne feature'y są organizowane w podobny sposób, agent łatwiej odnajduje właściwe symbole i ma mniej powodów, żeby tworzyć kolejny lokalny wariant struktury.
 
-W praktyce dobra architektura pomaga więc nie tylko w utrzymaniu projektu. **Bezpośrednio wpływa też na jakość pracy agentów AI - Może zmniejszyć ilość niepotrzebnego kontekstu, skrócić wyszukiwanie i zredukować liczbę tokenów potrzebnych do zrozumienia przepływów i zależności potrzebnych do wykonania konkretnej zmiany.**
+W praktyce dobra architektura pomaga więc nie tylko w utrzymaniu projektu. **Bezpośrednio wpływa też na jakość pracy agentów AI — może zmniejszyć ilość niepotrzebnego kontekstu, skrócić wyszukiwanie i zredukować liczbę tokenów potrzebnych do zrozumienia przepływów i zależności potrzebnych do wykonania konkretnej zmiany.**
 
 ### Architektura i checkery mogą być częścią feedback loop
 

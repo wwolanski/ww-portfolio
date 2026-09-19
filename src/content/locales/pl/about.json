@@ -79,7 +79,7 @@
   },
   "timeline": {
     "heading": "Droga do software",
-    "intro": "Obecny sposób pracy wyrósł z kilku wcześniejszych etapów: pierwszych stron i skryptów, lat związanych z audio, pracy w retailu oraz intensywnego powrotu do developmentu w latach 2024–2025.",
+    "intro": "Obecny sposób pracy wyrósł z kilku wcześniejszych etapów: pierwszych stron i skryptów, lat związanych z audio, pracy w retailu oraz powrotu do developmentu od 2024 roku.",
     "items": [
       {
         "date": "2008–2012 · nastoletnie lata",
@@ -92,7 +92,7 @@
         "text": "Ponad dekada pracy z muzyką, nagrywaniem, live sound i multimediami. To osobna ścieżka, która dała mi dużą swobodę techniczną i obycie z narzędziami. Wiele pojęć, które istnieją w Software i AI — takich jak `sampling`, `bit depth`, `kwantyzacja`, `kompresja`, `buffer` czy `cache` — znałem już wcześniej z audio."
       },
       {
-        "date": "2021–2024 retail / e-commerce",
+        "date": "2021–2024 · retail / e-commerce",
         "title": "Kontakt z procesem od strony użytkownika",
         "text": "Praca w e-commerce przy order pickingu i platformach delivery pokazała mi, ile problemów software'owych widać dopiero wtedy, gdy naprawdę wykonuje się dany proces."
       },
@@ -106,7 +106,7 @@
   "statement": {
     "kicker": "Na czym skupiam się teraz",
     "title": "LLM-y i Agentic development. ",
-    "text": "Najwięcej uwagi poświęcam obecnie LLM-om i agentic development. Śledzę rozwój modeli, coding agents i narzędzi wokół nich, ale jeszcze bardziej **interesuje mnie** to, co dzieje się poziom wyżej: jak dobierać narzędzia, **jak projektować repozytoria, po których agenci potrafią sprawnie się poruszać, i jak budować feedback loops, które pozwalają im samodzielnie weryfikować zmiany**.\n\nDuża część tych zainteresowań trafia obecnie do **[RepoAtlas](/pl/projects?caseStudy=repoatlas)** — projektu, nad którym obecnie intensywnie pracuję. Budując go, jednocześnie pogłębiam temat architektury aplikacji: `boundaries`, `dependency rules`, przepływy, odpowiedzialności modułów i sposoby mechanicznego egzekwowania tych zasad."
+    "text": "Najwięcej uwagi poświęcam obecnie LLM-om i agentic development. Śledzę rozwój modeli, coding agents i narzędzi wokół nich, ale jeszcze bardziej **interesuje mnie** to, co dzieje się poziom wyżej: jak dobierać narzędzia, **jak projektować repozytoria, po których agenci potrafią sprawnie się poruszać, i jak budować feedback loops, które pozwalają im samodzielnie weryfikować zmiany**.\n\nDuża część tych zainteresowań trafia do **[RepoAtlas](/pl/projects?caseStudy=repoatlas)** — projektu, nad którym intensywnie pracuję. Budując go, jednocześnie pogłębiam temat architektury aplikacji: `boundaries`, `dependency rules`, przepływy, odpowiedzialności modułów i sposoby mechanicznego egzekwowania tych zasad."
   },
   "cta": {
     "eyebrow": "Od problemu do działającego rozwiązania",

@@ -24,6 +24,7 @@
     "caseStudy": "case study",
     "openCaseStudy": "Open case study: {title}",
     "openExternal": "Open {provider}: {title}",
+    "openProvider": "Open {provider}",
     "openGallery": "Open image gallery: {title}",
     "close": "Close case study",
     "loading": "Loading case study…",

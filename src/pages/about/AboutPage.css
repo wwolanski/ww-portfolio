@@ -6,7 +6,7 @@
   position: relative;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  --ai-gap: 0px;
+  --ai-gap: clamp(0.75rem, 1.5vw, 1.75rem);
   gap: var(--ai-gap);
   margin-inline: auto; }
 

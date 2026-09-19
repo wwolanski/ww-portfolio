@@ -3,7 +3,7 @@ title: Konwerter wyciągów bankowych HTML i MHTML
 description: Lokalne narzędzie dla firmy księgowej, które rozpoznaje wyciągi z mBanku i Millennium i zamienia je na CSV zgodny z Taxomatic.
 ---
 
-# Konwenter wyciągów bankowych
+# Konwerter wyciągów bankowych
 
 **Status:** Shipped  
 **Typ:** Internal tool / accounting  
@@ -11,15 +11,14 @@ description: Lokalne narzędzie dla firmy księgowej, które rozpoznaje wyciągi
 
 <ImageGallery />
 
+Konwerter wyciągów bankowych powstał dla firmy księgowej korzystającej z programu Taxomatic.
 
-Konwenter wyciągów bankowych powstał dla firmy księgowej korzystającej z programu Taxomatic.
-
-Problem dotyczył wyciągów bankowych, których nie dało się normalnie zaimportować do systemu. Klientom zdarza zdarza się dostarczać firmie wyciągi bankowe w niestandardowych formatach. W przykładowych materiałach, które dostałem na początku, pojawiały się głównie `.html`, `.mhtml` `.pdf` oraz zrzuty ekranu.
+Problem dotyczył wyciągów bankowych, których nie dało się normalnie zaimportować do systemu. Klientom zdarza się dostarczać firmie wyciągi bankowe w niestandardowych formatach. W przykładowych materiałach, które dostałem na początku, pojawiały się głównie `.html`, `.mhtml`, `.pdf` oraz zrzuty ekranu.
 
 > [!SOLUTION]
 > Rozwiązaniem tego problemu jest małe lokalne narzędzie, które rozpoznaje format wyciągu, odczytuje dane i zapisuje je jako CSV zgodny z Taxomatic.
 
-Konwenter, w zależności od miesiąca, **oszczędza od kilku do kilkunastu godzin pracy.**
+Konwerter, w zależności od miesiąca, **oszczędza od kilku do kilkunastu godzin pracy.**
 
 ---
 
@@ -27,7 +26,7 @@ Konwenter, w zależności od miesiąca, **oszczędza od kilku do kilkunastu godz
 
 Taxomatic obsługuje standard `MT940` i `określone struktury CSV`. Problem zaczynał się wtedy, gdy wyciąg był zapisany w innym formacie.
 
-Dokładna przyczyna problemu, tzn dlaczego klientom firmy zdarza się dostarczać te nietypowe formy dokumentów nie jest mi znana. Zakładam, że wynika to albo z ograniczeń zewnętrznej platformy, lub nietechnicznych użytkowników, którzy nie potrafią samodzielnie dostarczyć dokumentów w odpowiednim formacie.
+Dokładna przyczyna problemu, tzn. dlaczego klientom firmy zdarza się dostarczać nietypowe formy dokumentów, nie jest mi znana. Zakładam, że wynika to albo z ograniczeń zewnętrznej platformy, albo z nietechnicznych użytkowników, którzy nie potrafią samodzielnie dostarczyć dokumentów w odpowiednim formacie.
 
 W praktyce kończyło się to ręcznym przepisywaniem transakcji do systemu.
 
@@ -55,13 +54,22 @@ CSV dla Taxomatic
 
 Dzięki temu format wejściowy może być inny, ale wynik ma zawsze tę samą strukturę.
 
+>Co oznacza kontrakt eksportu?
+>„Kontrakt eksportu Taxomatic” to zestaw warunków, które musi spełnić wynikowy plik CSV, żeby Taxomatic mógł go przyjąć i poprawnie przetworzyć. 
+>
+>
+>Obejmuje m.in. kolumny, ich kolejność, formaty wartości oraz reguły walidacji. Na zrzucie ekranu aplikacja dodatkowo sprawdza, czy saldo początkowe, transakcje i saldo końcowe składają się na poprawną sumę.
+
+W ustawieniach eksportu **tryb ekstrakcji** określa sposób odczytania danych z pliku, np. parser HTML/MHTML albo OCR. **Język dokumentu** jest osobną informacją: wskazuje język tekstu, który ma zostać rozpoznany podczas OCR i przetwarzania dokumentu. Nie powinien więc wyświetlać tego samego opisu co tryb ekstrakcji.
+
+
 ---
 
 ## Parsery dla znanych formatów
 
-Przewidywalne struktury HTML i MHTML pozowoliły na zbudowanie deterministycznych profili parsera.
+Przewidywalne struktury HTML i MHTML pozwoliły na zbudowanie deterministycznych profili parsera.
 
-Użytkownik nie wybiera banku ręcznie. Converter analizuje plik i próbuje rozpoznać format sam.
+Użytkownik nie wybiera banku ręcznie. Konwerter analizuje plik i próbuje rozpoznać format sam.
 
 Jeżeli struktura pasuje do jednego z obsługiwanych wariantów, uruchamiany jest odpowiedni parser.
 
@@ -81,7 +89,7 @@ Ta ścieżka jest całkowicie mechaniczna i to właśnie ona jest używana obecn
 
 ---
 
-## Zakres, który ustaliłem zbyt szeroko
+## Zakres ustaliłem zbyt szeroko…
 
 Tutaj popełniłem błąd.
 
@@ -99,7 +107,7 @@ Problem nie leżał więc w implementacji. Po prostu zbyt wcześnie potraktował
 
 **Powinienem był najpierw dokładniej ustalić, które przypadki naprawdę trzeba obsłużyć.**
 
-Obsługa OCR nadal działa w kodzie, ale jest wyłączona. Używana wersja convertera opiera się na automatycznym rozpoznawaniu znanych struktur HTML i MHTML oraz parserach dla mBanku i Millennium.
+Obsługa OCR nadal działa w kodzie, ale jest wyłączona. Używana wersja konwertera opiera się na automatycznym rozpoznawaniu znanych struktur HTML i MHTML oraz parserach dla mBanku i Millennium.
 
 ---
 

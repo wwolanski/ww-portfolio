@@ -24,6 +24,7 @@
     "caseStudy": "case-study",
     "openCaseStudy": "Otwórz case-study: {title}",
     "openExternal": "Otwórz {provider}: {title}",
+    "openProvider": "Otwórz {provider}",
     "openGallery": "Otwórz galerię obrazów: {title}",
     "close": "Zamknij okno case-study",
     "loading": "Ładowanie case-study…",

@@ -204,6 +204,7 @@ export const uiContentSchema = object({
     caseStudy: string,
     openCaseStudy: template('title'),
     openExternal: template('provider', 'title'),
+    openProvider: template('provider'),
     openGallery: template('title'),
     close: string,
     loading: string,
