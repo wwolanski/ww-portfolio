@@ -6,7 +6,7 @@
       "W PRAKTYCE.",
       ""
     ],
-    "lead": "Ta lista obejmuje rzeczy skończone, rozwijane i zatrzymane, a także próby, które po prostu nie zadziałały. Razem pokazują zakres mojego dotychczasowego doświadczenia."
+    "lead": "Są tu rzeczy skończone, rozwijane, zatrzymane i takie, które po prostu nie zadziałały. Razem dają obraz tego, czym do tej pory się zajmowałem."
   },
   "visualPanel": {
     "kicker": "projects & experiments",
@@ -107,10 +107,10 @@
   ],
   "outcome": "PRAWO JAKO DANE · DETERMINISTYCZNY RDZEŃ · AI DOPIERO TAM, GDZIE MA SENS",
   "anchor": "p3",
-  "details": [
+"details": [
   {
     "label": "Problem",
-    "text": "Odpowiedź podatkowa musi być nie tylko trafna, ale też aktualna, kompletna i weryfikowalna na podstawie konkretnych źródeł."
+        "text": "Odpowiedź podatkowa musi być nie tylko trafna, ale też aktualna, kompletna i weryfikowalna na podstawie konkretnych źródeł."
   },
   {
     "label": "Rdzeń",
@@ -226,7 +226,7 @@
           },
           {
             "label": "Wniosek",
-            "text": "Zmiana reprezentacji problemu stała się jednym z punktów wyjścia do rozwoju [Kukla2D](https://github.com/wwolanski/kukla2d)."
+            "text": "Zmiana reprezentacji problemu stała się jednym z punktów wyjścia do rozwoju Kukla2D."
           }
         ]
       }
